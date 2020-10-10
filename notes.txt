@@ -1,0 +1,11 @@
+*Track expenses for a load (driver?/kevin?)
+
+*Find way to convert load information to send to driver via phone
+
+Settlement (pay stud for the week)
+    *date
+    *pu and del location
+    *rate
+    *drivers pay after expenses
+    *expenses (insurance, IFTA fuel tax, 10%cut, prespass)
+    *reimbursement (lumper fee, detention, layover, tailgate)
