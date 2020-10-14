@@ -147,7 +147,7 @@ app.get('/loadsForCalendar/:year/:month', (req,res) => {
 });
 
 app.get('/unassignedLoads', (req,res) => {
-    db.query(`SELECT * FROM Loads WHERE driverID = 1;`, (err, rows) => {
+    db.query(`SELECT * FROM Loads WHERE driverID = 1 AND booked = true;`, (err, rows) => {
         if(err){
             throw err;
         } else {
