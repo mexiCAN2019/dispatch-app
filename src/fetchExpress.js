@@ -1,4 +1,4 @@
-const baseUrl = 'http://localhost:3002';
+const baseUrl = 'http://localhost:5000';
 const Express = {};
 
 
@@ -120,6 +120,18 @@ Express.getUnbookedLoads = () => {
     });
 };
 
+Express.getYearUnbookedLoads = (year) => {
+    const url = `${baseUrl}/unbookedLoads/${year}`;
+    return fetch(url).then(response => {
+        if(!response.ok){
+            return [];
+        }
+        return response.json();
+    }).then(jsonResponse => {
+        return jsonResponse.loads;
+    });
+};
+
 Express.getMonthUnbookedLoads = (year, month) => {
     const url = `${baseUrl}/unbookedLoads/${year}/${month}`;
     return fetch(url).then(response => {
@@ -147,7 +159,19 @@ Express.updateLoad = (loadID, updatedLoad) => {
     });
 };
 
-Express.getLoads = (year, month) => {
+Express.getYearLoads = (year) => {
+    const url = `${baseUrl}/loadsForCalendar/${year}`
+    return fetch(url).then(response => {
+            if(!response.ok){
+                return console.log('error');
+            }
+            return response.json();
+        }).then(jsonResponse => {
+            return jsonResponse.loads;
+        });
+};
+
+Express.getMonthLoads = (year, month) => {
     const url = `${baseUrl}/loadsForCalendar/${year}/${month}`
     return fetch(url).then(response => {
             if(!response.ok){

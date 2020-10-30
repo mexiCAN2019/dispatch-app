@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Form, TextArea, Select, Button, Input, Label, Checkbox } from 'semantic-ui-react';
 import { DateInput } from "semantic-ui-calendar-react";
-import './loads.css';
 import Express from './../../fetchExpress';
 import { trailerOptions, trailerNumbers, states } from './../../util/options'
 
@@ -12,21 +11,22 @@ function LoadInference() {
 
 
     const handleBooked = () => {
+        
         const newLoad = {
             driverID: load.driverID, puCity: load.puCity, puState: load.puState, puDate: load.puDate, puTime: load.puTime, endPUTime: load.endPUTime, delCity: load.delCity, 
             delState: load.delState, delDate: load.delDate, delTime: load.delTime, endDelTime: load.endDelTime, commodity: load.commodity, weight: load.weight, broker: load.broker, rate: load.rate, 
             notes: load.notes, loadStatus: load.loadStatus, dispatched: load.dispatched, trailerNumber: load.trailerNumber, trailerType: load.trailerType, booked: load.booked, reloadLoad: load.reloadLoad
-        }
+        };
         Express.createLoad(newLoad).then(response => {
             if(response === 'error 400'){
                 return alert('Fields with * must be filled out');
             } else {
                 setLoad({driverID: null, puCity: '', puState: '', puDate: '', puTime: '', endPUTime: '', delCity: '', delState: '', delDate: '',
-        delTime: '', endDelTime: '', commodity: '', weight: '', broker: '', rate: '', notes: '', loadStatus: 'waiting', dispatched: false, trailerNumber: null, trailerType: '', booked: load.booked, reloadLoad: null});
+        delTime: '', endDelTime: '', commodity: '', weight: '', broker: '', rate: '', notes: '', loadStatus: 'waiting', dispatched: false, trailerNumber: null, trailerType: '', booked: null, reloadLoad: null});
                 if(load.booked){
                     alert('LOAD BOOKED');
                 } else{
-                    alert('TOO CHEAP, LOAD NOT BOOKED');
+                    alert('LOAD NOT BOOKED');
                 }
             }
         });
@@ -34,7 +34,8 @@ function LoadInference() {
 
     const handleChange = (e, {name, value}) => {
         setLoad({...load, [name]: value });
-    }
+    };
+
 
     const [driversDropdown, setDriversDropdown] = useState();
     useEffect(() => {
@@ -98,11 +99,12 @@ function LoadInference() {
             <Form.Input label="Additional Note" control={TextArea} placeholder="note" name='notes' value={load.notes} onChange={handleChange} />
 
             <div style={{display: "flex", flexDirection: "row", justifyContent: "space-around"}}>
-            <Form.Group style={{display: 'flex', flexDirection: "column", alignContent: "space-around", border: "ridge 5px red", borderRadius: "5px", padding: "30px 15px"}}>
+            <Form.Group style={{display: 'flex', flexDirection: "column", alignContent: "space-around", border: "ridge 5px red", borderRadius: "5px", width: "196px", padding: "20px 15px 30px"}}>
+                Required*
                 <Form.Field>
                 <Checkbox
                     radio
-                    label='Book it!!!'
+                    label='Book it!'
                     name='booked'
                     value={true}
                     checked={load.booked === true}
@@ -112,7 +114,7 @@ function LoadInference() {
                 <Form.Field>
                 <Checkbox
                     radio
-                    label='Too cheap, no book'
+                    label="Do not book"
                     name='booked'
                     value={false}
                     checked={load.booked === false}
@@ -120,7 +122,8 @@ function LoadInference() {
                 />
                 </Form.Field>
             </Form.Group>
-            <Form.Group style={{display: 'flex', flexDirection: "column", border: "ridge 5px red", borderRadius: "5px", width: "196px", padding: "30px 15px"}}>
+            <Form.Group style={{display: 'flex', flexDirection: "column", border: "ridge 5px red", borderRadius: "5px", width: "196px", padding: "20px 15px 30px"}}>
+                Required*
                 <Form.Field>
                 <Checkbox
                     radio
@@ -134,7 +137,7 @@ function LoadInference() {
                 <Form.Field>
                 <Checkbox
                     radio
-                    label='Original Load'
+                    label='Load'
                     name='reloadLoad'
                     value={false}
                     checked={load.reloadLoad === false}

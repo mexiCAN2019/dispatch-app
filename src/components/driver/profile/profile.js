@@ -56,9 +56,9 @@ function Profile({ driverID, threeLoads }) {
         }
         if (window.confirm('Are you sure you want to fire employee?')) {
             Express.updateDriverInfo(driver.id, firedEmployee);
-            alert('Employee fired');
+            alert('Employee Fired');
         } else {
-            alert('Jk, employee not fired lol');
+            alert('Employee Not Fired');
         }
     };
         
@@ -82,7 +82,7 @@ function Profile({ driverID, threeLoads }) {
                         <Feed.Content>
                             <Feed.Date content={`${load.delDate}`} />
                             <Feed.Summary>
-                                {`Delivered load from ${load.puCity}, ${load.puState} to ${load.delCity}, ${load.delState}`}
+                                {`${load.loadStatus} load from ${load.puCity}, ${load.puState} to ${load.delCity}, ${load.delState}`}
                             </Feed.Summary>
                         </Feed.Content>
                     </Feed.Event>
@@ -114,14 +114,11 @@ function Profile({ driverID, threeLoads }) {
                                 ui={false}/>
                             <Card.Content>
                                 <Card.Header>{driver.firstName} {driver.lastName}</Card.Header>
-                                <Card.Meta>
+                                {/* <Card.Meta>
                                     <span className='date'>7/23</span>
                                     <br></br>
                                     <span className='date'>2020</span>
-                                </Card.Meta>
-                                <Card.Description>
-                                    Description
-                                </Card.Description>
+                                </Card.Meta> */}
                             </Card.Content>
                         </Card>
 
@@ -169,13 +166,6 @@ function Profile({ driverID, threeLoads }) {
                         </Card.Content>
                         {renderRecentLoads()}
                     </Card>
-
-                        <Card>
-                            <Card.Content header='Notes' />
-                                <Card.Content>
-                                    positions
-                                </Card.Content>
-                        </Card>
                     </Grid.Column>
                 </Grid.Row>
             </Grid>

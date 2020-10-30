@@ -3,7 +3,7 @@ const app = express();
 const cors = require('cors');
 const morgan = require('morgan')
 
-const PORT = process.env.PORT || 3002;
+const PORT = process.env.PORT || 5000;
 
 const mysql = require('mysql');
 const db = mysql.createConnection ({
@@ -131,8 +131,23 @@ app.get('/drivers/:driverID/bookedLoads/:year', (req,res) => {
     });
 });
 
+app.get('/loadsForCalendar/:year', (req,res) => {
+    db.query(`SELECT Drivers.firstName, Loads.puCity, Loads.puDate, Loads.puTime, Loads.endPUTime, Loads.delCity, Loads.delDate, Loads.delTime, Loads.endDelTime, Loads.loadStatus, Loads.dispatched, Loads.id
+                FROM Drivers 
+                INNER JOIN Loads
+                ON Drivers.id = Loads.driverID
+                WHERE booked = true AND delDate LIKE '______${req.params.year}'
+                ORDER BY firstName;`, (err, rows) => {
+        if(err){
+            throw err;
+        } else {
+            res.json({loads: rows});
+        }
+    });
+});
+
 app.get('/loadsForCalendar/:year/:month', (req,res) => {
-    db.query(`SELECT Drivers.firstName, Loads.puCity, Loads.puDate, Loads.puTime, Loads.endPUTime, Loads.delCity, Loads.delDate, Loads.delTime, Loads.endDelTime, Loads.loadStatus, Loads.dispatched
+    db.query(`SELECT Drivers.firstName, Loads.puCity, Loads.puDate, Loads.puTime, Loads.endPUTime, Loads.delCity, Loads.delDate, Loads.delTime, Loads.endDelTime, Loads.loadStatus, Loads.dispatched, Loads.id
                 FROM Drivers 
                 INNER JOIN Loads
                 ON Drivers.id = Loads.driverID
@@ -166,6 +181,17 @@ app.get('/unbookedLoads', (req,res) => {
     });
 });
 
+app.get('/unbookedLoads/:year', (req,res) => {
+    db.query(`SELECT * FROM Loads WHERE booked = false AND delDate LIKE '______${req.params.year}' 
+    ORDER BY puDate DESC;`, (err, rows) => {
+        if(err){
+            throw err;
+        } else {
+            res.json({loads: rows});
+        }
+    });
+});
+
 app.get('/unbookedLoads/:year/:month', (req,res) => {
     db.query(`SELECT * FROM Loads WHERE booked = false AND delDate LIKE '${req.params.month}____${req.params.year}' 
     ORDER BY puDate DESC;`, (err, rows) => {
@@ -179,8 +205,10 @@ app.get('/unbookedLoads/:year/:month', (req,res) => {
 
 app.post('/loads', (req,res) => {
     const newLoad = req.body.load;
+    console.log(newLoad);
     if(!newLoad.driverID  || !newLoad.puCity ||!newLoad.puState || !newLoad.puDate || !newLoad.puTime || !newLoad.delCity || !newLoad.delState
-        || !newLoad.delDate || !newLoad.delTime || !newLoad.commodity || !newLoad.weight || !newLoad.broker || !newLoad.rate || !newLoad.trailerType) {
+        || !newLoad.delDate || !newLoad.delTime || !newLoad.commodity || !newLoad.weight || !newLoad.broker || !newLoad.trailerType || !newLoad.rate
+        || newLoad.booked === null || newLoad.reloadLoad === null) {
             res.sendStatus(400);
         } else{
             db.query(`INSERT INTO Loads SET ?;`, {
@@ -283,7 +311,7 @@ app.get('/bookedRateAverage', (req,res) => {
     });
 });
 
-//Year Average for all loads, Doesn't take releodLoad in SQL Query
+//Year Average for all loads, Doesn't take reloaddLoad in SQL Query
 app.get('/bookedRateAverage/:year/2', (req,res) => {
     db.query(`SELECT ROUND(AVG(rate), 0) AS "averageRate", COUNT(*) AS numberOfLoads FROM Loads
     WHERE booked = 1 AND delDate LIKE '______${req.params.year}';`, (err, row) => {
@@ -307,7 +335,7 @@ app.get('/bookedRateAverage/:year/:reloadLoad', (req, res) => {
     });
 });
 
-//Year Average for all loads for SPECIFIC DRIVER, Doesn't take releodLoad in SQL Query
+//Year Average for all loads for SPECIFIC DRIVER, Doesn't take reloadLoad in SQL Query
 app.get('/bookedRateAverage/:year/2/driver/:driverID', (req,res) => {
     db.query(`SELECT ROUND(AVG(rate), 0) AS "averageRate", COUNT(*) AS numberOfLoads FROM Loads
     WHERE booked = 1 AND delDate LIKE '______${req.params.year}' AND driverID = ${req.params.driverID};`, (err, row) => {
@@ -382,7 +410,7 @@ app.get('/bookedRateAverage/:year/:month/:reloadLoad/driver/:driverID', (req, re
 
 //SUMS
 
-//Year Sum for all loads, Doesn't take releodLoad in SQL Query
+//Year Sum for all loads, Doesn't take reloadLoad in SQL Query
 app.get('/bookedRateSum/:year/2', (req,res) => {
     db.query(`SELECT SUM(rate) AS "sumRate", COUNT(*) AS numberOfLoads FROM Loads
     WHERE booked = 1 AND delDate LIKE '______${req.params.year}';`, (err, row) => {
@@ -406,7 +434,7 @@ app.get('/bookedRateSum/:year/:reloadLoad', (req, res) => {
     });
 });
 
-//Year Sum for all loads for SPECIFIC DRIVER, Doesn't take releodLoad in SQL Query
+//Year Sum for all loads for SPECIFIC DRIVER, Doesn't take reloadLoad in SQL Query
 app.get('/bookedRateSum/:year/2/driver/:driverID', (req,res) => {
     db.query(`SELECT SUM(rate) AS "sumRate", COUNT(*) AS numberOfLoads FROM Loads
     WHERE booked = 1 AND delDate LIKE '______${req.params.year}' AND driverID = ${req.params.driverID};`, (err, row) => {
@@ -430,7 +458,7 @@ app.get('/bookedRateSum/:year/:reloadLoad/driver/:driverID', (req, res) => {
     });
 });
 
-//Month Sum for all loads, Doesn't take releodLoad in SQL Query
+//Month Sum for all loads, Doesn't take reloadLoad in SQL Query
 app.get('/bookedRateSum/:year/:month/2', (req,res) => {
     db.query(`SELECT SUM(rate) AS "sumRate", COUNT(*) AS numberOfLoads FROM Loads
 WHERE booked = 1 AND delDate LIKE '${req.params.month}____${req.params.year}';`, (err, row) => {
@@ -454,7 +482,7 @@ app.get('/bookedRateSum/:year/:month/:reloadLoad', (req, res) => {
     });
 });
 
-//Month Sum for all loads for SPECIFIC DRIVER, Doesn't take releodLoad in SQL Query
+//Month Sum for all loads for SPECIFIC DRIVER, Doesn't take reloadLoad in SQL Query
 app.get('/bookedRateSum/:year/:month/2/driver/:driverID', (req,res) => {
     db.query(`SELECT SUM(rate) AS "sumRate", COUNT(*) AS numberOfLoads FROM Loads
 WHERE booked = 1 AND delDate LIKE '${req.params.month}____${req.params.year}' AND driverID = ${req.params.driverID};`, (err, row) => {

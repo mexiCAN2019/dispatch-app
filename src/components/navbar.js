@@ -18,10 +18,13 @@ function Navbar(props) {
                 <Dropdown.Item 
                     key={driver.id}
                     name={`${driver.firstName}`}
-                    // onClick={() => props.history.push(`/${driver.id}`)}
-                    as={NavLink}
-                    to={`/${driver.id}`}
-                    exact>
+                    onClick={() =>{
+                        history.push(`/drivers/${driver.id}`);
+                        window.location.reload(false);
+                    }}
+                    /* as={NavLink}
+                    to={`/drivers/${driver.id}`}
+                    exact */>
                         {driver.firstName}
                 </Dropdown.Item>
             );
@@ -55,9 +58,9 @@ function Navbar(props) {
                             <Dropdown.Item to='/unbookedLoads' name='calendar and data' as={NavLink} exact >Unbooked Loads</Dropdown.Item>
                         </Dropdown.Menu>
                     </Dropdown>
-                    <Menu.Item text='forms' as={NavLink} exact to='/forms'>
+                    {/* <Menu.Item text='forms' as={NavLink} exact to='/forms'>
                         Forms
-                    </Menu.Item>
+                    </Menu.Item> */}
                 </Menu.Menu>
             </Menu>
         </div>

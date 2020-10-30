@@ -1,13 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { Calendar, momentLocalizer } from 'react-big-calendar';
 import moment from 'moment';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
-import Express from '../../fetchExpress';
 
   const localizer = momentLocalizer(moment);
 
 
   function StatusCalendar({ loads }) {
+
     
     return(
       <div style={{ height: 1700 }}>
@@ -16,6 +16,7 @@ import Express from '../../fetchExpress';
           events={loads}
           localizer={localizer}
           popup
+          selectable={true}
           eventPropGetter={
             (event, start, end, isSelected) => {
               let newStyle = {

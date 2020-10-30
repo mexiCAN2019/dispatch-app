@@ -86,9 +86,11 @@ function Summary({ load }) {
                     <p><i>Deliver</i>: {loadInfo.delDate} @ {loadInfo.delTime}{loadInfo.endDelTime ? ` - ${loadInfo.endDelTime}` : ''}</p>
                 </div>
             </Card.Content>
-            <Card.Content extra>
+            <Card.Content extra style={{display: 'flex', flexDirection: 'column', justifyContent: 'center'}}>
                 <TextArea placeholder="Notes about Driver" name="summaryNote" value={loadInfo.summaryNote} onChange={handleChange} />
-                <Button icon="save" onClick={handleSubmit}></Button>
+                <div style={{display: 'flex', justifyContent: 'center'}}>
+                <Button icon="save" color="twitter" onClick={handleSubmit} size='mini' style={{width: "20%"}}></Button>
+                </div>
             </Card.Content>
         </Card>
     )

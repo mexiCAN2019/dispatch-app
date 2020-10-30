@@ -16,9 +16,9 @@ function UnbookedLoads() {
         Express.getMonthUnbookedLoads(new Date().getFullYear(), getMonth).then(loads => setLoads(loads));
     }, []);
 
-    const getMonthLoads = (year, month) => {
+    const getUnbookedLoads = (year, month) => {
         if(month == 0){
-            
+            Express.getYearUnbookedLoads(year).then(loads => setLoads(loads));
         } else {
             Express.getMonthUnbookedLoads(year, month).then(loads => setLoads(loads));
         }
@@ -27,7 +27,7 @@ function UnbookedLoads() {
     return (
         <div>
             <RenderLoads loads={loads} 
-                         unbookedMonthLoads={getMonthLoads}
+                         unbookedLoads={getUnbookedLoads}
                          driverID={false}
                          cancel={false} />
         </div>

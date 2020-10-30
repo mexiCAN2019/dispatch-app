@@ -84,9 +84,6 @@ function Driver({ match: { params: { driverID } } }) {
         }
     };
 
-    const updateLoad = () => {
-        // find way to fix load cancel when there is a comment. Find somehow to sync state in single load to state with object with all loads
-    }
 
     const renderProfileOrLoads = () => {
         if (profile === true) {
