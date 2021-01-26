@@ -42,10 +42,10 @@ function Summary({ load }) {
     if(year === d.getFullYear() && month === (d.getMonth() + 1) && day === d.getDate()){
         return warningBorder;
         
-    } else if( year < d.getFullYear() &&  month > (d.getMonth() + 1) && day > d.getDate() ){
+    } else if( year < d.getFullYear() &&  month > (d.getMonth() + 1)){
         return alertBorder;
 
-    } else if( year === d.getFullYear() && month < (d.getMonth() + 1) && day > d.getDate() ){
+    } else if( year === d.getFullYear() && month < (d.getMonth() + 1)){
         return alertBorder;
 
     } else if( year === d.getFullYear() && month == (d.getMonth() + 1) && day < d.getDate() ){

@@ -9,7 +9,7 @@ function HomePage() {
 
     useEffect(() => {
         Express.getDrivers().then(drivers => drivers.filter(driver => driver.id !== 1)).then(drivers => drivers.map(driver => {
-            Express.getMostRecentLoads(driver.id).then(load => {
+            Express.getMostRecentLoads(driver.id, new Date().getFullYear()).then(load => {
                 if(load){
                     setLoads(prevLoads => [...prevLoads, load]);
                 }

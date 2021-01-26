@@ -1,33 +1,31 @@
 import React, { useState, useEffect } from 'react';
-import { Button } from 'semantic-ui-react';
 import RenderLoads from './renderLoads';
-import Profile from './profile/profile';
 import Express from './../../fetchExpress';
+import { drivers } from './../../util/options'
+import {
+    Grid,
+    Card,
+    Image,
+    Button,
+    Segment,
+    Tab,
+    Modal,
+    Form,
+    Feed
+} from 'semantic-ui-react';
 
 
-// Page doesn't update when user chooses a different driver from this page
-//cancelledLoad is filtering the load underneath (no note) when load has a note. I think its due to individuale load module have own state and overall state in driver component 
 function Driver({ match: { params: { driverID } } }) {
     const [profile, setProfile] = useState(true);
-    const [loads, setLoads] = useState([]);
+    const [loads, setLoads] = useState(null);
     const [threeLoads, setThreeLoads] = useState(() => [])
+    const [editOpen, setEditOpen] = useState(false)
 
 
-    // Using these two useEffects (instead of just one) causes a 'If you meant to render a collection of children, use an array instead.' error in profile.js for the recent activity Feed. 
-    // useEffect(() => {
-    //     Express.getDriverBookedLoads(driverID).then(loads => setLoads(loads));
-    // }, []);
-
-    // useEffect(() => {
-    //     let loadsForProfile = [];
-    //     for(let i = 0; i <= 2; i++) {
-    //         const loadToBePushed = loads[i];
-    //         loadsForProfile.push(loadToBePushed);
-    //         console.log(loadToBePushed);
-    //         console.log(loadsForProfile);
-    //     }
-    //     setThreeLoads(loadsForProfile);
-    // },[loads]);
+    const [driver, setDriver] = useState(null);
+    useEffect(() => {
+        Express.getDriver(driverID).then(driver => setDriver(driver));
+    }, [driverID]);
 
     useEffect(() => {
         let getMonth = new Date().getMonth();
@@ -38,30 +36,19 @@ function Driver({ match: { params: { driverID } } }) {
 
         Express.getDriverBookedMonthLoads(driverID, new Date().getFullYear(), getMonth).then(loads => {
           setLoads(loads);
-          let loadsForProfile = [];
-          if(loads.length === false){
-                return;
-          } else if (loads.length === 1){
-            for(let i = 0; i <= 0; i++) {
-                const loadToBePushed = loads[i];
-                loadsForProfile.push(loadToBePushed);
-            };
-          } else if(loads.length === 2){
-                for(let i = 0; i <= 1; i++) {
-                    const loadToBePushed = loads[i];
-                    loadsForProfile.push(loadToBePushed);
-                };
-          } else {
-                for(let i = 0; i <= 2; i++) {
-                    const loadToBePushed = loads[i];
-                    loadsForProfile.push(loadToBePushed);
-                };
-          }
+          const loadsForProfile = loads.slice(0,3);
           setThreeLoads(loadsForProfile);
         }
       );
       
+    }, [driverID]);
+
+    const [driversDropdown, setDriversDropdown] = useState([]);
+    useEffect(() => {
+        setDriversDropdown(drivers());
     }, []);
+
+
 
 
 
@@ -84,20 +71,43 @@ function Driver({ match: { params: { driverID } } }) {
         }
     };
 
+    const handleChange = ({target}) => {
+        const {name, value} = target;
+        setDriver({...driver, [name]: value });
+    }
 
-    const renderProfileOrLoads = () => {
-        if (profile === true) {
-            return <Profile driverID={driverID}
-                            threeLoads={threeLoads} />
+    const handleSubmit = () => {
+        const updatedDriver = {
+            firstName: driver.firstName,
+            lastName: driver.lastName,
+            phoneNumber: driver.phoneNumber,
+            truckNumber: driver.truckNumber
+        };
+        Express.updateDriverInfo(driver.id, updatedDriver).then(response => {
+            if(response === 400){
+                return alert('Make sure all areas with * are filled');
+            } 
+            console.log(response);
+            alert('Load Updated');
+            setEditOpen(false);
+        });
+    }
+
+    const handleFired = () => {
+        const firedEmployee = {
+            firstName: driver.firstName,
+            lastName: driver.lastName,
+            phoneNumber: driver.phoneNumber,
+            truckNumber: driver.truckNumber,
+            employed: false
         }
-        return <RenderLoads loads={loads}
-                            cancelLoad={cancelledLoad}
-                            monthLoads={getMonthLoads}
-                            driverID={driverID}
-                            cancel={true} />
+        if (window.confirm('Are you sure you want to fire employee?')) {
+            Express.updateDriverInfo(driver.id, firedEmployee);
+            alert('Employee Fired');
+        } else {
+            alert('Employee Not Fired');
+        }
     };
-
-    
 
     const renderPositive = () => {
         if (profile === true) {
@@ -117,11 +127,132 @@ function Driver({ match: { params: { driverID } } }) {
             </Button.Group>
         )
     }
+        
+    const renderRecentLoads = () => {
+        if(!threeLoads) return;
+        if(!threeLoads[0]){
+            return (
+                <Feed.Event>
+                    <Feed.Label icon="truck" />
+                    <Feed.Content>
+                        <Feed.Summary>
+                            No Recent Loads
+                        </Feed.Summary>
+                    </Feed.Content>
+                </Feed.Event>
+            )
+        }
+           return threeLoads.map(load => {
+                return (                                    
+                    <Feed.Event>
+                        <Feed.Label icon="truck" />
+                        <Feed.Content>
+                            <Feed.Date content={`${load.delDate}`} />
+                            <Feed.Summary>
+                                {`${load.loadStatus} load from ${load.puCity}, ${load.puState} to ${load.delCity}, ${load.delState}`}
+                            </Feed.Summary>
+                        </Feed.Content>
+                    </Feed.Event>
+                        )
+            });
+    };
 
+
+
+
+
+    if(!profile){
+        return (
+            <div>
+                {renderPositive()}
+                <RenderLoads loads={loads}
+                            cancelLoad={cancelledLoad}
+                            monthLoads={getMonthLoads}
+                            driverID={driverID}
+                            cancel={true}
+                            driversDropdown={driversDropdown} />
+            </div>
+        )
+    }
     return (
         <div>
             {renderPositive()}
-            {renderProfileOrLoads()}
+            <Modal open={editOpen} onSubmit={handleSubmit}>
+                <Modal.Header>Edit Driver Info</Modal.Header>
+                    <Modal.Content Image>
+                        <Form>
+                            <Form.Input required label='First Name' name='firstName' value={driver && driver.firstName} onChange={handleChange}></Form.Input>
+                            <Form.Input required label='Last Name' name='lastName' value={driver && driver.lastName} onChange={handleChange}></Form.Input>
+                            <Form.Input required label='Truck Number' name='truckNumber' value={driver && driver.truckNumber} onChange={handleChange} type='number'></Form.Input>
+                            <Form.Input required label='Phone Number' name='phoneNumber' value={driver && driver.phoneNumber} onChange={handleChange}></Form.Input>
+                            <Button type="submit" color="green" icon="user" content="Save Changes" />
+                            <Button onClick={()=> setEditOpen(false)} color='google plus'>Close</Button>
+                        </Form>
+                    </Modal.Content>
+            </Modal>
+            <Grid celled='internally' style={{margin: "25px auto"}}>
+                <Grid.Row>
+                    <Grid.Column width={4}>
+                        <Card>
+                            <Image src='/truck-2.jpeg' wrapped
+                                ui={false}/>
+                            <Card.Content>
+                                <Card.Header>{driver && driver.firstName} {driver && driver.lastName}</Card.Header>
+                                {/* <Card.Meta>
+                                    <span className='date'>7/23</span>
+                                    <br></br>
+                                    <span className='date'>2020</span>
+                                </Card.Meta> */}
+                            </Card.Content>
+                        </Card>
+
+                        <Card>
+                            <Card.Content header='Details' />
+                            <Card.Content>
+                                <Card.Description textAlign='left'>
+                                    Truck Number: {driver && driver.truckNumber} 
+                                </Card.Description>
+                                <Card.Description textAlign='left'>
+                                    Phone: {driver && driver.phoneNumber}
+                                </Card.Description>
+                                <Card.Description textAlign='left'>
+                                    License Expiration: 1/1/2030
+                                </Card.Description>
+                            </Card.Content>
+                        </Card>
+
+                        <Card>
+                            <Card.Content header='Actions' />
+                            <Card.Content extra>
+                                <div className='ui three buttons'>
+                                    <Button basic color='green' onClick={()=> setEditOpen(true)}>
+                                        Edit
+                                    </Button>
+                                    <Button onClick={handleFired}  basic color='red'>
+                                        FIRED
+                                    </Button>
+                                </div>
+                            </Card.Content>
+                        </Card>
+                    </Grid.Column>
+
+                    <Grid.Column width={8}>
+                        <Segment style={{overflow: 'auto', maxHeight: '60em'}}>
+                            <Tab />
+                        </Segment>
+                    </Grid.Column>
+
+                    <Grid.Column width={4}>
+                    
+                    <Card>
+                        <Card.Content>
+                            <Card.Header>Recent Loads</Card.Header>
+                        </Card.Content>
+                        {renderRecentLoads()}
+                    </Card>
+                    </Grid.Column>
+                </Grid.Row>
+            </Grid>
         </div>
     )
 }

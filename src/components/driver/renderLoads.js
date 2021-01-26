@@ -4,7 +4,7 @@ import { Button, Form, Select } from 'semantic-ui-react';
 import { months } from './../../util/options';
 
 
-function RenderLoads({ loads, cancelLoad, monthLoads, unbookedLoads, driverID, cancel }) {
+function RenderLoads({ loads, cancelLoad, monthLoads, unbookedLoads, driverID, cancel, driversDropdown }) {
     const [dataCriteria, setDataCriteria] = useState({year: new Date().getFullYear(), month: null});
 
     useEffect(() => {
@@ -53,7 +53,8 @@ function RenderLoads({ loads, cancelLoad, monthLoads, unbookedLoads, driverID, c
                     return <Load load={load}
                                 cancelLoad={cancelLoad}
                                 key={load.id}
-                                cancel={cancel} />
+                                cancel={cancel}
+                                driversDropdown={driversDropdown} />
                 })}
                 
             </div>

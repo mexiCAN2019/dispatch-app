@@ -9,8 +9,6 @@ const mysql = require('mysql');
 const db = mysql.createConnection ({
     host: 'localhost',
     user: 'root',
-    password: 'Fedalwhoop19',
-    database: 'kgtransport'
 });
 
 db.connect();
@@ -94,12 +92,12 @@ app.put('/drivers/:driverID', (req,res) => {
 
 //LOADS
 
-app.get('/drivers/:driverID/latestLoad', (req,res) => {
+app.get('/drivers/:driverID/latestLoads/:year', (req,res) => {
     db.query(`SELECT Drivers.id, Drivers.firstName, Drivers.lastName, Drivers.phoneNumber, Drivers.truckNumber, Drivers.employed, Drivers.summaryNote, Loads.driverID, Loads.puDate, Loads.puTime, Loads.endPUTime, Loads.delDate, Loads.delTime, Loads.endDelTime, Loads.broker, Loads.notes FROM Drivers
     INNER JOIN Loads ON Drivers.id = Loads.driverID
-    WHERE driverID = ${req.params.driverID} AND Loads.booked
+    WHERE driverID = ${req.params.driverID} AND Loads.booked = true AND Loads.puDate LIKE '______${req.params.year}'
     ORDER BY puDate DESC
-    LIMIT 1;`, (err, rows) => {
+    LIMIT 3;`, (err, rows) => {
         if(err){
             throw err;
         } else{

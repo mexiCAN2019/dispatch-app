@@ -12,22 +12,20 @@ import {
 } from 'semantic-ui-react';
 import Express from '../../../fetchExpress';
 
+// this component is not in use
 
-
-//add modal to edit profile
-//edit Recent Activity to show load status
-function Profile({ driverID, threeLoads }) {
-    const [driver, setDriver] = useState([]);
+function Profile({ /* driverID */ driver, threeLoads, handleChange }) {
+    // const [driver, setDriver] = useState([]);
     const [editOpen, setEditOpen] = useState(false)
 
-    useEffect(() => {
-        Express.getDriver(driverID).then(driver => setDriver(driver));
-    }, []);
+    // useEffect(() => {
+    //     Express.getDriver(driverID).then(driver => setDriver(driver));
+    // }, [driverID]);
 
 
-    const handleChange = (e, {name, value}) => {
-        setDriver({...driver, [name]: value });
-    }
+    // const handleChange = (e, {name, value}) => {
+    //     setDriver({...driver, [name]: value });
+    // }
 
     const handleSubmit = () => {
         const updatedDriver = {
@@ -63,6 +61,7 @@ function Profile({ driverID, threeLoads }) {
     };
         
     const renderRecentLoads = () => {
+        if(!threeLoads) return;
         if(!threeLoads[0]){
             return (
                 <Feed.Event>
@@ -97,10 +96,10 @@ function Profile({ driverID, threeLoads }) {
                 <Modal.Header>Edit Driver Info</Modal.Header>
                     <Modal.Content Image>
                         <Form>
-                            <Form.Input required label='First Name' name='firstName' value={driver.firstName} onChange={handleChange}></Form.Input>
-                            <Form.Input required label='Last Name' name='lastName' value={driver.lastName} onChange={handleChange}></Form.Input>
-                            <Form.Input required label='Truck Number' name='truckNumber' value={driver.truckNumber} onChange={handleChange} type='number'></Form.Input>
-                            <Form.Input required label='Phone Number' name='phoneNumber' value={driver.phoneNumber} onChange={handleChange}></Form.Input>
+                            <Form.Input required label='First Name' name='firstName' value={driver && driver.firstName} onChange={handleChange}></Form.Input>
+                            <Form.Input required label='Last Name' name='lastName' value={driver && driver.lastName} onChange={(e) => handleChange(e.target)}></Form.Input>
+                            <Form.Input required label='Truck Number' name='truckNumber' value={driver && driver.truckNumber} onChange={(e) => handleChange(e.target)} type='number'></Form.Input>
+                            <Form.Input required label='Phone Number' name='phoneNumber' value={driver && driver.phoneNumber} onChange={(e) => handleChange(e.target)}></Form.Input>
                             <Button type="submit" color="green" icon="user" content="Save Changes" />
                             <Button onClick={()=> setEditOpen(false)} color='google plus'>Close</Button>
                         </Form>
@@ -113,7 +112,7 @@ function Profile({ driverID, threeLoads }) {
                             <Image src='/truck-2.jpeg' wrapped
                                 ui={false}/>
                             <Card.Content>
-                                <Card.Header>{driver.firstName} {driver.lastName}</Card.Header>
+                                <Card.Header>{driver && driver.firstName} {driver && driver.lastName}</Card.Header>
                                 {/* <Card.Meta>
                                     <span className='date'>7/23</span>
                                     <br></br>
@@ -126,10 +125,10 @@ function Profile({ driverID, threeLoads }) {
                             <Card.Content header='Details' />
                             <Card.Content>
                                 <Card.Description textAlign='left'>
-                                    Truck Number: {driver.truckNumber} 
+                                    Truck Number: {driver && driver.truckNumber} 
                                 </Card.Description>
                                 <Card.Description textAlign='left'>
-                                    Phone: {driver.phoneNumber}
+                                    Phone: {driver && driver.phoneNumber}
                                 </Card.Description>
                                 <Card.Description textAlign='left'>
                                     License Expiration: 1/1/2030

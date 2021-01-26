@@ -18,13 +18,9 @@ function Navbar(props) {
                 <Dropdown.Item 
                     key={driver.id}
                     name={`${driver.firstName}`}
-                    onClick={() =>{
-                        history.push(`/drivers/${driver.id}`);
-                        window.location.reload(false);
-                    }}
-                    /* as={NavLink}
+                    as={NavLink}
                     to={`/drivers/${driver.id}`}
-                    exact */>
+                    exact>
                         {driver.firstName}
                 </Dropdown.Item>
             );

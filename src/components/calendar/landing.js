@@ -6,9 +6,6 @@ import { months } from './../../util/options';
 
 function Calendars() {
     const [statusLoads, setStatusLoads] = useState([]);
-
-    const [dataCriteria, setDataCriteria] = useState({year: new Date().getFullYear(), month: null});
-
     useEffect(() => {
         //new Date() function doesn't take in numbers with zero in front. So must check if the month or day pulled from database has a zero in front
         //Might be able to just put Number() instead of checkZero function
@@ -27,25 +24,23 @@ function Calendars() {
 
         Express.getMonthLoads(new Date().getFullYear(), getMonth).then(loads => {
           loads.map(load => {
-            console.log(load);
             const startYear = load.puDate.slice(6);
             const startMonth = checkForZero(load.puDate.slice(0, 2));
             const startDay = checkForZero(load.puDate.slice(3, 5));
             const startHour = checkForZero(load.puTime.slice(0,2));
-            console.log(`${startYear}, ${startMonth}, ${startDay}, ${startHour}`);
   
             const endYear = load.delDate.slice(6);
             const endMonth = checkForZero(load.delDate.slice(0, 2));
             const endDay = checkForZero(load.delDate.slice(3, 5));
             const endHour = checkForZero(load.delTime.slice(0,2));
-            console.log(`${endYear}, ${endMonth}, ${endDay}, ${endHour}`);
   
-            setStatusLoads(prevLoad => [...prevLoad, {'title': `${load.firstName}, ${load.puCity} to ${load.delCity} - ${load.dispatched ? 'dispatched' : 'not dispathed'}`, 'start': new Date(`${startYear}`, `${Number(startMonth) - 1}`, `${startDay}`, `${startHour}`), 'end': new Date(`${endYear}`, `${Number(endMonth) - 1}`, `${endDay}`, `${endHour}`), 'driver': load.firstName, 'status': load.loadStatus}]);
+            setStatusLoads(prevLoad => [...prevLoad, {title: `${load.firstName}, ${load.puCity} to ${load.delCity} - ${load.dispatched ? 'dispatched' : 'not dispathed'}`, start: new Date(`${startYear}`, `${Number(startMonth) - 1}`, `${startDay}`, `${startHour}`), end: new Date(`${endYear}`, `${Number(endMonth) - 1}`, `${endDay}`, `${endHour}`), delMonthYear: `${load.delDate.slice(0, 2)}${load.delDate.slice(6)}`, status: load.loadStatus}]);
           });
         });
       }, []);
 
-      useEffect(() => {
+    const [dateCriteria, setDateCriteria] = useState({year: new Date().getFullYear(), month: null});
+    useEffect(() => {
         let getMonth = new Date().getMonth();
         getMonth += 1;
         if(getMonth.toString().length === 1){
@@ -53,8 +48,8 @@ function Calendars() {
         } else{
             getMonth = getMonth.toString();
         }
-        setDataCriteria({...dataCriteria, month: getMonth});
-      }, []);
+        setDateCriteria({...dateCriteria, month: getMonth});
+    }, []);
 
 
 
@@ -74,6 +69,8 @@ function Calendars() {
     }
 
     const handleSubmit = () => {
+        const loadsAlreadyFetched = statusLoads.find((load) => load.delMonthYear === `${dateCriteria.month}${dateCriteria.year}`);
+        if(loadsAlreadyFetched) return;
         const checkForZero = (monthOrDay) => {
             if(monthOrDay[0] == 0){
                 return monthOrDay.slice(1);
@@ -81,49 +78,25 @@ function Calendars() {
             return monthOrDay;
         };
 
-        if(dataCriteria.month == 0){
-            Express.getYearLoads(dataCriteria.year).then(loads => {
-                loads.map(load => {
-                    console.log(load);
-                    const startYear = load.puDate.slice(6);
-                    const startMonth = checkForZero(load.puDate.slice(0, 2));
-                    const startDay = checkForZero(load.puDate.slice(3, 5));
-                    const startHour = checkForZero(load.puTime.slice(0,2));
-                    console.log(`${startYear}, ${startMonth}, ${startDay}, ${startHour}`);
-        
-                    const endYear = load.delDate.slice(6);
-                    const endMonth = checkForZero(load.delDate.slice(0, 2));
-                    const endDay = checkForZero(load.delDate.slice(3, 5));
-                    const endHour = checkForZero(load.delTime.slice(0,2));
-                    console.log(`${endYear}, ${endMonth}, ${endDay}, ${endHour}`);
-        
-                    setStatusLoads(prevLoad => [...prevLoad, {'title': `${load.firstName}, ${load.puCity} to ${load.delCity} - ${load.dispatched ? 'dispatched' : 'not dispathed'}`, 'start': new Date(`${startYear}`, `${Number(startMonth) - 1}`, `${startDay}`, `${startHour}`), 'end': new Date(`${endYear}`, `${Number(endMonth) - 1}`, `${endDay}`, `${endHour}`), 'driver': load.firstName, 'status': load.loadStatus}]);
-                });
+        Express.getMonthLoads(dateCriteria.year, dateCriteria.month).then(loads => {
+            loads.map(load => {
+                const startYear = load.puDate.slice(6);
+                const startMonth = checkForZero(load.puDate.slice(0, 2));
+                const startDay = checkForZero(load.puDate.slice(3, 5));
+                const startHour = checkForZero(load.puTime.slice(0,2));
+    
+                const endYear = load.delDate.slice(6);
+                const endMonth = checkForZero(load.delDate.slice(0, 2));
+                const endDay = checkForZero(load.delDate.slice(3, 5));
+                const endHour = checkForZero(load.delTime.slice(0,2));
+    
+                setStatusLoads(prevLoad => [...prevLoad, {title: `${load.firstName}, ${load.puCity} to ${load.delCity} - ${load.dispatched ? 'dispatched' : 'not dispathed'}`, start: new Date(`${startYear}`, `${Number(startMonth) - 1}`, `${startDay}`, `${startHour}`), end: new Date(`${endYear}`, `${Number(endMonth) - 1}`, `${endDay}`, `${endHour}`), delMonthYear: `${load.delDate.slice(0, 2)}${load.delDate.slice(6)}`, status: load.loadStatus}]);
             });
-        } else{
-            Express.getMonthLoads(dataCriteria.year, dataCriteria.month).then(loads => {
-                loads.map(load => {
-                    console.log(load);
-                    const startYear = load.puDate.slice(6);
-                    const startMonth = checkForZero(load.puDate.slice(0, 2));
-                    const startDay = checkForZero(load.puDate.slice(3, 5));
-                    const startHour = checkForZero(load.puTime.slice(0,2));
-                    console.log(`${startYear}, ${startMonth}, ${startDay}, ${startHour}`);
-        
-                    const endYear = load.delDate.slice(6);
-                    const endMonth = checkForZero(load.delDate.slice(0, 2));
-                    const endDay = checkForZero(load.delDate.slice(3, 5));
-                    const endHour = checkForZero(load.delTime.slice(0,2));
-                    console.log(`${endYear}, ${endMonth}, ${endDay}, ${endHour}`);
-        
-                    setStatusLoads(prevLoad => [...prevLoad, {'title': `${load.firstName}, ${load.puCity} to ${load.delCity} - ${load.dispatched ? 'dispatched' : 'not dispathed'}`, 'start': new Date(`${startYear}`, `${Number(startMonth) - 1}`, `${startDay}`, `${startHour}`), 'end': new Date(`${endYear}`, `${Number(endMonth) - 1}`, `${endDay}`, `${endHour}`), 'driver': load.firstName, 'status': load.loadStatus}]);
-                });
-            });
-        }
+        });
     };
 
     const handleChange = (e, {name, value}) => {
-        setDataCriteria({...dataCriteria, [name]: value });
+        setDateCriteria({...dateCriteria, [name]: value });
     };
 
     const filterMonths = () => {
@@ -134,9 +107,9 @@ function Calendars() {
         <div>
            <Form onSubmit={handleSubmit}>
                 <Form.Group style={{display: 'flex', justifyContent: "center", margin: '75px auto'}}>
-                    <Form.Input control={Select} label='Choose Month' placeholder='Month' name='month' value={dataCriteria.month} options={filterMonths()} onChange={handleChange} />
-                    <Form.Input required type='number' label='Enter Year' placeholder='Year' name='year' value={dataCriteria.year} onChange={handleChange} />
-                    <Button type="submit" color="green" icon="truck" content="Get Loads!" />
+                    <Form.Input control={Select} label='Choose Month' placeholder='Month' name='month' value={dateCriteria.month} options={filterMonths()} onChange={handleChange} />
+                    <Form.Input required type='number' label='Enter Year' placeholder='Year' name='year' value={dateCriteria.year} onChange={handleChange} />
+                    <Button type="submit" id="get-loads-button" color="green" icon="truck" content="Get Loads!" />
                 </Form.Group>
             </Form>
             <span><i>Calendar initially only retreives loads for the current month.</i></span>

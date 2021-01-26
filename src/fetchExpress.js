@@ -58,16 +58,26 @@ Express.updateDriverInfo = (driverID, updatedDriver) => {
     });
 };
 
-Express.getMostRecentLoads = (driverID) => {
-    const url = `${baseUrl}/drivers/${driverID}/latestLoad`;
+Express.getMostRecentLoads = (driverID, year) => {
+    const url = `${baseUrl}/drivers/${driverID}/latestLoads/${year}`;
     return fetch(url).then(response => {
-        if(!response.ok){
-            return [];
+        if(response.ok){
+            return response.json();
         }
-        return response.json();
+        throw new Error('Request failed')
+    }, networkError => {
+        console.log(networkError.message);
     }).then(jsonResponse => {
         return jsonResponse.loads[0];
-    });
+    })
+    // return fetch(url).then(response => {
+    //     if(!response.ok){
+    //         return [];
+    //     }
+    //     return response.json();
+    // }).then(jsonResponse => {
+    //     return jsonResponse.loads[0];
+    // });
 };
 
 Express.getDriverBookedMonthLoads = (driverID, year, month) => {
@@ -78,7 +88,6 @@ Express.getDriverBookedMonthLoads = (driverID, year, month) => {
         }
         return response.json();
     }).then(jsonResponse => {
-        console.log(jsonResponse.loads);
         return jsonResponse.loads;
     });
 };

@@ -4,7 +4,7 @@ import { DateInput } from 'semantic-ui-calendar-react';
 import { trailerOptions, trailerNumbers, states, status, dispatched } from './../../util/options'
 import Express from '../../fetchExpress';
 
-function Load({ load, cancelLoad, cancel }) {
+function Load({ load, cancelLoad, cancel, driversDropdown }) {
     const [editOpen, setEditOpen] = useState(false);
     const [loadInfo , setLoadInfo] = useState(load);
 
@@ -127,18 +127,6 @@ function Load({ load, cancelLoad, cancel }) {
         }
     }
 
-    const [driversDropdown, setDriversDropdown] = useState();
-    useEffect(() => {
-        Express.getDrivers().then(fetchedDrivers => {
-            let drivers = [];
-            fetchedDrivers.map(driver => {
-                drivers.push({key: driver.id, value: driver.id, text: `${driver.firstName}, ${driver.truckNumber}, ${driver.phoneNumber}`})
-            });
-            console.log(drivers);
-        setDriversDropdown(drivers);
-        }) 
-    }, []);
-
     const loadStatusBorderColor = () => {
         const greenBorder = {
             border: "green solid 5px",
@@ -171,7 +159,7 @@ function Load({ load, cancelLoad, cancel }) {
             margin: "25px auto"
         }
 
-        switch(load.loadStatus){
+        switch(loadInfo.loadStatus){
             case "waiting":
                 return greyBorder;
             case "In-transit":

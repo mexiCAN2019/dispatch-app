@@ -1,3 +1,5 @@
+    import Express from './../fetchExpress';
+
 
     export const trailerOptions = [{ key: 'dry van', value: 'dry van', text: 'Dry Van'}, {key: 'flatbed', value: 'flatbed', text: 'Flatbed'}];
 
@@ -10,6 +12,16 @@
     export const reloadSelect = [{key: 'reload', value: 1, text: 'Reload'}, {key: 'not reload', value: 0, text: 'Not Reload'}, {key: 'all', value: 2, text: 'All Loads'}];
     
     export const dataType = [{key: 'average', value: 'average', text: 'Average'}, {key: 'sum', value: 'sum', text: 'Total'}];
+
+    export const drivers = () => {
+        const drivers = [];
+        Express.getDrivers().then(fetchedDrivers => {
+            fetchedDrivers.map(driver => {
+                drivers.push({key: driver.id, value: driver.id, text: `${driver.firstName}, ${driver.truckNumber}, ${driver.phoneNumber}`})
+            });
+        });
+        return drivers;
+    };
 
     export const months = [
         { key: 0, value: 0, text: 'Whole year' },

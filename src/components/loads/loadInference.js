@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Form, TextArea, Select, Button, Input, Label, Checkbox } from 'semantic-ui-react';
 import { DateInput } from "semantic-ui-calendar-react";
 import Express from './../../fetchExpress';
-import { trailerOptions, trailerNumbers, states } from './../../util/options'
+import { trailerOptions, trailerNumbers, states, drivers } from './../../util/options'
 
 
 function LoadInference() {
@@ -39,14 +39,7 @@ function LoadInference() {
 
     const [driversDropdown, setDriversDropdown] = useState();
     useEffect(() => {
-        Express.getDrivers().then(fetchedDrivers => {
-            let drivers = [];
-            fetchedDrivers.map(driver => {
-                drivers.push({key: driver.id, value: driver.id, text: `${driver.firstName}, ${driver.truckNumber}, ${driver.phoneNumber}`})
-            });
-            console.log(drivers);
-        setDriversDropdown(drivers);
-        }) 
+        setDriversDropdown(drivers());
     }, []);
 
     return(
