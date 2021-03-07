@@ -6,7 +6,7 @@ import LoadInference from './components/loads/loadInference';
 import NavBar from './components/navbar';
 import Calendars from './components/calendar/landing';
 import Driver from './components/driver/landing'
-// import Forms from './components/forms/landing';
+import Forms from './components/forms';
 import NewDriver from './components/driver/newDriver';
 import UnassignedLoads from './components/loads/unassignedLoads'
 import Data from './components/loads/Data';
@@ -20,7 +20,7 @@ function App() {
         <Route path='/' exact component={HomePage} />
         <Route path='/newLoad' exact component={LoadInference} />
         <Route path='/calendar' exact component={Calendars} />
-        {/* <Route path='/forms' exact component={Forms} /> */}
+        <Route path='/forms' exact component={Forms} />
         <Route path='/newDriver' exact component={NewDriver} />
         <Route path='/unassignedLoads' exact component={UnassignedLoads} />
         <Route path='/data' exact component={Data} />

@@ -71,6 +71,7 @@ function Calendars() {
     const handleSubmit = () => {
         const loadsAlreadyFetched = statusLoads.find((load) => load.delMonthYear === `${dateCriteria.month}${dateCriteria.year}`);
         if(loadsAlreadyFetched) return;
+        
         const checkForZero = (monthOrDay) => {
             if(monthOrDay[0] == 0){
                 return monthOrDay.slice(1);

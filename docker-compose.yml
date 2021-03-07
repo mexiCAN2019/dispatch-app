@@ -1,0 +1,20 @@
+version: "3"
+services:
+    react-app:
+        image: jsanchez19/dispatch
+        stdin_open: true
+        ports:
+            - "3000:3000"
+        networks:
+            - dispatch-app-network
+
+    api-server:
+        image: jsanchez19/dispatch-api
+        ports:
+            - "5000:5000"
+        networks:
+            - dispatch-app-network
+
+networks:
+    dispatch-app-network:
+        driver: bridge

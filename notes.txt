@@ -9,3 +9,15 @@ Settlement (pay stud for the week)
     *drivers pay after expenses
     *expenses (insurance, IFTA fuel tax, 10%cut, prespass)
     *reimbursement (lumper fee, detention, layover, tailgate)
+
+Use nested for loop in Calendar to check existing state with incoming array when you click get loads
+for (let i = 0; i < bobsFollowers.length; i++){
+  for (let j = 0; j < tinasFollowers.length; j++) {
+    if (bobsFollowers[i] === tinasFollowers[j]){
+      mutualFollowers.push(tinasFollowers[j]);
+      console.log(bobsFollowers[i]);
+    }
+  }
+};
+OR
+try using indexOf(). reference creditChecker from codecademy

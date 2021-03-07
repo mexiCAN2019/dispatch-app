@@ -54,9 +54,9 @@ function Navbar(props) {
                             <Dropdown.Item to='/unbookedLoads' name='calendar and data' as={NavLink} exact >Unbooked Loads</Dropdown.Item>
                         </Dropdown.Menu>
                     </Dropdown>
-                    {/* <Menu.Item text='forms' as={NavLink} exact to='/forms'>
+                    <Menu.Item text='forms' as={NavLink} exact to='/forms'>
                         Forms
-                    </Menu.Item> */}
+                    </Menu.Item>
                 </Menu.Menu>
             </Menu>
         </div>
