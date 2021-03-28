@@ -2,13 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { Form, TextArea, Select, Button, Input, Label, Checkbox } from 'semantic-ui-react';
 import { DateInput } from "semantic-ui-calendar-react";
 import Express from './../../fetchExpress';
-import { trailerOptions, trailerNumbers, states, drivers } from './../../util/options'
+import { trailerOptions, trailerNumbers, states, drivers } from './../../util/options';
 
 
 function LoadInference() {
     const [load, setLoad] = useState({driverID: null, puCity: '', puState: '', puDate: '', puTime: '', endPUTime: '', delCity: '', delState: '', delDate: '',
         delTime: '', endDelTime: '', commodity: '', weight: '', broker: '', rate: null, notes: '', loadStatus: 'waiting', dispatched: false, trailerNumber: null, trailerType: '', booked: null, reloadLoad: null});
-
 
     const handleBooked = () => {
         

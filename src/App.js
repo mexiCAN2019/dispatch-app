@@ -11,21 +11,40 @@ import NewDriver from './components/driver/newDriver';
 import UnassignedLoads from './components/loads/unassignedLoads'
 import Data from './components/loads/Data';
 import UnbookedLoads from './components/loads/unbookedLoads';
+import Login from './components/login';
 
 function App() {
+
+  const PrivateRoute = ({component, ...options}) => {
+    const finalComponent = (localStorage.token /* || user */) ? component : Login;
+
+    return <Route {...options} component={finalComponent}/>;
+};
+
+const wrappedRoutes = () => {
   return (
-    <div className="App">
+    <div>
       <NavBar />
       <Switch>
-        <Route path='/' exact component={HomePage} />
-        <Route path='/newLoad' exact component={LoadInference} />
-        <Route path='/calendar' exact component={Calendars} />
-        <Route path='/forms' exact component={Forms} />
-        <Route path='/newDriver' exact component={NewDriver} />
-        <Route path='/unassignedLoads' exact component={UnassignedLoads} />
-        <Route path='/data' exact component={Data} />
-        <Route path='/unbookedLoads' exact component={UnbookedLoads} />
-        <Route path='/drivers/:driverID' exact component={Driver} />
+        <Route path='/login' exact component={Login} />
+        <PrivateRoute path='/' exact component={HomePage} />
+        <PrivateRoute path='/newLoad' exact component={LoadInference} />
+        <PrivateRoute path='/calendar' exact component={Calendars} />
+        <PrivateRoute path='/forms' exact component={Forms} />
+        <PrivateRoute path='/newDriver' exact component={NewDriver} />
+        <PrivateRoute path='/unassignedLoads' exact component={UnassignedLoads} />
+        <PrivateRoute path='/data' exact component={Data} />
+        <PrivateRoute path='/unbookedLoads' exact component={UnbookedLoads} />
+        <PrivateRoute path='/drivers/:driverID' exact component={Driver} />
+      </Switch>
+    </div>
+  )
+};
+
+  return (
+    <div className="App">
+      <Switch>
+        <Route path="/" component={wrappedRoutes} />
       </Switch>
     </div>
   );

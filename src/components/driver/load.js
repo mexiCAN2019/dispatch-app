@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { Form, Button, Input, Label, Modal, Select, TextArea, Icon} from 'semantic-ui-react';
 import { DateInput } from 'semantic-ui-calendar-react';
-import { trailerOptions, trailerNumbers, states, status, dispatched } from './../../util/options'
+import { trailerOptions, trailerNumbers, states, status, dispatched, drivers } from './../../util/options'
 import Express from '../../fetchExpress';
 
-function Load({ load, cancelLoad, cancel, driversDropdown }) {
+function Load({ load, cancelLoad, cancel }) {
     const [editOpen, setEditOpen] = useState(false);
     const [loadInfo , setLoadInfo] = useState(load);
 
@@ -182,6 +182,11 @@ function Load({ load, cancelLoad, cancel, driversDropdown }) {
         }
         return <Button type="submit" color='green' content="Book Load" /> 
     };
+
+    const [driversDropdown, setDriversDropdown] = useState();
+    useEffect(() => {
+        setDriversDropdown(drivers());
+    }, []);
 
 
     return(
