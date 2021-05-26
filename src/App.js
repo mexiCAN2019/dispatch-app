@@ -1,5 +1,5 @@
-import React from 'react';
-import { Switch, Route, withRouter } from 'react-router-dom';
+import React, {useState, useEffect} from 'react';
+import { Switch, Route, Redirect } from 'react-router-dom';
 import './App.css';
 import HomePage from './components/landing/landing';
 import LoadInference from './components/loads/loadInference';
@@ -12,14 +12,55 @@ import UnassignedLoads from './components/loads/unassignedLoads'
 import Data from './components/loads/Data';
 import UnbookedLoads from './components/loads/unbookedLoads';
 import Login from './components/login';
+import { useUser } from './util/react-local-spa';
 
 function App() {
 
-  const PrivateRoute = ({component, ...options}) => {
-    const finalComponent = (localStorage.token /* || user */) ? component : Login;
+  const {user} = useUser();
 
-    return <Route {...options} component={finalComponent}/>;
-};
+  const checkLoggedIn = () => {
+    const loggedIn = (localStorage.token || user) ? true : false;
+    return loggedIn;
+  };
+
+  const checkRole = ({route, component, ...options}) => {
+    let finalComponent;
+    switch(route){
+      case 'home':
+        finalComponent = (user.role === 'dev' || user.role === 'dispatch') ? component : 'redirect';
+        break;
+      case 'new-load':
+        finalComponent = (user.role === 'dev' || user.role === 'dispatch') ? component : 'redirect';
+        break;
+      case 'new-driver':
+        finalComponent = (user.role === 'dev' || user.role === 'admin') ? component : 'redirect';
+        break;
+      case 'unassigned-loads':
+        finalComponent = (user.role === 'dev' || user.role === 'dispatch') ? component : 'redirect';
+        break;
+      case 'data':
+        finalComponent = (user.role === 'dev' || user.role === 'dispatch') ? component : 'redirect';
+        break;
+      case 'unbooked-loads':
+        finalComponent = (user.role === 'dev' || user.role === 'dispatch') ? component : 'redirect';
+        break;
+      default:
+        finalComponent = component;
+        break;
+    };
+    if(finalComponent === 'redirect') return <Redirect to="/" />;
+    console.log(component);
+    console.log(finalComponent);
+    return <Route {...options} component={finalComponent} />;
+  };
+
+  const CustomRoute = ({route, component, ...options}) => {
+    console.log(checkLoggedIn());
+    if(!checkLoggedIn()) return <Route {...options} component={Login}/>;
+    const path = checkRole({route, component, ...options});
+    return path; 
+    // return <Route {...options} component={HomePage} />;
+  };
 
 const wrappedRoutes = () => {
   return (
@@ -27,15 +68,15 @@ const wrappedRoutes = () => {
       <NavBar />
       <Switch>
         <Route path='/login' exact component={Login} />
-        <PrivateRoute path='/' exact component={HomePage} />
-        <PrivateRoute path='/newLoad' exact component={LoadInference} />
-        <PrivateRoute path='/calendar' exact component={Calendars} />
-        <PrivateRoute path='/forms' exact component={Forms} />
-        <PrivateRoute path='/newDriver' exact component={NewDriver} />
-        <PrivateRoute path='/unassignedLoads' exact component={UnassignedLoads} />
-        <PrivateRoute path='/data' exact component={Data} />
-        <PrivateRoute path='/unbookedLoads' exact component={UnbookedLoads} />
-        <PrivateRoute path='/drivers/:driverID' exact component={Driver} />
+        <CustomRoute path='/' exact route='home' component={HomePage} />
+        <CustomRoute path='/newLoad' exact route='new-load' component={LoadInference} />
+        <CustomRoute path='/calendar' exact component={Calendars} />
+        <CustomRoute path='/forms' exact component={Forms} />
+        <CustomRoute path='/newDriver' exact route='new-driver' component={NewDriver} />
+        <CustomRoute path='/unassignedLoads' exact route='unassigned-loads' component={UnassignedLoads} />
+        <CustomRoute path='/data' exact route='data' component={Data} />
+        <CustomRoute path='/unbookedLoads' exact route='unbooked-loads' component={UnbookedLoads} />
+        <CustomRoute path='/drivers/:driverId' exact component={Driver} />
       </Switch>
     </div>
   )

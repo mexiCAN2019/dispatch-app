@@ -25,8 +25,8 @@ export const UserProvider = ({children}) => {
         console.log(res);
         if(res.accessToken){
             var usr = {
-                email: res.user.email
-                //role: res.role
+                email: res.user.email,
+                role: res.user.role
             }
             setUser(usr);
             localStorage.setItem('token',res.accessToken);

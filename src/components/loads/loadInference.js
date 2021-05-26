@@ -3,25 +3,26 @@ import { Form, TextArea, Select, Button, Input, Label, Checkbox } from 'semantic
 import { DateInput } from "semantic-ui-calendar-react";
 import Express from './../../fetchExpress';
 import { trailerOptions, trailerNumbers, states, drivers } from './../../util/options';
+import ExpressF from '../../fetchFeathers';
 
 
 function LoadInference() {
-    const [load, setLoad] = useState({driverID: null, puCity: '', puState: '', puDate: '', puTime: '', endPUTime: '', delCity: '', delState: '', delDate: '',
-        delTime: '', endDelTime: '', commodity: '', weight: '', broker: '', rate: null, notes: '', loadStatus: 'waiting', dispatched: false, trailerNumber: null, trailerType: '', booked: null, reloadLoad: null});
+    const [load, setLoad] = useState({driverId: null, puCity: null, puState: null, puDate: null, puTime: null, endPUTime: null, delCity: null, delState: null, delDate: null,
+        delTime: null, endDelTime: null, commodity: null, weight: null, broker: null, rate: null, notes: null, loadStatus: 'waiting', dispatched: false, trailerNumber: null, trailerType: null, booked: null, reloadLoad: null});
 
     const handleBooked = () => {
         
         const newLoad = {
-            driverID: load.driverID, puCity: load.puCity, puState: load.puState, puDate: load.puDate, puTime: load.puTime, endPUTime: load.endPUTime, delCity: load.delCity, 
+            driverId: load.driverId, puCity: load.puCity, puState: load.puState, puDate: load.puDate, puTime: load.puTime, endPUTime: load.endPUTime, delCity: load.delCity, 
             delState: load.delState, delDate: load.delDate, delTime: load.delTime, endDelTime: load.endDelTime, commodity: load.commodity, weight: load.weight, broker: load.broker, rate: load.rate, 
             notes: load.notes, loadStatus: load.loadStatus, dispatched: load.dispatched, trailerNumber: load.trailerNumber, trailerType: load.trailerType, booked: load.booked, reloadLoad: load.reloadLoad
         };
-        Express.createLoad(newLoad).then(response => {
+        ExpressF.createLoad(newLoad).then(response => {
             if(response === 'error 400'){
                 return alert('Fields with * must be filled out');
             } else {
-                setLoad({driverID: null, puCity: '', puState: '', puDate: '', puTime: '', endPUTime: '', delCity: '', delState: '', delDate: '',
-        delTime: '', endDelTime: '', commodity: '', weight: '', broker: '', rate: '', notes: '', loadStatus: 'waiting', dispatched: false, trailerNumber: null, trailerType: '', booked: null, reloadLoad: null});
+                setLoad({driverId: null, puCity: null, puState: null, puDate: null, puTime: null, endPUTime: null, delCity: null, delState: null, delDate: null,
+        delTime: null, endDelTime: null, commodity: null, weight: null, broker: null, rate: null, notes: null, loadStatus: 'waiting', dispatched: false, trailerNumber: null, trailerType: null, booked: null, reloadLoad: null});
                 if(load.booked){
                     alert('LOAD BOOKED');
                 } else{
@@ -44,7 +45,7 @@ function LoadInference() {
     return(
         <Form widths='equal' onSubmit={handleBooked} style={{margin: '50px auto'}}>
         <Form.Group>
-            <Form.Input required control={Select} label='Driver' placeholder='Driver' name='driverID' value={load.driverID} options={driversDropdown} onChange={handleChange} />
+            <Form.Input required control={Select} label='Driver' placeholder='Driver' name='driverId' value={load.driverId} options={driversDropdown} onChange={handleChange} />
             <Form.Input required control={Select} label='Trailer Type' placeholder='Trailer Type' name='trailerType' value={load.trailerType} options={trailerOptions} onChange={handleChange} />
             <Form.Input control={Select} label='Trailer Number' placeholder='Trailer Number' name='trailerNumber' value={load.trailerNumber} options={trailerNumbers} onChange={handleChange} />
         </Form.Group>    

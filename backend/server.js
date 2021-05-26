@@ -9,8 +9,7 @@ const mysql = require('mysql');
 const db = mysql.createConnection ({
     host: 'localhost',
     user: 'root',
-    password: 'Fedalwhoop19',
-    database: 'kgtransport'
+    
 });
 
 db.connect();
@@ -57,8 +56,8 @@ app.post('/drivers', (req,res) => {
     }
 });
 
-app.get('/drivers/:driverID', (req,res) => {
-    db.query(`SELECT * FROM Drivers WHERE id = ${req.params.driverID};`, (err,row) => {
+app.get('/drivers/:driverId', (req,res) => {
+    db.query(`SELECT * FROM Drivers WHERE id = ${req.params.driverId};`, (err,row) => {
         if(err){
             throw err;
         } else {
@@ -67,13 +66,13 @@ app.get('/drivers/:driverID', (req,res) => {
     });
 });
 
-app.put('/drivers/:driverID', (req,res) => {
+app.put('/drivers/:driverId', (req,res) => {
     const updatedDriver = req.body.driver;
     console.log(updatedDriver);
     if(!updatedDriver.firstName || !updatedDriver.lastName || !updatedDriver.truckNumber || !updatedDriver.phoneNumber) {
         res.sendStatus(400);
     } else {
-        db.query(`UPDATE Drivers SET ? WHERE id = ${req.params.driverID};`, {
+        db.query(`UPDATE Drivers SET ? WHERE id = ${req.params.driverId};`, {
             firstName: updatedDriver.firstName,
             lastName: updatedDriver.lastName,
             truckNumber: updatedDriver.truckNumber,
@@ -94,10 +93,10 @@ app.put('/drivers/:driverID', (req,res) => {
 
 //LOADS
 
-app.get('/drivers/:driverID/latestLoads/:year', (req,res) => {
-    db.query(`SELECT Drivers.id, Drivers.firstName, Drivers.lastName, Drivers.phoneNumber, Drivers.truckNumber, Drivers.employed, Drivers.summaryNote, Loads.driverID, Loads.puDate, Loads.puTime, Loads.endPUTime, Loads.delDate, Loads.delTime, Loads.endDelTime, Loads.broker, Loads.notes FROM Drivers
-    INNER JOIN Loads ON Drivers.id = Loads.driverID
-    WHERE driverID = ${req.params.driverID} AND Loads.booked = true AND Loads.puDate LIKE '______${req.params.year}'
+app.get('/drivers/:driverId/latestLoads/:year', (req,res) => {
+    db.query(`SELECT Drivers.id, Drivers.firstName, Drivers.lastName, Drivers.phoneNumber, Drivers.truckNumber, Drivers.employed, Drivers.summaryNote, Loads.driverId, Loads.puDate, Loads.puTime, Loads.endPUTime, Loads.delDate, Loads.delTime, Loads.endDelTime, Loads.broker, Loads.notes FROM Drivers
+    INNER JOIN Loads ON Drivers.id = Loads.driverId
+    WHERE driverId = ${req.params.driverId} AND Loads.booked = true AND Loads.puDate LIKE '______${req.params.year}'
     ORDER BY puDate DESC
     LIMIT 3;`, (err, rows) => {
         if(err){
@@ -109,8 +108,8 @@ app.get('/drivers/:driverID/latestLoads/:year', (req,res) => {
 });
 
 
-app.get('/drivers/:driverID/bookedLoads/:year/:month', (req,res) => {
-    db.query(`SELECT * FROM Loads WHERE driverID = ${req.params.driverID} AND booked = true AND delDate LIKE '${req.params.month}____${req.params.year}' 
+app.get('/drivers/:driverId/bookedLoads/:year/:month', (req,res) => {
+    db.query(`SELECT * FROM Loads WHERE driverId = ${req.params.driverId} AND booked = true AND delDate LIKE '${req.params.month}____${req.params.year}' 
     ORDER BY puDate DESC;`, (err, rows) => {
         if(err){
             throw err;
@@ -120,8 +119,8 @@ app.get('/drivers/:driverID/bookedLoads/:year/:month', (req,res) => {
     });
 });
 
-app.get('/drivers/:driverID/bookedLoads/:year', (req,res) => {
-    db.query(`SELECT * FROM Loads WHERE driverID = ${req.params.driverID} AND booked = true AND delDate LIKE '______${req.params.year}' 
+app.get('/drivers/:driverId/bookedLoads/:year', (req,res) => {
+    db.query(`SELECT * FROM Loads WHERE driverId = ${req.params.driverId} AND booked = true AND delDate LIKE '______${req.params.year}' 
     ORDER BY puDate DESC;`, (err, rows) => {
         if(err){
             throw err;
@@ -135,7 +134,7 @@ app.get('/loadsForCalendar/:year', (req,res) => {
     db.query(`SELECT Drivers.firstName, Loads.puCity, Loads.puDate, Loads.puTime, Loads.endPUTime, Loads.delCity, Loads.delDate, Loads.delTime, Loads.endDelTime, Loads.loadStatus, Loads.dispatched, Loads.id
                 FROM Drivers 
                 INNER JOIN Loads
-                ON Drivers.id = Loads.driverID
+                ON Drivers.id = Loads.driverId
                 WHERE booked = true AND delDate LIKE '______${req.params.year}'
                 ORDER BY firstName;`, (err, rows) => {
         if(err){
@@ -150,7 +149,7 @@ app.get('/loadsForCalendar/:year/:month', (req,res) => {
     db.query(`SELECT Drivers.firstName, Loads.puCity, Loads.puDate, Loads.puTime, Loads.endPUTime, Loads.delCity, Loads.delDate, Loads.delTime, Loads.endDelTime, Loads.loadStatus, Loads.dispatched, Loads.id
                 FROM Drivers 
                 INNER JOIN Loads
-                ON Drivers.id = Loads.driverID
+                ON Drivers.id = Loads.driverId
                 WHERE booked = true AND delDate LIKE '${req.params.month}____${req.params.year}'
                 ORDER BY firstName;`, (err, rows) => {
         if(err){
@@ -162,7 +161,7 @@ app.get('/loadsForCalendar/:year/:month', (req,res) => {
 });
 
 app.get('/unassignedLoads', (req,res) => {
-    db.query(`SELECT * FROM Loads WHERE driverID = 1 AND booked = true;`, (err, rows) => {
+    db.query(`SELECT * FROM Loads WHERE driverId = 1 AND booked = true;`, (err, rows) => {
         if(err){
             throw err;
         } else {
@@ -206,14 +205,14 @@ app.get('/unbookedLoads/:year/:month', (req,res) => {
 app.post('/loads', (req,res) => {
     const newLoad = req.body.load;
     console.log(newLoad);
-    if(!newLoad.driverID  || !newLoad.puCity ||!newLoad.puState || !newLoad.puDate || !newLoad.puTime || !newLoad.delCity || !newLoad.delState
+    if(!newLoad.driverId  || !newLoad.puCity ||!newLoad.puState || !newLoad.puDate || !newLoad.puTime || !newLoad.delCity || !newLoad.delState
         || !newLoad.delDate || !newLoad.delTime || !newLoad.commodity || !newLoad.weight || !newLoad.broker || !newLoad.trailerType || !newLoad.rate
         || newLoad.booked === null || newLoad.reloadLoad === null) {
             res.sendStatus(400);
         } else{
             db.query(`INSERT INTO Loads SET ?;`, {
                             loadID: newLoad.loadID,
-                            driverID: newLoad.driverID,
+                            driverId: newLoad.driverId,
                             puCity: newLoad.puCity,
                             puState: newLoad.puState,
                             puDate: newLoad.puDate,
@@ -248,13 +247,13 @@ app.post('/loads', (req,res) => {
 
 app.put('/loads/:loadID', (req,res) => {
     const updatedLoad = req.body.load;
-    if(!updatedLoad.driverID  || !updatedLoad.puCity ||!updatedLoad.puState || !updatedLoad.puDate || !updatedLoad.puTime || !updatedLoad.delCity || !updatedLoad.delState
+    if(!updatedLoad.driverId  || !updatedLoad.puCity ||!updatedLoad.puState || !updatedLoad.puDate || !updatedLoad.puTime || !updatedLoad.delCity || !updatedLoad.delState
         || !updatedLoad.delDate || !updatedLoad.delTime || !updatedLoad.commodity || !updatedLoad.weight || !updatedLoad.broker || !updatedLoad.rate || !updatedLoad.trailerType){
             res.sendStatus(400);
         } else{
             db.query(`UPDATE Loads SET ? WHERE id = ${req.params.loadID};`, {
                             loadID: updatedLoad.loadID,
-                            driverID: updatedLoad.driverID,
+                            driverId: updatedLoad.driverId,
                             puCity: updatedLoad.puCity,
                             puState: updatedLoad.puState,
                             puDate: updatedLoad.puDate,
@@ -336,9 +335,9 @@ app.get('/bookedRateAverage/:year/:reloadLoad', (req, res) => {
 });
 
 //Year Average for all loads for SPECIFIC DRIVER, Doesn't take reloadLoad in SQL Query
-app.get('/bookedRateAverage/:year/2/driver/:driverID', (req,res) => {
+app.get('/bookedRateAverage/:year/2/driver/:driverId', (req,res) => {
     db.query(`SELECT ROUND(AVG(rate), 0) AS "averageRate", COUNT(*) AS numberOfLoads FROM Loads
-    WHERE booked = 1 AND delDate LIKE '______${req.params.year}' AND driverID = ${req.params.driverID};`, (err, row) => {
+    WHERE booked = 1 AND delDate LIKE '______${req.params.year}' AND driverId = ${req.params.driverId};`, (err, row) => {
         if(err){
             throw err;
         } else{
@@ -348,9 +347,9 @@ app.get('/bookedRateAverage/:year/2/driver/:driverID', (req,res) => {
 });
 
 //Year Average for either reload or orignal loads for SPECIFIC DRIVER
-app.get('/bookedRateAverage/:year/:reloadLoad/driver/:driverID', (req, res) => {
+app.get('/bookedRateAverage/:year/:reloadLoad/driver/:driverId', (req, res) => {
     db.query(`SELECT ROUND(AVG(rate), 0) AS "averageRate", COUNT(*) AS numberOfLoads FROM Loads
-    WHERE booked = 1 AND delDate LIKE '______${req.params.year}' AND reloadLoad = ${req.params.reloadLoad} AND driverID = ${req.params.driverID};`, (err, row) => {
+    WHERE booked = 1 AND delDate LIKE '______${req.params.year}' AND reloadLoad = ${req.params.reloadLoad} AND driverId = ${req.params.driverId};`, (err, row) => {
         if(err){
             throw err;
         } else{
@@ -385,9 +384,9 @@ app.get('/bookedRateAverage/:year/:month/:reloadLoad', (req, res) => {
 });
 
 //Month Average for all loads FOR SPECIFIC DRIVER, Doesn't take reloadLoad in SQL Query
-app.get('/bookedRateAverage/:year/:month/2/driver/:driverID', (req,res) => {
+app.get('/bookedRateAverage/:year/:month/2/driver/:driverId', (req,res) => {
         db.query(`SELECT ROUND(AVG(rate), 0) AS "averageRate", COUNT(*) AS numberOfLoads FROM Loads
-    WHERE booked = 1 AND delDate LIKE '${req.params.month}____${req.params.year}' AND driverID = ${req.params.driverID};`, (err, row) => {
+    WHERE booked = 1 AND delDate LIKE '${req.params.month}____${req.params.year}' AND driverId = ${req.params.driverId};`, (err, row) => {
             if(err){
                 throw err;
             } else{
@@ -397,9 +396,9 @@ app.get('/bookedRateAverage/:year/:month/2/driver/:driverID', (req,res) => {
 });
 
 //Month Average for either reload or orignal loads FOR SPECIFIC DRIVER
-app.get('/bookedRateAverage/:year/:month/:reloadLoad/driver/:driverID', (req, res) => {
+app.get('/bookedRateAverage/:year/:month/:reloadLoad/driver/:driverId', (req, res) => {
     db.query(`SELECT ROUND(AVG(rate), 0) AS "averageRate", COUNT(*) AS numberOfLoads FROM Loads
-    WHERE booked = 1 AND delDate LIKE '${req.params.month}____${req.params.year}' AND reloadLoad = ${req.params.reloadLoad} AND driverID = ${req.params.driverID};`, (err, row) => {
+    WHERE booked = 1 AND delDate LIKE '${req.params.month}____${req.params.year}' AND reloadLoad = ${req.params.reloadLoad} AND driverId = ${req.params.driverId};`, (err, row) => {
         if(err){
             throw err;
         } else{
@@ -435,9 +434,9 @@ app.get('/bookedRateSum/:year/:reloadLoad', (req, res) => {
 });
 
 //Year Sum for all loads for SPECIFIC DRIVER, Doesn't take reloadLoad in SQL Query
-app.get('/bookedRateSum/:year/2/driver/:driverID', (req,res) => {
+app.get('/bookedRateSum/:year/2/driver/:driverId', (req,res) => {
     db.query(`SELECT SUM(rate) AS "sumRate", COUNT(*) AS numberOfLoads FROM Loads
-    WHERE booked = 1 AND delDate LIKE '______${req.params.year}' AND driverID = ${req.params.driverID};`, (err, row) => {
+    WHERE booked = 1 AND delDate LIKE '______${req.params.year}' AND driverId = ${req.params.driverId};`, (err, row) => {
         if(err){
             throw err;
         } else{
@@ -447,9 +446,9 @@ app.get('/bookedRateSum/:year/2/driver/:driverID', (req,res) => {
 });
 
 //Year Sum for either reload or orignal loads FOR SPECIFIC DRIVER
-app.get('/bookedRateSum/:year/:reloadLoad/driver/:driverID', (req, res) => {
+app.get('/bookedRateSum/:year/:reloadLoad/driver/:driverId', (req, res) => {
     db.query(`SELECT SUM(rate) AS "sumRate", COUNT(*) AS numberOfLoads FROM Loads
-    WHERE booked = 1 AND delDate LIKE '______${req.params.year}' AND reloadLoad = ${req.params.reloadLoad} AND driverID = ${req.params.driverID};`, (err, row) => {
+    WHERE booked = 1 AND delDate LIKE '______${req.params.year}' AND reloadLoad = ${req.params.reloadLoad} AND driverId = ${req.params.driverId};`, (err, row) => {
         if(err){
             throw err;
         } else{
@@ -483,9 +482,9 @@ app.get('/bookedRateSum/:year/:month/:reloadLoad', (req, res) => {
 });
 
 //Month Sum for all loads for SPECIFIC DRIVER, Doesn't take reloadLoad in SQL Query
-app.get('/bookedRateSum/:year/:month/2/driver/:driverID', (req,res) => {
+app.get('/bookedRateSum/:year/:month/2/driver/:driverId', (req,res) => {
     db.query(`SELECT SUM(rate) AS "sumRate", COUNT(*) AS numberOfLoads FROM Loads
-WHERE booked = 1 AND delDate LIKE '${req.params.month}____${req.params.year}' AND driverID = ${req.params.driverID};`, (err, row) => {
+WHERE booked = 1 AND delDate LIKE '${req.params.month}____${req.params.year}' AND driverId = ${req.params.driverId};`, (err, row) => {
         if(err){
             throw err;
         } else{
@@ -495,9 +494,9 @@ WHERE booked = 1 AND delDate LIKE '${req.params.month}____${req.params.year}' AN
 });
 
 //Month Sum for either reload or orignal loads for SPECIFIC DRIVER
-app.get('/bookedRateSum/:year/:month/:reloadLoad/driver/:driverID', (req, res) => {
+app.get('/bookedRateSum/:year/:month/:reloadLoad/driver/:driverId', (req, res) => {
     db.query(`SELECT SUM(rate) AS "sumRate", COUNT(*) AS numberOfLoads FROM Loads
-    WHERE booked = 1 AND delDate LIKE '${req.params.month}____${req.params.year}' AND reloadLoad = ${req.params.reloadLoad} AND driverID = ${req.params.driverID};`, (err, row) => {
+    WHERE booked = 1 AND delDate LIKE '${req.params.month}____${req.params.year}' AND reloadLoad = ${req.params.reloadLoad} AND driverId = ${req.params.driverId};`, (err, row) => {
         if(err){
             throw err;
         } else{

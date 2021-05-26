@@ -3,6 +3,7 @@ import { Form, Button, Input, Label, Modal, Select, TextArea, Icon} from 'semant
 import { DateInput } from 'semantic-ui-calendar-react';
 import { trailerOptions, trailerNumbers, states, status, dispatched, drivers } from './../../util/options'
 import Express from '../../fetchExpress';
+import ExpressF from '../../fetchFeathers';
 
 function Load({ load, cancelLoad, cancel }) {
     const [editOpen, setEditOpen] = useState(false);
@@ -13,7 +14,7 @@ function Load({ load, cancelLoad, cancel }) {
         const updatedLoad = {
             id: loadInfo.id,
             loadID: loadInfo.loadID,
-            driverID: loadInfo.driverID,
+            driverId: loadInfo.driverId,
             puCity: loadInfo.puCity,
             puState: loadInfo.puState,
             puDate: loadInfo.puDate,
@@ -28,6 +29,7 @@ function Load({ load, cancelLoad, cancel }) {
             weight: loadInfo.weight,
             broker: loadInfo.broker,
             rate: loadInfo.rate,
+            reloadLoad: loadInfo.reloadLoad,
             notes: loadInfo.notes,
             loadStatus:loadInfo.loadStatus,
             dispatched: loadInfo.dispatched,
@@ -40,7 +42,7 @@ function Load({ load, cancelLoad, cancel }) {
 
     const handleDelete = () => {
         if (window.confirm('Are you sure you want to delete load?')) {
-            Express.deleteLoad(loadInfo.id);
+            ExpressF.deleteLoad(loadInfo.id);
             alert('Load Deleted');
         } else {
             alert('Load Not Deleted');
@@ -53,7 +55,7 @@ function Load({ load, cancelLoad, cancel }) {
         if(cancel){
             updatedLoad = {
                 loadID: loadInfo.loadID,
-                driverID: loadInfo.driverID,
+                driverId: loadInfo.driverId,
                 puCity: loadInfo.puCity,
                 puState: loadInfo.puState,
                 puDate: loadInfo.puDate,
@@ -68,6 +70,7 @@ function Load({ load, cancelLoad, cancel }) {
                 weight: loadInfo.weight,
                 broker: loadInfo.broker,
                 rate: loadInfo.rate,
+                reloadLoad: loadInfo.reloadLoad,
                 notes: loadInfo.notes,
                 loadStatus:loadInfo.loadStatus,
                 dispatched: loadInfo.dispatched,
@@ -78,7 +81,7 @@ function Load({ load, cancelLoad, cancel }) {
         } else {
             updatedLoad = {
                 loadID: loadInfo.loadID,
-                driverID: loadInfo.driverID,
+                driverId: loadInfo.driverId,
                 puCity: loadInfo.puCity,
                 puState: loadInfo.puState,
                 puDate: loadInfo.puDate,
@@ -93,6 +96,7 @@ function Load({ load, cancelLoad, cancel }) {
                 weight: loadInfo.weight,
                 broker: loadInfo.broker,
                 rate: loadInfo.rate,
+                reloadLoad: loadInfo.reloadLoad,
                 notes: loadInfo.notes,
                 loadStatus:loadInfo.loadStatus,
                 dispatched: loadInfo.dispatched,
@@ -101,12 +105,10 @@ function Load({ load, cancelLoad, cancel }) {
                 booked: true
             };
         }
-        
-        Express.updateLoad(loadInfo.id, updatedLoad).then(response => {
+        ExpressF.updateLoad(loadInfo.id, updatedLoad).then(response => {
             if(response === 400){
                 return alert('Make sure all areas with * are filled');
-            } 
-            console.log(response);
+            }
             alert('Load Updated');
             setEditOpen(false);
         });
@@ -222,7 +224,7 @@ function Load({ load, cancelLoad, cancel }) {
                         </Form.Group>
                         <Form.Group>
                             <Form.Input control={Select} label='Dispatched' name='dispatched' value={loadInfo.dispatched} options={dispatched} onChange={handleChange} />
-                            <Form.Input required control={Select} label='Driver' placeholder='Driver' name='driverID' value={loadInfo.driverID} options={driversDropdown} onChange={handleChange} />
+                            <Form.Input required control={Select} label='Driver' placeholder='Driver' name='driverId' value={loadInfo.driverId} options={driversDropdown} onChange={handleChange} />
                             <Form.Input required control={Select} label='Trailer Type' placeholder='Trailer Type' name='trailerType' value={loadInfo.trailerType} options={trailerOptions} onChange={handleChange} />
                             <Form.Input control={Select} label='Trailer Number' placeholder='Trailer Number' name='trailerNumber' value={loadInfo.trailerNumber} options={trailerNumbers} onChange={handleChange} />
                         </Form.Group>    

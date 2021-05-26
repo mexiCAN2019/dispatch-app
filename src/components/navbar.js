@@ -2,18 +2,18 @@ import React, { useState, useEffect } from 'react';
 import { NavLink, useHistory } from 'react-router-dom';
 import { Menu, Dropdown, Image, Icon } from 'semantic-ui-react';
 import Express from '../fetchExpress';
+import ExpressF from '../fetchFeathers';
 import { useUser } from './../util/react-local-spa';
 
 function Navbar(props) {
     const [drivers, setDrivers] = useState([]);
 
     useEffect(() => {
-        Express.getDrivers().then(drivers => setDrivers(drivers));
+        ExpressF.getDrivers().then(drivers => setDrivers(drivers));
     }, []);
 
     const history = useHistory();
     const { logout, user } = useUser();
-    console.log(user);
 
     const renderDrivers = () => {
         return drivers.filter(arrayDriver => arrayDriver.firstName !== "Unassigned").map(driver => {

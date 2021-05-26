@@ -11,7 +11,6 @@ function Login() {
     }
 
     const { login } = useUser();
-    console.log(useUser(), login);
     const history = useHistory();
 
     const handleSubmit = async () => {

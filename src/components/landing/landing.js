@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Express from '../../fetchExpress';
+import ExpressF from '../../fetchFeathers';
 import RenderSummaries from './renderSummaries';
 import './landing.css';
 
@@ -8,14 +9,15 @@ function HomePage() {
     const [unassignedLoads, setUnassignedLoads] = useState([]);
 
     useEffect(() => {
-        Express.getDrivers().then(drivers => drivers.filter(driver => driver.id !== 1)).then(drivers => drivers.map(driver => {
+        console.log(ExpressF.getDrivers());
+        ExpressF.getDrivers().then(drivers => drivers.filter(driver => driver.id !== 1)).then(drivers => drivers.map(driver => {
             Express.getMostRecentLoads(driver.id, new Date().getFullYear()).then(load => {
                 if(load){
                     setLoads(prevLoads => [...prevLoads, load]);
                 }
             });
         }));
-        Express.getUnassignedLoads().then(loads => setUnassignedLoads(loads));
+        ExpressF.getUnassignedLoads().then(loads => setUnassignedLoads(loads));
     }, []);
 
 

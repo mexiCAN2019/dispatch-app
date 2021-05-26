@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import RenderLoads from './renderLoads';
 import Express from './../../fetchExpress';
+import ExpressF from './../../fetchFeathers';
 import { drivers } from './../../util/options'
 import {
     Grid,
@@ -15,7 +16,7 @@ import {
 } from 'semantic-ui-react';
 
 
-function Driver({ match: { params: { driverID } } }) {
+function Driver({ match: { params: { driverId } } }) {
     const [profile, setProfile] = useState(true);
     const [loads, setLoads] = useState(null);
     const [threeLoads, setThreeLoads] = useState(() => [])
@@ -24,8 +25,8 @@ function Driver({ match: { params: { driverID } } }) {
 
     const [driver, setDriver] = useState(null);
     useEffect(() => {
-        Express.getDriver(driverID).then(driver => setDriver(driver));
-    }, [driverID]);
+        ExpressF.getDriver(driverId).then(driver => setDriver(driver));
+    }, [driverId]);
 
     useEffect(() => {
         let getMonth = new Date().getMonth();
@@ -34,14 +35,14 @@ function Driver({ match: { params: { driverID } } }) {
             getMonth = `0${getMonth}`;
         };
 
-        Express.getDriverBookedMonthLoads(driverID, new Date().getFullYear(), getMonth).then(loads => {
+        ExpressF.getDriverBookedMonthLoads(driverId, new Date().getFullYear(), getMonth).then(loads => {
           setLoads(loads);
           const loadsForProfile = loads.slice(0,3);
           setThreeLoads(loadsForProfile);
         }
       );
       
-    }, [driverID]);
+    }, [driverId]);
 
     const [driversDropdown, setDriversDropdown] = useState([]);
     useEffect(() => {
@@ -54,7 +55,7 @@ function Driver({ match: { params: { driverID } } }) {
 
     const cancelledLoad = (cancelledLoad) => {
         if (window.confirm('Are you sure you want to cancel load?')) {
-            Express.updateLoad(cancelledLoad.id, cancelledLoad);
+            ExpressF.updateLoad(cancelledLoad.id, cancelledLoad);
             alert('load cancelled');
             const filteredLoads = loads.filter(load => load.id != cancelledLoad.id);
             setLoads(filteredLoads);
@@ -63,11 +64,11 @@ function Driver({ match: { params: { driverID } } }) {
         }
     };
 
-    const getMonthLoads = (driverID, year, month) => {
+    const getMonthLoads = (driverId, year, month) => {
         if(month == 0){
-            Express.getDriverBookedYearLoads(driverID, year).then(loads => setLoads(loads));
+            ExpressF.getDriverBookedYearLoads(driverId, year).then(loads => setLoads(loads));
         } else {
-            Express.getDriverBookedMonthLoads(driverID, year, month).then(loads => setLoads(loads));
+            ExpressF.getDriverBookedMonthLoads(driverId, year, month).then(loads => setLoads(loads));
         }
     };
 
@@ -81,9 +82,10 @@ function Driver({ match: { params: { driverID } } }) {
             firstName: driver.firstName,
             lastName: driver.lastName,
             phoneNumber: driver.phoneNumber,
-            truckNumber: driver.truckNumber
+            truckNumber: driver.truckNumber,
+            employed: true
         };
-        Express.updateDriverInfo(driver.id, updatedDriver).then(response => {
+        ExpressF.updateDriverInfo(driver.id, updatedDriver).then(response => {
             if(response === 400){
                 return alert('Make sure all areas with * are filled');
             } 
@@ -102,7 +104,7 @@ function Driver({ match: { params: { driverID } } }) {
             employed: false
         }
         if (window.confirm('Are you sure you want to fire employee?')) {
-            Express.updateDriverInfo(driver.id, firedEmployee);
+            ExpressF.updateDriverInfo(driver.id, firedEmployee);
             alert('Employee Fired');
         } else {
             alert('Employee Not Fired');
@@ -168,7 +170,7 @@ function Driver({ match: { params: { driverID } } }) {
                 <RenderLoads loads={loads}
                             cancelLoad={cancelledLoad}
                             monthLoads={getMonthLoads}
-                            driverID={driverID}
+                            driverId={driverId}
                             cancel={true}
                             driversDropdown={driversDropdown} />
             </div>

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Form, TextArea, Select, Button, Input, Label, Checkbox } from 'semantic-ui-react';
 import Express from '../../fetchExpress';
+import ExpressF from '../../fetchFeathers';
 
 function NewDriver() {
     const [driver, setDriver] = useState({firstName: '', lastName: '', truckNumber: null, phoneNumber: ''});
@@ -15,9 +16,11 @@ function NewDriver() {
             lastName: driver.lastName,
             truckNumber: driver.truckNumber,
             phoneNumber: driver.phoneNumber,
-            employed: true
+            employed: true,
+            summaryNote: null
         };
-        Express.newDriver(newDriver).then(response => {
+        ExpressF.newDriver(newDriver).then(response => {
+            console.log(response);
             if(response === 400){
                 return alert('Make sure all fields are filled out');
             } else{
