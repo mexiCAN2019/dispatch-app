@@ -1,4 +1,5 @@
     import Express from './../fetchExpress';
+    import ExpressF from './../fetchFeathers';
 
 
     export const trailerOptions = [{ key: 'dry van', value: 'dry van', text: 'Dry Van'}, {key: 'flatbed', value: 'flatbed', text: 'Flatbed'}];
@@ -15,7 +16,7 @@
 
     export const drivers = () => {
         const drivers = [];
-        Express.getDrivers().then(fetchedDrivers => {
+        ExpressF.getDrivers().then(fetchedDrivers => {
             fetchedDrivers.map(driver => {
                 drivers.push({key: driver.id, value: driver.id, text: `${driver.firstName}, ${driver.truckNumber}, ${driver.phoneNumber}`})
             });

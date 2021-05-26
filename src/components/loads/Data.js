@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { Button, Form, Select } from 'semantic-ui-react';
 import Express from './../../fetchExpress';
+import ExpressF from './../../fetchFeathers';
 import { months, reloadSelect, dataType } from './../../util/options';
 
 function Data() {
-    const [dataCriteria, setDataCriteria] = useState({dataType: null, year: new Date().getFullYear(), month: null, reloadLoad: null, driverID: null});
+    const [dataCriteria, setDataCriteria] = useState({dataType: null, year: new Date().getFullYear(), month: null, reloadLoad: null, driverId: null});
     const [data, setData] = useState({rate: null, numberOfLoads: null});
 
     const handleChange = (e, {name, value}) => {
@@ -12,7 +13,7 @@ function Data() {
     };
 
     const handleSubmit = () => {
-        if(dataCriteria.driverID === 0){
+        if(dataCriteria.driverId === 0){
             switch(dataCriteria.dataType){
                 case "average":
                     if(dataCriteria.month == 0){
@@ -37,17 +38,17 @@ function Data() {
             switch(dataCriteria.dataType){
                 case "average":
                     if(dataCriteria.month == 0){
-                        Express.getDriverYearRateAverage(dataCriteria.year, dataCriteria.reloadLoad, dataCriteria.driverID).then(response => setData({rate: response.averageRate, numberOfLoads: response.numberOfLoads}));
+                        Express.getDriverYearRateAverage(dataCriteria.year, dataCriteria.reloadLoad, dataCriteria.driverId).then(response => setData({rate: response.averageRate, numberOfLoads: response.numberOfLoads}));
                     } else{
-                        Express.getDriverMonthRateAverage(dataCriteria.year, dataCriteria.month, dataCriteria.reloadLoad, dataCriteria.driverID).then(response => setData({rate: response.averageRate, numberOfLoads: response.numberOfLoads}));
+                        Express.getDriverMonthRateAverage(dataCriteria.year, dataCriteria.month, dataCriteria.reloadLoad, dataCriteria.driverId).then(response => setData({rate: response.averageRate, numberOfLoads: response.numberOfLoads}));
                         console.log("Drivermonth");
                     }
                     break;
                 case "sum":
                     if(dataCriteria.month == 0){
-                        Express.getDriverYearRateSum(dataCriteria.year, dataCriteria.reloadLoad, dataCriteria.driverID).then(response => setData({rate: response.sumRate, numberOfLoads: response.numberOfLoads}));
+                        Express.getDriverYearRateSum(dataCriteria.year, dataCriteria.reloadLoad, dataCriteria.driverId).then(response => setData({rate: response.sumRate, numberOfLoads: response.numberOfLoads}));
                     } else{
-                        Express.getDriverMonthRateSum(dataCriteria.year, dataCriteria.month, dataCriteria.reloadLoad, dataCriteria.driverID).then(response => setData({rate: response.sumRate, numberOfLoads: response.numberOfLoads}));
+                        Express.getDriverMonthRateSum(dataCriteria.year, dataCriteria.month, dataCriteria.reloadLoad, dataCriteria.driverId).then(response => setData({rate: response.sumRate, numberOfLoads: response.numberOfLoads}));
                     }
                     break;
                 default:
@@ -60,7 +61,7 @@ function Data() {
 
     const [driversDropdown, setDriversDropdown] = useState();
     useEffect(() => {
-        Express.getDrivers().then(fetchedDrivers => {
+        ExpressF.getDrivers().then(fetchedDrivers => {
             let drivers = [{key: 0, value: 0, text: 'All Drivers'}];
             fetchedDrivers.map(driver => {
                 drivers.push({key: driver.id, value: driver.id, text: `${driver.firstName}`})
@@ -75,7 +76,7 @@ function Data() {
             <div style={{display: 'flex', justifyContent: 'center'}}>
             <Form onSubmit={handleSubmit}>
                 
-            <Form.Input style={{width:"300px"}} required control={Select} label='Driver' placeholder='Driver' name='driverID' value={dataCriteria.driverID} options={driversDropdown} onChange={handleChange} width={6} />
+            <Form.Input style={{width:"300px"}} required control={Select} label='Driver' placeholder='Driver' name='driverId' value={dataCriteria.driverId} options={driversDropdown} onChange={handleChange} width={6} />
             <Form.Input style={{width:"300px"}} required control={Select} label='Choose Data Type' placeholder='Average or Total?' name='dataType' value={dataCriteria.dataType} options={dataType} onChange={handleChange} width={6} />
             <Form.Input style={{width:"300px"}} required control={Select} label='Choose Month' placeholder='Month' name='month' value={dataCriteria.month} options={months} onChange={handleChange} width={6} />
             <Form.Input style={{width:"300px"}} required type='number' label='Enter Year' placeholder='Year' name='year' value={dataCriteria.year} onChange={handleChange} width={6} />

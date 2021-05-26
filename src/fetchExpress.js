@@ -58,8 +58,8 @@ Express.updateDriverInfo = (driverID, updatedDriver) => {
     });
 };
 
-Express.getMostRecentLoads = (driverID, year) => {
-    const url = `${baseUrl}/drivers/${driverID}/latestLoads/${year}`;
+Express.getMostRecentLoads = (driverId, year) => {
+    const url = `${baseUrl}/drivers/${driverId}/latestLoads/${year}`;
     return fetch(url).then(response => {
         if(response.ok){
             return response.json();

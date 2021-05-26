@@ -2,15 +2,18 @@ import React, { useState, useEffect } from 'react';
 import { NavLink, useHistory } from 'react-router-dom';
 import { Menu, Dropdown, Image, Icon } from 'semantic-ui-react';
 import Express from '../fetchExpress';
+import ExpressF from '../fetchFeathers';
+import { useUser } from './../util/react-local-spa';
 
 function Navbar(props) {
     const [drivers, setDrivers] = useState([]);
 
     useEffect(() => {
-        Express.getDrivers().then(drivers => setDrivers(drivers));
+        ExpressF.getDrivers().then(drivers => setDrivers(drivers));
     }, []);
 
     const history = useHistory();
+    const { logout, user } = useUser();
 
     const renderDrivers = () => {
         return drivers.filter(arrayDriver => arrayDriver.firstName !== "Unassigned").map(driver => {
@@ -27,6 +30,10 @@ function Navbar(props) {
         });
     };
 
+    const handleLogout = () => {
+        logout();
+        history.push('/login');
+    }
 
     return(
         <div>
@@ -57,6 +64,11 @@ function Navbar(props) {
                     <Menu.Item text='forms' as={NavLink} exact to='/forms'>
                         Forms
                     </Menu.Item>
+                    <Dropdown item text={user ? user.email : 'user'}>
+                        <Dropdown.Menu>
+                            <Dropdown.Item name='logout' onClick={handleLogout}>Logout</Dropdown.Item>
+                        </Dropdown.Menu>
+                    </Dropdown>
                 </Menu.Menu>
             </Menu>
         </div>

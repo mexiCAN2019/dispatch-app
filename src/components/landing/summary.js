@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Card, TextArea, Button } from 'semantic-ui-react';
 import Express from './../../fetchExpress';
+import ExpressF from './../../fetchFeathers';
 
 
 function Summary({ load }) {
@@ -67,7 +68,7 @@ function Summary({ load }) {
             summaryNote: loadInfo.summaryNote
         };
 
-        Express.updateDriverInfo(loadInfo.id, updatedDriver);
+        ExpressF.updateDriverInfo(loadInfo.id, updatedDriver);
     };
 
     const handleChange = (e, {name, value}) => {
