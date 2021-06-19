@@ -21,8 +21,8 @@ function LoadInference() {
             if(response === 'error 400'){
                 return alert('Fields with * must be filled out');
             } else {
-                setLoad({driverId: null, puCity: null, puState: null, puDate: null, puTime: null, endPUTime: null, delCity: null, delState: null, delDate: null,
-        delTime: null, endDelTime: null, commodity: null, weight: null, broker: null, rate: null, notes: null, loadStatus: 'waiting', dispatched: false, trailerNumber: null, trailerType: null, booked: null, reloadLoad: null});
+                setLoad({driverId: null, puCity: '', puState: null, puDate: null, puTime: '', endPUTime: '', delCity: '', delState: null, delDate: null,
+        delTime: '', endDelTime: '', commodity: '', weight: '', broker: '', rate: '', notes: '', loadStatus: 'waiting', dispatched: false, trailerNumber: null, trailerType: null, booked: null, reloadLoad: null});
                 if(load.booked){
                     alert('LOAD BOOKED');
                 } else{

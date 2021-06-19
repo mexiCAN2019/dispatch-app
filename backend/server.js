@@ -7,7 +7,9 @@ require('dotenv').config();
 
 const PORT = process.env.PORT || 5000;
 
-const mysql = require('mysql');
+// const mysql = require('mysql');
+const mysql = require('mysql2');
+
 const db = mysql.createConnection ({
     host: process.env.DATABASE_HOST,
     port: process.env.DATABASE_PORT,
@@ -98,9 +100,9 @@ app.put('/drivers/:driverId', (req,res) => {
 //LOADS
 
 app.get('/drivers/:driverId/latestLoads/:year', (req,res) => {
-    db.query(`SELECT Drivers.id, Drivers.firstName, Drivers.lastName, Drivers.phoneNumber, Drivers.truckNumber, Drivers.employed, Drivers.summaryNote, Loads.driverId, Loads.puDate, Loads.puTime, Loads.endPUTime, Loads.delDate, Loads.delTime, Loads.endDelTime, Loads.broker, Loads.notes FROM Drivers
-    INNER JOIN Loads ON Drivers.id = Loads.driverId
-    WHERE driverId = ${req.params.driverId} AND Loads.booked = true AND Loads.puDate LIKE '______${req.params.year}'
+    db.query(`SELECT drivers.id, drivers.firstName, drivers.lastName, drivers.phoneNumber, drivers.truckNumber, drivers.employed, drivers.summaryNote, loads.driverId, loads.puDate, loads.puTime, loads.endPUTime, loads.delDate, loads.delTime, loads.endDelTime, loads.broker, loads.notes FROM drivers
+    INNER JOIN loads ON drivers.id = loads.driverId
+    WHERE driverId = ${req.params.driverId} AND loads.booked = true AND loads.puDate LIKE '______${req.params.year}'
     ORDER BY puDate DESC
     LIMIT 3;`, (err, rows) => {
         if(err){
@@ -150,10 +152,10 @@ app.get('/loadsForCalendar/:year', (req,res) => {
 });
 
 app.get('/loadsForCalendar/:year/:month', (req,res) => {
-    db.query(`SELECT Drivers.firstName, Loads.puCity, Loads.puDate, Loads.puTime, Loads.endPUTime, Loads.delCity, Loads.delDate, Loads.delTime, Loads.endDelTime, Loads.loadStatus, Loads.dispatched, Loads.id
-                FROM Drivers 
-                INNER JOIN Loads
-                ON Drivers.id = Loads.driverId
+    db.query(`SELECT drivers.firstName, loads.puCity, loads.puDate, loads.puTime, loads.endPUTime, loads.delCity, loads.delDate, loads.delTime, loads.endDelTime, loads.loadStatus, loads.dispatched, loads.id
+                FROM drivers 
+                INNER JOIN loads
+                ON drivers.id = loads.driverId
                 WHERE booked = true AND delDate LIKE '${req.params.month}____${req.params.year}'
                 ORDER BY firstName;`, (err, rows) => {
         if(err){

@@ -15,6 +15,13 @@ services:
         networks:
             - dispatch-app-network
 
+    api-feathers:
+        image: jsanchez19/dispatch-feathers
+        ports: 
+            - "3030:3030"
+        networks:
+            - dispatch-app-network
+
 networks:
     dispatch-app-network:
         driver: bridge

@@ -12,7 +12,8 @@ ExpressF.getDrivers = () => {
     };
     return fetch(url, fetchOptions).then(response => {
             if(!response.ok){
-                return console.log('error');
+                console.log('error');
+                throw 'get drivers'
             }
             return response.json();
         }).then(jsonResponse => {
@@ -89,6 +90,39 @@ ExpressF.getMostRecentLoads = (driverId, year) => {
     // }).then(jsonResponse => {
     //     return jsonResponse.loads[0];
     // });
+};
+
+// need to add All Loads component to utilize next two functions. 
+ExpressF.getAllBookedMonthLoads = (year, month) => {
+    const fetchOptions = {
+        method: 'GET',
+        headers: header
+    };
+    const url = `${baseUrl}/loads?booked=1&delDate[$like]=${month}____${year}&$sort[puDate]=-1`;
+    return fetch(url, fetchOptions).then(response => {
+        if(!response.ok){
+            return [];
+        }
+        return response.json();
+    }).then(jsonResponse => {
+        return jsonResponse.data;
+    });
+};
+
+ExpressF.getAllBookedYearLoads = (year) => {
+    const fetchOptions = {
+        method: 'GET',
+        headers: header
+    };
+    const url = `${baseUrl}/loads?booked=1&delDate[$like]=______${year}&$sort[puDate]=-1`;
+    return fetch(url, fetchOptions).then(response => {
+        if(!response.ok){
+            return [];
+        }
+        return response.json();
+    }).then(jsonResponse => {
+        return jsonResponse.data;
+    });
 };
 
 ExpressF.getDriverBookedMonthLoads = (driverId, year, month) => {

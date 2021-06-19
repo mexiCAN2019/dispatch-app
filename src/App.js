@@ -19,7 +19,7 @@ function App() {
   const {user} = useUser();
 
   const checkLoggedIn = () => {
-    const loggedIn = (localStorage.token || user) ? true : false;
+    const loggedIn = (localStorage.token && user) ? true : false;
     return loggedIn;
   };
 
@@ -27,6 +27,7 @@ function App() {
     let finalComponent;
     switch(route){
       case 'home':
+        console.log(user);
         finalComponent = (user.role === 'dev' || user.role === 'dispatch') ? component : 'redirect';
         break;
       case 'new-load':

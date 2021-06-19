@@ -14,7 +14,7 @@ function UnassignedSummary({ loads }) {
         justifyContent: 'center'
     };
 
-    const numberOfLoads = loads.length;
+    const numberOfLoads = loads ? loads.length : 0;
 
     return (
         <div style={border}>
