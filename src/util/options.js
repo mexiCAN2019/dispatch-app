@@ -14,9 +14,9 @@
     
     export const dataType = [{key: 'average', value: 'average', text: 'Average'}, {key: 'sum', value: 'sum', text: 'Total'}];
 
-    export const drivers = () => {
+    export const drivers = (token) => {
         const drivers = [];
-        ExpressF.getDrivers().then(fetchedDrivers => {
+        ExpressF.getDrivers(token).then(fetchedDrivers => {
             fetchedDrivers.map(driver => {
                 drivers.push({key: driver.id, value: driver.id, text: `${driver.firstName}, ${driver.truckNumber}, ${driver.phoneNumber}`})
             });

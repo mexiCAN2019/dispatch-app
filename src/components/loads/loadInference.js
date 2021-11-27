@@ -39,7 +39,8 @@ function LoadInference() {
 
     const [driversDropdown, setDriversDropdown] = useState();
     useEffect(() => {
-        setDriversDropdown(drivers());
+        const token = localStorage.getItem('token');
+        setDriversDropdown(drivers(token));
     }, []);
 
     return(

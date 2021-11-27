@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import { Card, TextArea, Button } from 'semantic-ui-react';
+import { useHistory } from 'react-router-dom';
 import Express from './../../fetchExpress';
 import ExpressF from './../../fetchFeathers';
 
 
 function Summary({ load }) {
     const [loadInfo, setLoadInfo] = useState(load);
+    const history = useHistory();
 
     const renderColorIfDriverNeedsLoad = () => {
         const greenBorder = {
@@ -78,7 +80,9 @@ function Summary({ load }) {
 
     return(
         <Card style={renderColorIfDriverNeedsLoad()}>
-            <Card.Header><b style={{fontSize: '20px', margin: '5px auto'}}>{loadInfo.firstName}</b></Card.Header>
+            <Card.Header>
+                {/* <b style={{fontSize: '20px', margin: '5px auto'}}> */}<Button onClick={() => history.push(`/drivers/${loadInfo.driverId}`)} style={{color: 'none'}}>{loadInfo.firstName}</Button>{/* </b> */}
+            </Card.Header>
             <Card.Content>
                 <div style={{display: 'flex', flexDirection: 'column'}}>
                     <p><u>Most Recent Load</u></p>

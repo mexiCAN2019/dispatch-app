@@ -9,15 +9,16 @@ function HomePage() {
     const [unassignedLoads, setUnassignedLoads] = useState([]);
 
     useEffect(() => {
-        console.log(ExpressF.getDrivers());
-        ExpressF.getDrivers().then(drivers => drivers.filter(driver => driver.id !== 1)).then(drivers => drivers.map(driver => {
-            Express.getMostRecentLoads(driver.id, new Date().getFullYear()).then(load => {
-                if(load){
-                    setLoads(prevLoads => [...prevLoads, load]);
-                }
-            });
-        }));
-        ExpressF.getUnassignedLoads().then(loads => setUnassignedLoads(loads));
+            const token = localStorage.getItem('token');
+            ExpressF.getDriversLanding(token).then(drivers => drivers.filter(driver => driver.id !== 1)).then(drivers => drivers.map(driver => {
+                Express.getMostRecentLoads(driver.id, new Date().getFullYear()).then(load => {
+                    if(load){
+                        setLoads(prevLoads => [...prevLoads, load]);
+                    }
+                });
+            })) 
+            
+            // ExpressF.getUnassignedLoads().then(loads => setUnassignedLoads(loads))
     }, []);
 
 

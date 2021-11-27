@@ -61,7 +61,8 @@ function Data() {
 
     const [driversDropdown, setDriversDropdown] = useState();
     useEffect(() => {
-        ExpressF.getDrivers().then(fetchedDrivers => {
+        const token = localStorage.getItem('token');
+        ExpressF.getDrivers(token).then(fetchedDrivers => {
             let drivers = [{key: 0, value: 0, text: 'All Drivers'}];
             fetchedDrivers.map(driver => {
                 drivers.push({key: driver.id, value: driver.id, text: `${driver.firstName}`})

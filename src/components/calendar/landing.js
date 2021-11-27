@@ -34,7 +34,12 @@ function Calendars() {
             const endDay = checkForZero(load.delDate.slice(3, 5));
             const endHour = checkForZero(load.delTime.slice(0,2));
   
-            setStatusLoads(prevLoad => [...prevLoad, {title: `${load.firstName}, ${load.puCity} to ${load.delCity} - ${load.dispatched ? 'dispatched' : 'not dispathed'}`, start: new Date(`${startYear}`, `${Number(startMonth) - 1}`, `${startDay}`, `${startHour}`), end: new Date(`${endYear}`, `${Number(endMonth) - 1}`, `${endDay}`, `${endHour}`), delMonthYear: `${load.delDate.slice(0, 2)}${load.delDate.slice(6)}`, status: load.loadStatus}]);
+            setStatusLoads(prevLoad => [...prevLoad, {title: `${load.firstName}, ${load.puCity} to ${load.delCity} - ${load.dispatched ? 'dispatched' : 'not dispathed'}`, 
+                                                    start: new Date(`${startYear}`, `${Number(startMonth) - 1}`, `${startDay}`, `${startHour}`), 
+                                                    end: new Date(`${endYear}`, `${Number(endMonth) - 1}`, `${endDay}`, `${endHour}`), 
+                                                    delMonthYear: `${load.delDate.slice(0, 2)}${load.delDate.slice(6)}`, 
+                                                    status: load.loadStatus,
+                                                    driverId: load.driverId}]);
           });
         });
       }, []);

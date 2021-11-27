@@ -9,14 +9,19 @@ function Navbar(props) {
     const [drivers, setDrivers] = useState([]);
 
     useEffect(() => {
-        ExpressF.getDrivers().then(drivers => setDrivers(drivers));
+        const token = localStorage.getItem('token');
+        if(user){
+            setTimeout(() => {
+                ExpressF.getDriversLanding(token).then(drivers => setDrivers(drivers));
+            }, 1000); 
+        }
     }, []);
 
     const history = useHistory();
     const { logout, user } = useUser();
 
     const renderDrivers = () => {
-        return drivers.filter(arrayDriver => arrayDriver.firstName !== "Unassigned").map(driver => {
+        if(drivers) return drivers.filter(arrayDriver => arrayDriver.firstName !== "Unassigned").map(driver => {
             return (
                 <Dropdown.Item 
                     key={driver.id}

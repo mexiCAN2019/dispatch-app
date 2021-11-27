@@ -1,19 +1,46 @@
-const baseUrl = 'http://localhost:3030';
+// const baseUrl = 'http://localhost:3030';
+const baseUrl = 'http://kgfeathers.elementbalance.com';
 const ExpressF = {};
 const token = localStorage.getItem('token');
-const header = {'Content-Type': 'application/json', authorization: `Bearer ${token}`};
+// const header = {'Content-Type': 'application/json', 'authorization': `Bearer ${token}`};
 
-ExpressF.getDrivers = () => {
+
+ExpressF.getDriversLanding = (tokenParam) => {
+    const url = `${baseUrl}/drivers?employed=1`;
+    console.log(token, tokenParam);
+    const fetchOptions = {
+        method: 'GET',
+        headers: {'Content-Type': 'application/json', 'authorization': `Bearer ${tokenParam ? tokenParam : localStorage.getItem('token')}`}
+    };
+
+    if(!tokenParam){
+        ExpressF.getDriversLanding(localStorage.getItem('token'));
+    }
+
+    return fetch(url, fetchOptions).then(response => {
+            if(!response.ok){
+                console.log('error');
+                return 'error'
+            }
+            return response.json();
+        }).then(jsonResponse => {
+            return jsonResponse.data;
+        });
+};
+
+
+ExpressF.getDrivers = (tokenParam) => {
     const url = `${baseUrl}/drivers?employed=1`;
     console.log(token);
     const fetchOptions = {
         method: 'GET',
-        headers: header
+        headers: {'Content-Type': 'application/json', 'authorization': `Bearer ${tokenParam ? tokenParam : localStorage.getItem('token')}`}
     };
+
     return fetch(url, fetchOptions).then(response => {
             if(!response.ok){
                 console.log('error');
-                throw 'get drivers'
+                return 403
             }
             return response.json();
         }).then(jsonResponse => {
@@ -24,7 +51,7 @@ ExpressF.getDrivers = () => {
 ExpressF.getDriver = (driverId) => {
     const fetchOptions = {
         method: 'GET',
-        headers: header
+        headers: {'Content-Type': 'application/json', 'authorization': `Bearer ${localStorage.getItem('token')}`}
     };
     const url = `${baseUrl}/drivers/${driverId}`;
     return fetch(url, fetchOptions).then(response => {
@@ -41,7 +68,7 @@ ExpressF.newDriver = (newDriver) => {
     const url = `${baseUrl}/drivers`;
     const fetchOptions = {
         method: 'POST',
-        headers: header,
+        headers: {'Content-Type': 'application/json', 'authorization': `Bearer ${localStorage.getItem('token')}`},
         body: JSON.stringify(newDriver)
     };
     console.log(newDriver);
@@ -57,7 +84,7 @@ ExpressF.updateDriverInfo = (driverId, updatedDriver) => {
     const url = `${baseUrl}/drivers/${driverId}`;
     const fetchOptions = {
         method: 'PATCH',
-        headers: header,
+        headers: {'Content-Type': 'application/json', 'authorization': `Bearer ${localStorage.getItem('token')}`},
         body: JSON.stringify(updatedDriver)
     };
     console.log(updatedDriver);
@@ -96,7 +123,7 @@ ExpressF.getMostRecentLoads = (driverId, year) => {
 ExpressF.getAllBookedMonthLoads = (year, month) => {
     const fetchOptions = {
         method: 'GET',
-        headers: header
+        headers: {'Content-Type': 'application/json', 'authorization': `Bearer ${localStorage.getItem('token')}`}
     };
     const url = `${baseUrl}/loads?booked=1&delDate[$like]=${month}____${year}&$sort[puDate]=-1`;
     return fetch(url, fetchOptions).then(response => {
@@ -112,7 +139,7 @@ ExpressF.getAllBookedMonthLoads = (year, month) => {
 ExpressF.getAllBookedYearLoads = (year) => {
     const fetchOptions = {
         method: 'GET',
-        headers: header
+        headers: {'Content-Type': 'application/json', 'authorization': `Bearer ${localStorage.getItem('token')}`}
     };
     const url = `${baseUrl}/loads?booked=1&delDate[$like]=______${year}&$sort[puDate]=-1`;
     return fetch(url, fetchOptions).then(response => {
@@ -128,7 +155,7 @@ ExpressF.getAllBookedYearLoads = (year) => {
 ExpressF.getDriverBookedMonthLoads = (driverId, year, month) => {
     const fetchOptions = {
         method: 'GET',
-        headers: header
+        headers: {'Content-Type': 'application/json', 'authorization': `Bearer ${localStorage.getItem('token')}`}
     };
     const url = `${baseUrl}/loads?driverId=${driverId}&booked=1&delDate[$like]=${month}____${year}&$sort[puDate]=-1`;
     return fetch(url, fetchOptions).then(response => {
@@ -144,7 +171,7 @@ ExpressF.getDriverBookedMonthLoads = (driverId, year, month) => {
 ExpressF.getDriverBookedYearLoads = (driverId, year) => {
     const fetchOptions = {
         method: 'GET',
-        headers: header
+        headers: {'Content-Type': 'application/json', 'authorization': `Bearer ${localStorage.getItem('token')}`}
     };
     const url = `${baseUrl}/loads?driverId=${driverId}&booked=1&delDate[$like]=______${year}&$sort[puDate]=-1`;
     return fetch(url, fetchOptions).then(response => {
@@ -161,7 +188,7 @@ ExpressF.getDriverBookedYearLoads = (driverId, year) => {
 ExpressF.getUnassignedLoads = () => {
     const fetchOptions = {
         method: 'GET',
-        headers: header
+        headers: {'Content-Type': 'application/json', 'authorization': `Bearer ${localStorage.getItem('token')}`}
     };
     const url = `${baseUrl}/loads?driverId=1&booked=1`;
     return fetch(url, fetchOptions).then(response => {
@@ -177,7 +204,7 @@ ExpressF.getUnassignedLoads = () => {
 ExpressF.getUnbookedLoads = () => {
     const fetchOptions = {
         method: 'GET',
-        headers: header
+        headers: {'Content-Type': 'application/json', 'authorization': `Bearer ${localStorage.getItem('token')}`}
     };
     const url = `${baseUrl}/loads?booked=false`;
     return fetch(url, fetchOptions).then(response => {
@@ -193,7 +220,7 @@ ExpressF.getUnbookedLoads = () => {
 ExpressF.getYearUnbookedLoads = (year) => {
     const fetchOptions = {
         method: 'GET',
-        headers: header
+        headers: {'Content-Type': 'application/json', 'authorization': `Bearer ${localStorage.getItem('token')}`}
     };
     const url = `${baseUrl}/loads?booked=0&delDate[$like]=______${year}&$sort[puDate]=-1`;
     return fetch(url, fetchOptions).then(response => {
@@ -209,7 +236,7 @@ ExpressF.getYearUnbookedLoads = (year) => {
 ExpressF.getMonthUnbookedLoads = (year, month) => {
     const fetchOptions = {
         method: 'GET',
-        headers: header
+        headers: {'Content-Type': 'application/json', 'authorization': `Bearer ${localStorage.getItem('token')}`}
     };
     const url = `${baseUrl}/loads?booked=0&delDate[$like]=${month}____${year}&$sort[puDate]=-1`;
     return fetch(url, fetchOptions).then(response => {
@@ -226,7 +253,7 @@ ExpressF.updateLoad = (loadID, updatedLoad) => {
     const url = `${baseUrl}/loads/${loadID}`;
     const fetchOptions = {
         method: `PUT`,
-        headers: header,
+        headers: {'Content-Type': 'application/json', 'authorization': `Bearer ${localStorage.getItem('token')}`},
         body: JSON.stringify(updatedLoad)
     };
     console.log(updatedLoad);
@@ -244,7 +271,7 @@ ExpressF.updateLoad = (loadID, updatedLoad) => {
 ExpressF.getYearLoads = (year) => {
     const fetchOptions = {
         method: 'GET',
-        headers: header
+        headers: {'Content-Type': 'application/json', 'authorization': `Bearer ${localStorage.getItem('token')}`}
     };
     const url = `${baseUrl}/loadsForCalendar/${year}`
     return fetch(url, fetchOptions).then(response => {
@@ -260,7 +287,7 @@ ExpressF.getYearLoads = (year) => {
 ExpressF.getMonthLoads = (year, month) => {
     const fetchOptions = {
         method: 'GET',
-        headers: header
+        headers: {'Content-Type': 'application/json', 'authorization': `Bearer ${localStorage.getItem('token')}`}
     };
     const url = `${baseUrl}/loadsForCalendar/${year}/${month}`
     return fetch(url, fetchOptions).then(response => {
@@ -277,7 +304,7 @@ ExpressF.createLoad = (newLoad) => {
     const url = `${baseUrl}/loads`;
     const fetchOptions = {
         method: 'POST',
-        headers: header,
+        headers: {'Content-Type': 'application/json', 'authorization': `Bearer ${localStorage.getItem('token')}`},
         body: JSON.stringify(newLoad)
     };
     console.log(fetchOptions);
@@ -292,7 +319,7 @@ ExpressF.deleteLoad = (loadID) => {
     const url = `${baseUrl}/loads/${loadID}`;
     const fetchOptions = {
         method: 'DELETE',
-        headers: header
+        headers: {'Content-Type': 'application/json', 'authorization': `Bearer ${localStorage.getItem('token')}`}
     };
     return fetch(url, fetchOptions);
 };

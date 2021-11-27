@@ -9,7 +9,7 @@ export const Authenticate = (email, password) => {
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify({strategy: "local", email: email, password: password})
     };
-    return fetch("http://localhost:3030/authentication", fetchOptions).then(response => {
+    return fetch("http://kgfeathers.elementbalance.com/authentication", fetchOptions).then(response => {
         if(!response.ok){
             return 400;
         }
@@ -30,6 +30,7 @@ export const UserProvider = ({children}) => {
             }
             setUser(usr);
             localStorage.setItem('token',res.accessToken);
+            console.log(localStorage.getItem('token'));
             return 'granted';
         }
         return 'incorrect login';

@@ -1,4 +1,5 @@
-const baseUrl = 'http://localhost:5000';
+// const baseUrl = 'http://localhost:5000';
+const baseUrl = 'http://kgtransportapi.elementbalance.com';
 const Express = {};
 
 
@@ -68,6 +69,7 @@ Express.getMostRecentLoads = (driverId, year) => {
     }, networkError => {
         console.log(networkError.message);
     }).then(jsonResponse => {
+        if(!jsonResponse) return;
         return jsonResponse.loads[0];
     })
     // return fetch(url).then(response => {

@@ -1,5 +1,6 @@
 import React from 'react';
 import { Calendar, momentLocalizer } from 'react-big-calendar';
+import { useHistory } from 'react-router-dom';
 import moment from 'moment';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 
@@ -8,7 +9,8 @@ import 'react-big-calendar/lib/css/react-big-calendar.css';
 
   function StatusCalendar({ loads }) {
 
-    
+    const history = useHistory();
+
     return(
       <div style={{ height: 1700 }}>
         <Calendar
@@ -17,6 +19,7 @@ import 'react-big-calendar/lib/css/react-big-calendar.css';
           localizer={localizer}
           popup
           selectable={true}
+          onSelectEvent={event => history.push(`/drivers/${event.driverId}`) }
           eventPropGetter={
             (event, start, end, isSelected) => {
               let newStyle = {
