@@ -7,7 +7,6 @@ const token = localStorage.getItem('token');
 
 ExpressF.getDriversLanding = (tokenParam) => {
     const url = `${baseUrl}/drivers?employed=1`;
-    console.log(token, tokenParam);
     const fetchOptions = {
         method: 'GET',
         headers: {'Content-Type': 'application/json', 'authorization': `Bearer ${tokenParam ? tokenParam : localStorage.getItem('token')}`}

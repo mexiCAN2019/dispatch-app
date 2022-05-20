@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import './App.css';
 import HomePage from './components/landing/landing';
@@ -19,7 +19,8 @@ function App() {
   const {user} = useUser();
 
   const checkLoggedIn = () => {
-    const loggedIn = (localStorage.token && user) ? true : false;
+    const loggedIn = (/* localStorage.token && */ user) ? true : false; //localStorage.token returns false even though auth is successful
+    // console.log(localStorage.token, user, loggedIn);
     return loggedIn;
   };
 
@@ -27,35 +28,33 @@ function App() {
     let finalComponent;
     switch(route){
       case 'home':
-        console.log(user);
-        finalComponent = (user.role === 'dev' || user.role === 'dispatch') ? <HomePage /> : 'redirect';
+        finalComponent = (user.role === 'dev' || user.role === 'admin') ? <HomePage /> : 'redirect';
         break;
       case 'new-load':
-        finalComponent = (user.role === 'dev' || user.role === 'dispatch') ? <LoadInference /> : 'redirect';
+        finalComponent = (user.role === 'dev' || user.role === 'admin') ? <LoadInference /> : 'redirect';
         break;
         case 'calendar':
-        finalComponent = (user.role === 'dev' || user.role === 'dispatch') ? <Calendars /> : 'redirect';
+        finalComponent = (user.role === 'dev' || user.role === 'admin') ? <Calendars /> : 'redirect';
         break;
         case 'forms':
-        finalComponent = (user.role === 'dev' || user.role === 'dispatch') ? <Forms /> : 'redirect';
+        finalComponent = (user.role === 'dev' || user.role === 'admin') ? <Forms /> : 'redirect';
         break;
       case 'new-driver':
         finalComponent = (user.role === 'dev' || user.role === 'admin') ? <NewDriver /> : 'redirect';
         break;
       case 'unassigned-loads':
-        finalComponent = (user.role === 'dev' || user.role === 'dispatch') ? <UnassignedLoads /> : 'redirect';
+        finalComponent = (user.role === 'dev' || user.role === 'admin') ? <UnassignedLoads /> : 'redirect';
         break;
       case 'data':
-        finalComponent = (user.role === 'dev' || user.role === 'dispatch') ? <Data /> : 'redirect';
+        finalComponent = (user.role === 'dev' || user.role === 'admin') ? <Data /> : 'redirect';
         break;
       case 'unbooked-loads':
-        finalComponent = (user.role === 'dev' || user.role === 'dispatch') ? <UnbookedLoads /> : 'redirect';
+        finalComponent = (user.role === 'dev' || user.role === 'admin') ? <UnbookedLoads /> : 'redirect';
         break;
       default:
         break;
     };
     if(finalComponent === 'redirect') return <Navigate to="/" />;
-    console.log(finalComponent);
     return finalComponent;
   };
 

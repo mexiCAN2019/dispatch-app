@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { useHistory } from 'react-router-dom';
 
 export const UserContext = React.createContext(null);
 
@@ -22,7 +21,6 @@ export const UserProvider = ({children}) => {
 
     const login = async (email, password) => {
         const res = await Authenticate(email, password);
-        console.log(res);
         if(res.accessToken){
             var usr = {
                 email: res.user.email,
