@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import { Switch, Route, Redirect } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import './App.css';
 import HomePage from './components/landing/landing';
 import LoadInference from './components/loads/loadInference';
@@ -23,71 +23,65 @@ function App() {
     return loggedIn;
   };
 
-  const checkRole = ({route, component, ...options}) => {
+  const checkRole = (route) => {
     let finalComponent;
     switch(route){
       case 'home':
         console.log(user);
-        finalComponent = (user.role === 'dev' || user.role === 'dispatch') ? component : 'redirect';
+        finalComponent = (user.role === 'dev' || user.role === 'dispatch') ? <HomePage /> : 'redirect';
         break;
       case 'new-load':
-        finalComponent = (user.role === 'dev' || user.role === 'dispatch') ? component : 'redirect';
+        finalComponent = (user.role === 'dev' || user.role === 'dispatch') ? <LoadInference /> : 'redirect';
+        break;
+        case 'calendar':
+        finalComponent = (user.role === 'dev' || user.role === 'dispatch') ? <Calendars /> : 'redirect';
+        break;
+        case 'forms':
+        finalComponent = (user.role === 'dev' || user.role === 'dispatch') ? <Forms /> : 'redirect';
         break;
       case 'new-driver':
-        finalComponent = (user.role === 'dev' || user.role === 'admin') ? component : 'redirect';
+        finalComponent = (user.role === 'dev' || user.role === 'admin') ? <NewDriver /> : 'redirect';
         break;
       case 'unassigned-loads':
-        finalComponent = (user.role === 'dev' || user.role === 'dispatch') ? component : 'redirect';
+        finalComponent = (user.role === 'dev' || user.role === 'dispatch') ? <UnassignedLoads /> : 'redirect';
         break;
       case 'data':
-        finalComponent = (user.role === 'dev' || user.role === 'dispatch') ? component : 'redirect';
+        finalComponent = (user.role === 'dev' || user.role === 'dispatch') ? <Data /> : 'redirect';
         break;
       case 'unbooked-loads':
-        finalComponent = (user.role === 'dev' || user.role === 'dispatch') ? component : 'redirect';
+        finalComponent = (user.role === 'dev' || user.role === 'dispatch') ? <UnbookedLoads /> : 'redirect';
         break;
       default:
-        finalComponent = component;
         break;
     };
-    if(finalComponent === 'redirect') return <Redirect to="/" />;
-    console.log(component);
+    if(finalComponent === 'redirect') return <Navigate to="/" />;
     console.log(finalComponent);
-    return <Route {...options} component={finalComponent} />;
+    return finalComponent;
   };
 
-  const CustomRoute = ({route, component, ...options}) => {
-    console.log(checkLoggedIn());
-    if(!checkLoggedIn()) return <Route {...options} component={Login}/>;
-    const path = checkRole({route, component, ...options});
-    return path; 
-    // return <Route {...options} component={HomePage} />;
+  const authenticatedRoutes = (route) => {
+    return checkLoggedIn() ? checkRole(route) : <Navigate to='/login' />
   };
 
-const wrappedRoutes = () => {
   return (
     <div>
       <NavBar />
-      <Switch>
-        <Route path='/login' exact component={Login} />
-        <CustomRoute path='/' exact route='home' component={HomePage} />
-        <CustomRoute path='/newLoad' exact route='new-load' component={LoadInference} />
-        <CustomRoute path='/calendar' exact component={Calendars} />
-        <CustomRoute path='/forms' exact component={Forms} />
-        <CustomRoute path='/newDriver' exact route='new-driver' component={NewDriver} />
-        <CustomRoute path='/unassignedLoads' exact route='unassigned-loads' component={UnassignedLoads} />
-        <CustomRoute path='/data' exact route='data' component={Data} />
-        <CustomRoute path='/unbookedLoads' exact route='unbooked-loads' component={UnbookedLoads} />
-        <CustomRoute path='/drivers/:driverId' exact component={Driver} />
-      </Switch>
-    </div>
-  )
-};
-
-  return (
-    <div className="App">
-      <Switch>
-        <Route path="/" component={wrappedRoutes} />
-      </Switch>
+      <Routes>
+        <Route path='/login' element={<Login />} />
+        <Route path='/' element={
+          <>
+            {authenticatedRoutes('home')}
+          </>
+        } />
+        <Route path='/newLoad' element={<>{authenticatedRoutes('new-load')}</>} />
+        <Route path='/calendar' element={<>{authenticatedRoutes('calendar')}</>} />
+        <Route path='/forms' element={<>{authenticatedRoutes('forms')}</>} />
+        <Route path='/newDriver' route='new-driver' element={<>{authenticatedRoutes('new-driver')}</>} />
+        <Route path='/unassignedLoads' route='unassigned-loads' element={<>{authenticatedRoutes('unassigned-loads')}</>} />
+        <Route path='/data' route='data' element={<>{authenticatedRoutes('data')}</>} />
+        <Route path='/unbookedLoads' route='unbooked-loads' element={<>{authenticatedRoutes('unbooked-loads')}</>} />
+        <Route path='/drivers/:driverId' element={<Driver />} />
+      </Routes>
     </div>
   );
 }

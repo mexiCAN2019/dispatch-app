@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
 import RenderLoads from './renderLoads';
 import Express from './../../fetchExpress';
 import ExpressF from './../../fetchFeathers';
@@ -16,11 +17,13 @@ import {
 } from 'semantic-ui-react';
 
 
-function Driver({ match: { params: { driverId } } }) {
+function Driver() {
     const [profile, setProfile] = useState(true);
     const [loads, setLoads] = useState(null);
     const [threeLoads, setThreeLoads] = useState(() => [])
     const [editOpen, setEditOpen] = useState(false)
+
+    const { driverId } = useParams();
 
 
     const [driver, setDriver] = useState(null);

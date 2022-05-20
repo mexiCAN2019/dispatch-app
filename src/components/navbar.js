@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { NavLink, useHistory } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import { Menu, Dropdown, Image, Icon } from 'semantic-ui-react';
 import Express from '../fetchExpress';
 import ExpressF from '../fetchFeathers';
@@ -17,7 +17,7 @@ function Navbar(props) {
         }
     }, []);
 
-    const history = useHistory();
+    const navigate = useNavigate();
     const { logout, user } = useUser();
 
     const renderDrivers = () => {
@@ -37,7 +37,7 @@ function Navbar(props) {
 
     const handleLogout = () => {
         logout();
-        history.push('/login');
+        navigate('/login');
     }
 
     return(
