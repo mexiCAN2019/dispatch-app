@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import { Card, TextArea, Button } from 'semantic-ui-react';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import Express from './../../fetchExpress';
 import ExpressF from './../../fetchFeathers';
 
 
 function Summary({ load }) {
     const [loadInfo, setLoadInfo] = useState(load);
-    const history = useHistory();
+    const naviagate = useNavigate();
 
     const renderColorIfDriverNeedsLoad = () => {
         const greenBorder = {
@@ -81,7 +81,7 @@ function Summary({ load }) {
     return(
         <Card style={renderColorIfDriverNeedsLoad()}>
             <Card.Header>
-                {/* <b style={{fontSize: '20px', margin: '5px auto'}}> */}<Button onClick={() => history.push(`/drivers/${loadInfo.driverId}`)} style={{color: 'none'}}>{loadInfo.firstName}</Button>{/* </b> */}
+                {/* <b style={{fontSize: '20px', margin: '5px auto'}}> */}<Button onClick={() => naviagate(`/drivers/${loadInfo.driverId}`)} style={{color: 'none'}}>{loadInfo.firstName}</Button>{/* </b> */}
             </Card.Header>
             <Card.Content>
                 <div style={{display: 'flex', flexDirection: 'column'}}>

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Button, Form, Grid, Header, Segment } from 'semantic-ui-react';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useUser } from './../util/react-local-spa';
 
 function Login() {
@@ -11,14 +11,14 @@ function Login() {
     }
 
     const { login } = useUser();
-    const history = useHistory();
+    const navigate = useNavigate();
 
     const handleSubmit = async () => {
         login(values.email, values.password).then(res => {
             if(res === 'incorrect login'){
                 setValues({...values, passwordError: true});
             };
-            history.push('/');
+            navigate('/');
         }).catch(err => {
             setValues({...values, error: err});
         });
