@@ -14,14 +14,21 @@ function Login() {
     const navigate = useNavigate();
 
     const handleSubmit = async () => {
-        login(values.email, values.password).then(res => {
-            if(res === 'incorrect login'){
-                setValues({...values, passwordError: true});
-            };
-            navigate('/');
-        }).catch(err => {
+        // login(values.email, values.password).then(res => {
+        //     if(res === 'granted'){
+        //         navigate('/');
+        //     };
+        // }).catch(err => {
+        //     setValues({...values, error: err});
+        // });
+        try{
+            const response = await login(values.email, values.password);
+            if(response === 'granted'){
+                    navigate('/');
+            }
+        } catch(err){
             setValues({...values, error: err});
-        });
+        }
     };
 
     return (

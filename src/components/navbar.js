@@ -5,20 +5,20 @@ import Express from '../fetchExpress';
 import ExpressF from '../fetchFeathers';
 import { useUser } from './../util/react-local-spa';
 
-function Navbar(props) {
+function Navbar() {
     const [drivers, setDrivers] = useState([]);
+
+    const navigate = useNavigate();
+    const { logout, user } = useUser();
 
     useEffect(() => {
         const token = localStorage.getItem('token');
         if(user){
-            setTimeout(() => {
+            // setTimeout(() => {
                 ExpressF.getDriversLanding(token).then(drivers => setDrivers(drivers));
-            }, 1000); 
+            // }, 1000); 
         }
-    }, []);
-
-    const navigate = useNavigate();
-    const { logout, user } = useUser();
+    }, [user]);
 
     const renderDrivers = () => {
         if(drivers) return drivers.filter(arrayDriver => arrayDriver.firstName !== "Unassigned").map(driver => {
