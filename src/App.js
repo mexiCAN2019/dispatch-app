@@ -74,7 +74,7 @@ function App() {
         } />
         <Route path='/newLoad' element={<>{authenticatedRoutes('new-load')}</>} />
         <Route path='/calendar' element={<>{authenticatedRoutes('calendar')}</>} />
-        <Route path='/forms' element={<>{authenticatedRoutes('forms')}</>} />
+        {/* <Route path='/forms' element={<>{authenticatedRoutes('forms')}</>} /> */}
         <Route path='/newDriver' route='new-driver' element={<>{authenticatedRoutes('new-driver')}</>} />
         <Route path='/unassignedLoads' route='unassigned-loads' element={<>{authenticatedRoutes('unassigned-loads')}</>} />
         <Route path='/data' route='data' element={<>{authenticatedRoutes('data')}</>} />

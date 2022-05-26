@@ -1,11 +1,27 @@
 import React, { useState, useEffect } from 'react';
 
 function Forms() {
+    const [value, setValue] = useState(null);
+
+
     
+    const handleClick = () => {
+            const url = `http://kgtransportapi.elementbalance.com/loadsForCalendar/2022/05`;
+            fetch(url).then(response => {
+                if(response.ok){
+                    return response.json();
+                }
+                console.log(response);
+            }, networkError => {
+                console.log(networkError.message);
+            }).then(jsonResponse => {
+                return jsonResponse;
+            }).then(data => setValue(data));
+        }
 
     return (
         <div>
-            Forms
+            <button onClick={handleClick}>test</button>
         </div>
     )
 };
