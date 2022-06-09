@@ -67,18 +67,14 @@ function App() {
       <NavBar />
       <Routes>
         <Route path='/login' element={<Login />} />
-        <Route path='/' element={
-          <>
-            {authenticatedRoutes('home')}
-          </>
-        } />
-        <Route path='/newLoad' element={<>{authenticatedRoutes('new-load')}</>} />
-        <Route path='/calendar' element={<>{authenticatedRoutes('calendar')}</>} />
+        <Route path='/' element={<HomePage />} />
+        <Route path='/newLoad' element={<LoadInference />} />
+        <Route path='/calendar' element={<Calendars />} />
         {/* <Route path='/forms' element={<>{authenticatedRoutes('forms')}</>} /> */}
-        <Route path='/newDriver' route='new-driver' element={<>{authenticatedRoutes('new-driver')}</>} />
-        <Route path='/unassignedLoads' route='unassigned-loads' element={<>{authenticatedRoutes('unassigned-loads')}</>} />
-        <Route path='/data' route='data' element={<>{authenticatedRoutes('data')}</>} />
-        <Route path='/unbookedLoads' route='unbooked-loads' element={<>{authenticatedRoutes('unbooked-loads')}</>} />
+        <Route path='/newDriver' route='new-driver' element={<NewDriver />} />
+        <Route path='/unassignedLoads' route='unassigned-loads' element={<UnassignedLoads />} />
+        <Route path='/data' route='data' element={<Data />} />
+        <Route path='/unbookedLoads' route='unbooked-loads' element={<UnbookedLoads />} />
         <Route path='/drivers/:driverId' element={<Driver />} />
       </Routes>
     </div>
@@ -86,3 +82,13 @@ function App() {
 }
 
 export default App;
+
+{/* <>
+            {authenticatedRoutes('home')}
+          </>
+<>{authenticatedRoutes('new-load')}</>
+<>{authenticatedRoutes('calendar')}</>
+<>{authenticatedRoutes('new-driver')}</>
+<>{authenticatedRoutes('unassigned-loads')}</>
+<>{authenticatedRoutes('data')}</>
+<>{authenticatedRoutes('unbooked-loads')}</> */}
