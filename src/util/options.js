@@ -14,6 +14,7 @@
     
     export const dataType = [{key: 'average', value: 'average', text: 'Average'}, {key: 'sum', value: 'sum', text: 'Total'}];
 
+    //will be able to delete this
     export const drivers = (token) => {
         const drivers = [];
         ExpressF.getDrivers(token).then(fetchedDrivers => {
