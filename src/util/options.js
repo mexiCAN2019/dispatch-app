@@ -12,7 +12,6 @@
 
     export const reloadSelect = [{key: 'reload', value: 1, text: 'Reload'}, {key: 'not reload', value: 0, text: 'Not Reload'}, {key: 'all', value: 2, text: 'All Loads'}];
     
-    export const dataType = [{key: 'average', value: 'average', text: 'Average'}, {key: 'sum', value: 'sum', text: 'Total'}];
 
     //will be able to delete this
     export const drivers = (token) => {
