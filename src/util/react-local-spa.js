@@ -31,7 +31,7 @@ export const UserProvider = ({children}) => {
             console.log(localStorage.getItem('token'));
             return 'granted';
         }
-        return 'incorrect login';
+        throw new Error('Incorrect Login');
     };
 
     const logout = () => {

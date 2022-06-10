@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
-import { Button, Form, Grid, Header, Segment } from 'semantic-ui-react';
+import { Card, Box, Toolbar, IconButton, Stack, Container, Button, Grid, TextField } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { useUser } from './../util/react-local-spa';
 
 function Login() {
-    const [values, setValues] = useState({ email: '', password: '', passwordError: null, error: null});
+    const [values, setValues] = useState({ email: '', password: '', error: null});
 
-    const handleChange = (e, { name, value }) => {
+    const handleChange = (e) => {
+        const {name, value} = e.target;
         setValues({...values, [name]: value});
     }
 
@@ -14,52 +15,33 @@ function Login() {
     const navigate = useNavigate();
 
     const handleSubmit = async () => {
-        // login(values.email, values.password).then(res => {
-        //     if(res === 'granted'){
-        //         navigate('/');
-        //     };
-        // }).catch(err => {
-        //     setValues({...values, error: err});
-        // });
         try{
+            setValues({...values, error: false});
             const response = await login(values.email, values.password);
             if(response === 'granted'){
                     navigate('/');
             }
         } catch(err){
-            setValues({...values, error: err});
+            console.log(err);
+            setValues({...values, error: true});
         }
     };
 
     return (
-        <Grid textAlign='center' style={{height: '100vh'}} verticalAlign='middle'>
-            <Grid.Column style={{maxWidth: 450}}>
-                <Grid.Row>
-                    <Header as='h2' color='blue' textAlign='center'>
-                        Welcome
-                    </Header>
-                    <Form size='large'>
-                        <Segment stacked>
-                            <Form.Input fluid icon='user' iconPosition='left' placeholder='email' value={values.company} name='email' onChange={handleChange} />
-                            <Form.Input
-                                fluid
-                                icon='lock'
-                                iconPosition='left'
-                                placeholder='Password'
-                                type='password'
-                                name='password'
-                                value={values.inputPassword}
-                                onChange={handleChange}
-                            />
-
-                            <Button color='blue' fluid size='large' onClick={() => handleSubmit()}>
-                                Login
-                            </Button>
-                        </Segment>
-                        {values.passwordError ? <h5 style={{color: 'red'}}>Incorrect Password</h5> : ''}
-                    </Form>
-                </Grid.Row>
-            </Grid.Column>
+        <Grid container direction="column" alignItems="center" justifyContent="center" style={{height: "90vh"}}>
+            <Grid item>
+                <Card>
+                    <Container>
+                        <Stack spacing={3}>
+                            <h2>Welcome</h2>
+                            <TextField label='email' value={values.email} name="email" onChange={handleChange} />
+                            <TextField label='password' value={values.password} name="password" onChange={handleChange} type="password" />
+                            <Button varaint="contained" onClick={handleSubmit}>Login</Button>
+                        </Stack>
+                    </Container>
+                </Card>
+                    {values.error ? <h5 style={{color: 'red'}}>Incorrect Password or Username</h5> : ''}
+            </Grid >
         </Grid>
     )
 };
