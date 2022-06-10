@@ -8,7 +8,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { TimePicker } from '@mui/x-date-pickers/TimePicker';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import Express from './../../fetchExpress';
-import { trailerOptions, trailerNumbers, states, drivers } from './../../util/options';
+import { trailerOptions, trailerNumbers, states } from './../../util/options';
 import ExpressF from '../../fetchFeathers';
 
 
@@ -126,7 +126,14 @@ function LoadInference() {
                     <TextField required name="puCity" label="Pickup City" value={load.puCity} onChange={handleChange} error={error.puCity} />
                 </Grid>
                 <Grid item md={2}>
-                    <TextField required name="puState" label="Pickup State" value={load.puState} onChange={handleChange} error={error.puState} />
+                    <FormControl fullWidth>
+                        <InputLabel>Pickup State *</InputLabel>
+                        <Select name='puState' value={load.puState} onChange={handleChange} required error={error.puState}>
+                            {states.map(state => {
+                                return <MenuItem value={state.value}>{state.text}</MenuItem>
+                            })}
+                        </Select>
+                    </FormControl>
                 </Grid>
                 <Grid item md={3}>
                     <LocalizationProvider dateAdapter={AdapterDateFns}>
@@ -154,13 +161,20 @@ function LoadInference() {
                 </Grid>
 
 
-                <Grid item>
+                <Grid item md={2}>
                     <TextField required name="delCity" label="Deliver City" value={load.delCity} onChange={handleChange} error={error.delCity} />
                 </Grid>
-                <Grid item>
-                    <TextField required name="delState" label="Deliver State" value={load.delState} onChange={handleChange} error={error.delState} />
+                <Grid item md={2}>
+                    <FormControl fullWidth>
+                        <InputLabel>Deliver State *</InputLabel>
+                        <Select name='delState' value={load.delState} onChange={handleChange} required error={error.delState}>
+                            {states.map(state => {
+                                return <MenuItem value={state.value}>{state.text}</MenuItem>
+                            })}
+                        </Select>
+                    </FormControl>
                 </Grid>
-                <Grid item>
+                <Grid item md={3}>
                     <LocalizationProvider dateAdapter={AdapterDateFns}>
                         <DatePicker
                             label="Deliver Date *"

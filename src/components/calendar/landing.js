@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Button, Dimmer, Loader, Segment, Form, Select } from 'semantic-ui-react';
+import { Dimmer, Loader } from 'semantic-ui-react';
+// Button, , Segment, Form, Select
+import { Box, Stack, InputLabel, TextField, Select, FormControl, Container, Button, MenuItem } from '@mui/material';
 import StatusCalendar from './statusCalendar';
 import Express from '../../fetchExpress';
 import { months } from './../../util/options';
@@ -101,31 +103,35 @@ function Calendars() {
         });
     };
 
-    const handleChange = (e, {name, value}) => {
+    const handleChange = (e) => {
+        const {value, name} = e.target;
         setDateCriteria({...dateCriteria, [name]: value });
     };
 
-    const filterMonths = () => {
-        return months.filter(month => month.value !== 0);
-    }
-
     return(
-        <div>
-           <Form onSubmit={handleSubmit}>
-                <Form.Group style={{display: 'flex', justifyContent: "center", margin: '75px auto'}}>
-                    <Form.Input control={Select} label='Choose Month' placeholder='Month' name='month' value={dateCriteria.month} options={filterMonths()} onChange={handleChange} />
-                    <Form.Input required type='number' label='Enter Year' placeholder='Year' name='year' value={dateCriteria.year} onChange={handleChange} />
-                    <Button type="submit" id="get-loads-button" color="green" icon="truck" content="Get Loads!" />
-                </Form.Group>
-            </Form>
-            <span><i>Calendar initially only retreives loads for the current month.</i></span>
-           <Segment>
+        <Container>
+            <Stack direction="row" spacing={2} justifyContent="center" style={{margin: '75px auto'}}>
+                <FormControl>
+                    <InputLabel>Choose Month</InputLabel>
+                    <Select name='month' value={dateCriteria.month || ''} onChange={handleChange} required>
+                        {months.map(month => {
+                            if(month.value === 0) return;
+                            return <MenuItem value={month.value}>{month.text}</MenuItem>
+                        })}
+                    </Select>
+                </FormControl>
+                <TextField label="Enter Year" name="year" type='number' value={dateCriteria.year} onChange={handleChange} />
+                <Button variant="contained" onClick={handleSubmit}>Get Loads!</Button>
+            </Stack>
+            <div>
+                <h4 style={{textAlign:"center"}}><i>Calendar initially only retreives loads for the current month. Must get loads and then hit "back" to see the month and loads.</i></h4>
+           
                 {renderLoader()}
 
                 <StatusCalendar loads={statusLoads} />
-            </Segment>
+            </div>
                   
-        </div>
+        </Container>
     )
 }
 
