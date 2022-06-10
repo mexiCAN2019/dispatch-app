@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
-import { Menu, Dropdown, Image, Icon } from 'semantic-ui-react';
-import { AppBar, Box, Toolbar, IconButton, Typography, Container, Button, MenuItem } from '@mui/material';
+import {  Image } from 'semantic-ui-react';
+// Menu, Dropdown,, Icon
+import { AppBar, Box, Toolbar, IconButton, Typography, Container, Button, MenuItem, Menu } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import AdbIcon from '@mui/icons-material/Menu';
 import AccountCircle from '@mui/icons-material/AccountCircle';
@@ -16,49 +17,72 @@ function Navbar() {
     const [drivers, setDrivers] = useState([]);
     const [anchorElNav, setAnchorElNav] = useState(false);
     const [anchorElUser, setAnchorElUser] = useState(false);
+    const [anchorElDrivers, setAnchorElDrivers] = useState(null);
+    const [anchorElLoads, setAnchorElLoads] = useState(null);
 
     const navigate = useNavigate();
     const { logout, user } = useUser();
 
+    // useEffect(() => {
+    //     const token = localStorage.getItem('token');
+    //         ExpressF.getDriversLanding(token).then(drivers => setDrivers(drivers));
+    // }, [user]);
     useEffect(() => {
         const token = localStorage.getItem('token');
-        if(user){
-            // setTimeout(() => {
-                ExpressF.getDriversLanding(token).then(drivers => setDrivers(drivers));
-            // }, 1000); 
-        }
-    }, [user]);
+        ExpressF.getDrivers(token).then(fetchedDrivers => {
+            setDrivers(fetchedDrivers);
+        }); 
+    }, []);
 
-    const handleOpenNavMenu = (event) => {
+    const handleOpenNavMenu = (event) => { //SMALL
         setAnchorElNav(true);
       };
-      const handleMenu = (event) => {
-        setAnchorElUser(true);
-      };
-    
-      const handleCloseNavMenu = (urlTarget) => {
+
+    const handleCloseNavMenu = (urlTarget) => { //SMALL
         setAnchorElNav(null);
         navigate(`/${urlTarget}`)
-      };
-    
-      const handleClose = () => {
-        setAnchorElUser(null);
-      };
-
-    const renderDrivers = () => {
-        if(drivers) return drivers.filter(arrayDriver => arrayDriver.firstName !== "Unassigned").map(driver => {
-            return (
-                <Dropdown.Item 
-                    key={driver.id}
-                    name={`${driver.firstName}`}
-                    as={NavLink}
-                    to={`/drivers/${driver.id}`}
-                    exact>
-                        {driver.firstName}
-                </Dropdown.Item>
-            );
-        });
     };
+
+    //USER
+    const handleUserMenu = (event) => {
+    setAnchorElUser(true);
+    };
+
+    const handleUserClose = () => {
+    setAnchorElUser(null);
+    };
+
+    //DRIVERS
+    const handleDriversClick = (event) => {
+        setAnchorElDrivers(event.currentTarget);
+    };
+    const handleDriversClose = (urlTarget) => {
+        setAnchorElDrivers(null);
+        navigate(`/drivers/${urlTarget}`)
+    };
+
+    //LOADS
+    const handleLoadsClick = (event) => {
+        setAnchorElLoads(event.currentTarget);
+    };
+    const handleLoadsClose = (urlTarget) => {
+        setAnchorElLoads(null);
+        navigate(`/${urlTarget}`)
+    };
+    // const renderDrivers = () => {
+    //     if(drivers) return drivers.filter(arrayDriver => arrayDriver.firstName !== "Unassigned").map(driver => {
+    //         return (
+    //             <Dropdown.Item 
+    //                 key={driver.id}
+    //                 name={`${driver.firstName}`}
+    //                 as={NavLink}
+    //                 to={`/drivers/${driver.id}`}
+    //                 exact>
+    //                     {driver.firstName}
+    //             </Dropdown.Item>
+    //         );
+    //     });
+    // };
 
     const handleLogout = () => {
         logout();
@@ -187,50 +211,93 @@ function Navbar() {
               >
                 New Load
               </Button>
-              <Button
-                key='new load'
-                onClick={() => handleCloseNavMenu('newLoad')}
-                sx={{ my: 2, color: 'white', display: 'block' }}
-              >
-                Drivers
-              </Button>
-              <Button
-                key='new load'
-                onClick={() => handleCloseNavMenu('newLoad')}
-                sx={{ my: 2, color: 'white', display: 'block' }}
-              >
-                Loads
-              </Button>
-          </Box>
 
-          <IconButton
+              <Button
+                    id="demo-positioned-button"
+                    aria-controls={Boolean(anchorElDrivers) ? 'demo-positioned-menu' : undefined}
+                    aria-haspopup="true"
+                    aria-expanded={Boolean(anchorElDrivers) ? 'true' : undefined}
+                    onClick={handleDriversClick}
+                    color="inherit"
+                >
+                    Drivers
+                </Button>
+                <Menu
+                    id="demo-positioned-menu" //
+                    aria-labelledby="demo-positioned-button" ////
+                    anchorEl={anchorElDrivers} //
+                    open={Boolean(anchorElDrivers)} // 
+                    onClose={() => setAnchorElDrivers(null)} //
+                    anchorOrigin={{ //
+                    vertical: 'top',
+                    horizontal: 'left',
+                    }}
+                    transformOrigin={{ //
+                    vertical: 'top',
+                    horizontal: 'left',
+                    }}
+                >
+                    {drivers ? drivers.map(driver => {
+                                if(driver.firstName === 'Unassigned') return;
+                                return <MenuItem value={driver.id} onClick={() => handleDriversClose(`${driver.id}`)}>{driver.firstName}</MenuItem>
+                            }) : <MenuItem>Loading...</MenuItem>}
+                </Menu>
+
+                <Button
+                    id="loads-positioned-button"
+                    aria-controls={Boolean(anchorElLoads) ? 'loads-positioned-menu' : undefined}
+                    aria-haspopup="true"
+                    aria-expanded={Boolean(anchorElLoads) ? 'true' : undefined}
+                    onClick={handleLoadsClick}
+                    color="inherit"
+                >
+                    Loads
+                </Button>
+                <Menu
+                    id="loads-positioned-menu" //
+                    aria-labelledby="loads-positioned-button" ////
+                    anchorEl={anchorElLoads} //
+                    open={Boolean(anchorElLoads)} // 
+                    onClose={() => setAnchorElLoads(null)} //
+                    anchorOrigin={{ //
+                    vertical: 'top',
+                    horizontal: 'left',
+                    }}
+                    transformOrigin={{ //
+                    vertical: 'top',
+                    horizontal: 'left',
+                    }}
+                >
+                    <MenuItem onClick={() => handleLoadsClose('unassignedLoads')}>Unassigned Loads</MenuItem>
+                    <MenuItem onClick={() => handleLoadsClose('calendar')}>Calendar</MenuItem>
+                    <MenuItem onClick={() => handleLoadsClose('data')}>Data</MenuItem>
+                    <MenuItem onClick={() => handleLoadsClose('unbookedLoads')}>Unbooked Loads</MenuItem>
+                </Menu>
+            </Box>
+
+            <IconButton
                 size="large"
                 aria-label="account of current user"
                 aria-controls="menu-appbar"
                 aria-haspopup="true"
-                onClick={handleMenu}
+                onClick={handleUserMenu}
                 color="inherit"
               >
                 <AccountCircle />
-              </IconButton>
-              <Menu
+            </IconButton>
+            <Menu
                 id="menu-appbar"
                 anchorEl={anchorElUser}
-                anchorOrigin={{
-                  vertical: 'top',
-                  horizontal: 'right',
-                }}
+                getContentAnchorEl={null}
+                anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
                 keepMounted
-                transformOrigin={{
-                  vertical: 'top',
-                  horizontal: 'right',
-                }}
+                transformOrigin={{ vertical: 'top', horizontal: 'right' }}
                 open={Boolean(anchorElUser)}
-                onClose={handleClose}
-              >
-                <MenuItem onClick={handleClose}>Profile</MenuItem>
-                <MenuItem onClick={handleClose}>My account</MenuItem>
-              </Menu>
+                onClose={handleUserClose}
+            >
+                <MenuItem>{user ? user.email : 'user'}</MenuItem>
+                <MenuItem name='logout' onClick={handleLogout}>Logout</MenuItem>
+            </Menu>
         </Toolbar>
       </Container>
     </AppBar>
