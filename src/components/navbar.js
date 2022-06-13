@@ -239,7 +239,7 @@ function Navbar() {
                 >
                     {drivers ? drivers.map(driver => {
                                 if(driver.firstName === 'Unassigned') return;
-                                return <MenuItem value={driver.id} onClick={() => handleDriversClose(`${driver.id}`)}>{driver.firstName}</MenuItem>
+                                return <MenuItem key={driver.id} value={driver.id} onClick={() => handleDriversClose(`${driver.id}`)}>{driver.firstName}</MenuItem>
                             }) : <MenuItem>Loading...</MenuItem>}
                 </Menu>
 

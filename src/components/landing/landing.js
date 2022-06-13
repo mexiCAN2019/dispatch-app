@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Express from '../../fetchExpress';
 import ExpressF from '../../fetchFeathers';
 import RenderSummaries from './renderSummaries';
+import { Container } from '@mui/material';
 import './landing.css';
 
 function HomePage() {
@@ -30,10 +31,11 @@ function HomePage() {
                     <h4 style={{margin: '0px auto 5px'}}>"Excellence in Motion"</h4>
                 </div>
             </div>
-            <h2>Dashboard</h2>
-
-            <RenderSummaries loads={loads}
-                             unassignedLoads={unassignedLoads} />
+            <Container>
+                <h2>Dashboard</h2>
+                <RenderSummaries loads={loads}
+                                unassignedLoads={unassignedLoads} />
+            </Container>
         </div>
     )
 }

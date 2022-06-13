@@ -13,7 +13,6 @@ import Data from './components/loads/Data';
 import UnbookedLoads from './components/loads/unbookedLoads';
 import Login from './components/login';
 import { useUser } from './util/react-local-spa';
-
 function App() {
 
   const {user} = useUser();
