@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Load from './load';
-import { Button, Form, Select } from 'semantic-ui-react';
+import { FormControl, InputLabel, Select, Container, Button, MenuItem, TextField, Stack, Backdrop, CircularProgress } from '@mui/material';
 import { months } from './../../util/options';
 
 
@@ -19,7 +19,8 @@ function RenderLoads({ loads, cancelLoad, monthLoads, unbookedLoads, driverId, c
       }, []);
 
 
-    const handleChange = (e, {name, value}) => {
+    const handleChange = ({target}) => {
+        const {name, value} = target;
         setDataCriteria({...dataCriteria, [name]: value });
     };
 
@@ -33,16 +34,34 @@ function RenderLoads({ loads, cancelLoad, monthLoads, unbookedLoads, driverId, c
         }
     };
 
+
+    if(!loads) {
+        return (
+            <Backdrop
+                sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+                open={true}
+            >
+                <CircularProgress color="inherit" />
+            </Backdrop>
+        )
+    }
+
     return(
         <div>
-            <Form onSubmit={handleSubmit}>
-                <Form.Group style={{display: 'flex', justifyContent: "center", margin: '25px auto'}}>
-                    <Form.Input control={Select} label='Choose Month' placeholder='Month' name='month' value={dataCriteria.month} options={months} onChange={handleChange} />
-                    <Form.Input required type='number' label='Enter Year' placeholder='Year' name='year' value={dataCriteria.year} onChange={handleChange} />
-                    <br></br>
-                    <Button type="submit" color="green" icon="truck" content="Get Loads!" />
-                </Form.Group>
-            </Form>
+            <Container>
+                <Stack direction="row" spacing={2} justifyContent="center" style={{margin: '75px auto'}}>
+                    <FormControl>
+                        <InputLabel>Choose Month</InputLabel>
+                        <Select name='month' value={dataCriteria.month || ''} onChange={handleChange} required>
+                            {months.map(month => {
+                                return <MenuItem value={month.value}>{month.text}</MenuItem>
+                            })}
+                        </Select>
+                    </FormControl>
+                    <TextField label="Enter Year" name="year" type='number' value={dataCriteria.year} onChange={handleChange} />
+                    <Button variant="contained" onClick={handleSubmit}>Get Loads!</Button>
+                </Stack>
+            </Container>
 
             <span><i>Page initially only retreives loads for the current month.</i></span>
             <br></br>

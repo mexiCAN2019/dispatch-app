@@ -4,21 +4,14 @@ import RenderLoads from './renderLoads';
 import Express from './../../fetchExpress';
 import ExpressF from './../../fetchFeathers';
 import { drivers } from './../../util/options'
+import { Divider, Stack, Dialog, Container, Button, ToggleButtonGroup, ToggleButton, CardMedia, CardContent, Grid, TextField, DialogTitle, Card } from '@mui/material';
 import {
-    Grid,
-    Card,
-    Image,
-    Button,
-    Segment,
-    Tab,
-    Modal,
-    Form,
     Feed
 } from 'semantic-ui-react';
 
 
 function Driver() {
-    const [profile, setProfile] = useState(true);
+    const [alignment, setAlignment] = useState('loads');
     const [loads, setLoads] = useState(null);
     const [threeLoads, setThreeLoads] = useState(() => [])
     const [editOpen, setEditOpen] = useState(false)
@@ -114,28 +107,28 @@ function Driver() {
         }
     };
 
-    const renderPositive = () => {
-        if (profile === true) {
-            return (
-                <Button.Group>
-                    <Button positive onClick={() => setProfile(true)}>Profile</Button>
-                    <Button.Or />
-                    <Button onClick={() => setProfile(false)}>Driver Loads</Button>
-                </Button.Group>
-            )
-        }
+    const handleProfileChange = (event, newAlignment) => {
+        if (newAlignment !== null) {
+            setAlignment(newAlignment);
+          }
+      };
+
+    const renderProfileOrLoads = () => {
         return (
-            <Button.Group>
-                <Button onClick={() => setProfile(true)}>Profile</Button>
-                <Button.Or />
-                <Button positive onClick={() => setProfile(false)}>Driver Loads</Button>
-            </Button.Group>
+            <ToggleButtonGroup
+                color="primary"
+                value={alignment}
+                exclusive
+                onChange={handleProfileChange}
+            >
+                <ToggleButton value="profile">Profile</ToggleButton>
+                <ToggleButton value="loads">Driver Loads</ToggleButton>
+            </ToggleButtonGroup>
         )
     }
         
     const renderRecentLoads = () => {
-        if(!threeLoads) return;
-        if(!threeLoads[0]){
+        if(!threeLoads){
             return (
                 <Feed.Event>
                     <Feed.Label icon="truck" />
@@ -166,99 +159,104 @@ function Driver() {
 
 
 
-    if(!profile){
+    if(alignment === 'loads'){
         return (
-            <div>
-                {renderPositive()}
+            <Container>
+                {renderProfileOrLoads()}
                 <RenderLoads loads={loads}
                             cancelLoad={cancelledLoad}
                             monthLoads={getMonthLoads}
                             driverId={driverId}
                             cancel={true}
                             driversDropdown={driversDropdown} />
-            </div>
+            </Container>
         )
     }
     return (
-        <div>
-            {renderPositive()}
-            <Modal open={editOpen} onSubmit={handleSubmit}>
-                <Modal.Header>Edit Driver Info</Modal.Header>
-                    <Modal.Content Image>
-                        <Form>
-                            <Form.Input required label='First Name' name='firstName' value={driver && driver.firstName} onChange={handleChange}></Form.Input>
-                            <Form.Input required label='Last Name' name='lastName' value={driver && driver.lastName} onChange={handleChange}></Form.Input>
-                            <Form.Input required label='Truck Number' name='truckNumber' value={driver && driver.truckNumber} onChange={handleChange} type='number'></Form.Input>
-                            <Form.Input required label='Phone Number' name='phoneNumber' value={driver && driver.phoneNumber} onChange={handleChange}></Form.Input>
-                            <Button type="submit" color="green" icon="user" content="Save Changes" />
-                            <Button onClick={()=> setEditOpen(false)} color='google plus'>Close</Button>
-                        </Form>
-                    </Modal.Content>
-            </Modal>
-            <Grid celled='internally' style={{margin: "25px auto"}}>
-                <Grid.Row>
-                    <Grid.Column width={4}>
+        <Container>
+            {renderProfileOrLoads()}
+            <Dialog onClose={() => setEditOpen(false)} open={editOpen} fullWidth={true}>
+                <DialogTitle>Edit Driver Info</DialogTitle>
+                <Container>
+                    <Stack spacing={3}>
+                        <TextField label="First Name" name="firstName" value={driver && driver.firstName} onChnage={handleChange} />
+                        <TextField label="Lase Name" name="lastName" value={driver && driver.lastName} onChnage={handleChange} />
+                        <TextField label="Truck Number" name="truckNumber" value={driver && driver.truckNumber} onChnage={handleChange} type="number" />
+                        <TextField label="Phone Number" name="phoneNumber" value={driver && driver.phoneNumber} onChnage={handleChange} />
+                    </Stack>
+                </Container>
+                <Button onClick={handleSubmit}>Save</Button>
+                <Button onClick={()=> setEditOpen(false)}>Close</Button>
+            </Dialog>
+            
+            <Grid container justifyContent="center" spacing={3}>
+                <Grid item md={3}>
+                    <Stack spacing={2}>
                         <Card>
-                            <Image src='/truck-2.jpeg' wrapped
-                                ui={false}/>
-                            <Card.Content>
-                                <Card.Header>{driver && driver.firstName} {driver && driver.lastName}</Card.Header>
-                                {/* <Card.Meta>
-                                    <span className='date'>7/23</span>
-                                    <br></br>
-                                    <span className='date'>2020</span>
-                                </Card.Meta> */}
-                            </Card.Content>
+                            <CardMedia component="img" image="/truck-2.jpeg" alt="profile pic" />
+                            <CardContent>
+                                <h2>{driver && driver.firstName} {driver && driver.lastName}</h2>
+                            </CardContent>
                         </Card>
-
                         <Card>
-                            <Card.Content header='Details' />
-                            <Card.Content>
-                                <Card.Description textAlign='left'>
-                                    Truck Number: {driver && driver.truckNumber} 
-                                </Card.Description>
-                                <Card.Description textAlign='left'>
-                                    Phone: {driver && driver.phoneNumber}
-                                </Card.Description>
-                                <Card.Description textAlign='left'>
-                                    License Expiration: 1/1/2030
-                                </Card.Description>
-                            </Card.Content>
+                            <CardContent>
+                                <h2>Details</h2>
+                                <Divider />
+                                <Stack spacing={1}>
+                                    <span>Truck Number: {driver && driver.truckNumber}</span>
+                                    <span>Phone: {driver && driver.phoneNumber}</span>
+                                    <span>License Expiration: 1/1/2020</span>
+                                </Stack>
+                            </CardContent>
                         </Card>
-
                         <Card>
-                            <Card.Content header='Actions' />
-                            <Card.Content extra>
-                                <div className='ui three buttons'>
-                                    <Button basic color='green' onClick={()=> setEditOpen(true)}>
+                            <CardContent>
+                                <h2>Actions</h2>
+                                <Divider />
+                                <div>
+                                    <Button onClick={()=> setEditOpen(true)}>
                                         Edit
                                     </Button>
-                                    <Button onClick={handleFired}  basic color='red'>
+                                    <Button onClick={handleFired}>
                                         FIRED
                                     </Button>
                                 </div>
-                            </Card.Content>
+                            </CardContent>
                         </Card>
-                    </Grid.Column>
-
-                    <Grid.Column width={8}>
-                        <Segment style={{overflow: 'auto', maxHeight: '60em'}}>
-                            <Tab />
-                        </Segment>
-                    </Grid.Column>
-
-                    <Grid.Column width={4}>
-                    
-                    <Card>
-                        <Card.Content>
-                            <Card.Header>Recent Loads</Card.Header>
-                        </Card.Content>
-                        {renderRecentLoads()}
-                    </Card>
-                    </Grid.Column>
-                </Grid.Row>
+                    </Stack>
+                </Grid>
+                <Grid item md={6}>
+                    <Stack spacing={3}>
+                        <Card>
+                            <CardContent>
+                                <h2>Licensing Info</h2>
+                            </CardContent>
+                        </Card>
+                        <Card>
+                            <CardContent>
+                                <h2>History</h2>
+                            </CardContent>
+                        </Card>
+                        <Card>
+                            <CardContent>
+                                <h2>Requests</h2>
+                            </CardContent>
+                        </Card>
+                    </Stack>
+                </Grid>
+                <Grid item md={3}>
+                    <Stack>
+                        <Card>
+                            <CardContent>
+                                <h2>Recent Loads This Month</h2>
+                                <Divider />
+                                {renderRecentLoads()}
+                            </CardContent>
+                        </Card>
+                    </Stack>
+                </Grid>
             </Grid>
-        </div>
+            </Container>
     )
 }
 

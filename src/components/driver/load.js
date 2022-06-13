@@ -1,5 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Form, Button, Input, Label, Modal, Select, TextArea, Icon} from 'semantic-ui-react';
+import { Divider, Stack, Dialog, Container, Button, FormControl, Select, InputLabel, MenuItem, Grid, TextField, DialogTitle, Card, CardContent } from '@mui/material';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { TimePicker } from '@mui/x-date-pickers/TimePicker';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { DateInput } from 'semantic-ui-calendar-react';
 import { trailerOptions, trailerNumbers, states, status, dispatched, drivers } from './../../util/options'
 import Express from '../../fetchExpress';
@@ -8,7 +12,14 @@ import ExpressF from '../../fetchFeathers';
 function Load({ load, cancelLoad, cancel }) {
     const [editOpen, setEditOpen] = useState(false);
     const [loadInfo , setLoadInfo] = useState(load);
+    const [drivers, setDrivers] = useState();
 
+    useEffect(() => {
+        const token = localStorage.getItem('token');
+        ExpressF.getDrivers(token).then(fetchedDrivers => {
+            setDrivers(fetchedDrivers);
+        }); 
+    }, []);
     
     const cancelledLoad = () => {
         const updatedLoad = {
@@ -114,7 +125,8 @@ function Load({ load, cancelLoad, cancel }) {
         });
     };
 
-    const handleChange = (e, {name, value}) => {
+    const handleChange = ({ target }) => {
+        const {name, value} = target;
         setLoadInfo({...loadInfo, [name]: value });
     }
 
@@ -173,118 +185,200 @@ function Load({ load, cancelLoad, cancel }) {
 
     const renderCancelOrDelete = () => {
         if(cancel){
-            return <Button color='red' onClick={cancelledLoad}>Cancel Load</Button>
+            return <Button onClick={cancelledLoad}>Cancel Load</Button>
         }
-        return <Button color='red' onClick={handleDelete}>Delete Load</Button>
+        return <Button onClick={handleDelete}>Delete Load</Button>
     }
 
     const renderSaveOrBookButton = () => {
         if(cancel){
-            return <Button type="submit" color="green" icon="truck" content="Save Changes" />
+            return <Button onClick={handleSubmit}>Save Changes</Button>
         }
-        return <Button type="submit" color='green' content="Book Load" /> 
+        return <Button onClick={handleSubmit}>Book Load</Button> 
     };
-
-    const [driversDropdown, setDriversDropdown] = useState();
-    useEffect(() => {
-        setDriversDropdown(drivers());
-    }, []);
 
 
     return(
-        <div style={loadStatusBorderColor()}>
-            {loadInfo.dispatched ? '' : <Icon name="circle" color="red" />}
-            <p style={{fontWeight: "bold", margin: "0px"}}>{loadInfo.loadID}</p>
-            <p style={{fontWeight: "bold", margin: "0px"}}>{loadInfo.puCity}, {loadInfo.puState}</p>
-            <p style={{margin: "0px"}}>{loadInfo.puDate}, {loadInfo.puTime} {renderEndPUTime()}</p>
-             <p style={{margin: "0px"}}>- to -</p>
-            <p style={{fontWeight: "bold", margin: "0px"}}>{loadInfo.delCity}, {loadInfo.delState}</p>
-            <p style={{margin: "0px"}}>{loadInfo.delDate}, {loadInfo.delTime} {renderEndDelTime()}</p>
-            <br></br>
-            {loadInfo.commodity} | {loadInfo.weight}K LBS
-            <br></br>
-            {loadInfo.broker} | ${loadInfo.rate}
-            <br></br>
-            <p style={{border: "black solid 1px", width: "300px", margin: "auto"}}>Notes: {loadInfo.notes}</p>
-
-            <Button color="twitter" onClick={()=> setEditOpen(true)} style={{margin: "auto"}}>Edit</Button> 
-
-            <Modal open={editOpen} size='large'>
-                <Modal.Header>
-                    Edit 
-                    <Button onClick={()=> setEditOpen(false)} color='grey' icon="times" floated='right' />
-                </Modal.Header>
+        <Card style={loadStatusBorderColor()}>
+            <CardContent style={{display: 'flex', flexDirection: 'column', alignItems:'center'}}>
+                {loadInfo.dispatched ? '' : <h3 style={{color: 'red'}}>Not Dispatched</h3>}
+                <p style={{fontWeight: "bold", margin: "0px"}}>Load #: {loadInfo.loadID}</p>
+                <p style={{fontWeight: "bold", margin: "0px"}}>{loadInfo.puCity}, {loadInfo.puState}</p>
+                <p style={{margin: "0px"}}>{loadInfo.puDate}, {loadInfo.puTime} {renderEndPUTime()}</p>
+                <p style={{margin: "0px"}}>- to -</p>
+                <p style={{fontWeight: "bold", margin: "0px"}}>{loadInfo.delCity}, {loadInfo.delState}</p>
+                <p style={{margin: "0px"}}>{loadInfo.delDate}, {loadInfo.delTime} {renderEndDelTime()}</p>
+                <br></br>
+                {loadInfo.commodity} | {loadInfo.weight}K LBS
+                <br></br>
+                {loadInfo.broker} | ${loadInfo.rate}
+                <br></br>
+                <p style={{border: "black solid 1px", width: "300px", margin: "auto"}}><strong>Notes:</strong> {loadInfo.notes}</p>
+            </CardContent>    
+            <Button onClick={()=> setEditOpen(true)} style={{margin: "auto"}}>Edit</Button> 
                 
-                <Modal.Content image>
-                <div style={{display: 'flex', flexDirection: 'column'}}>
-                    <Form widths='equal' onSubmit={handleSubmit}>
-                        <Form.Group>
-                            <Form.Input label='Load ID' placeholder='PRO#, Confirmation#, etc...' name='loadID' value={loadInfo.loadID} onChange={handleChange} />
-                            <Form.Input control={Select} options={status} label='Status' name='loadStatus' value={loadInfo.loadStatus} onChange={handleChange} />
-                        </Form.Group>
-                        <Form.Group>
-                            <Form.Input control={Select} label='Dispatched' name='dispatched' value={loadInfo.dispatched} options={dispatched} onChange={handleChange} />
-                            <Form.Input required control={Select} label='Driver' placeholder='Driver' name='driverId' value={loadInfo.driverId} options={driversDropdown} onChange={handleChange} />
-                            <Form.Input required control={Select} label='Trailer Type' placeholder='Trailer Type' name='trailerType' value={loadInfo.trailerType} options={trailerOptions} onChange={handleChange} />
-                            <Form.Input control={Select} label='Trailer Number' placeholder='Trailer Number' name='trailerNumber' value={loadInfo.trailerNumber} options={trailerNumbers} onChange={handleChange} />
-                        </Form.Group>    
+            
 
-                <Form.Group>
-                    <Form.Input required label='Pickup City' placeholder='Pickup City' name='puCity' value={loadInfo.puCity} onChange={handleChange} />
-                    <Form.Input required control={Select} search options={states} label='Pickup State' placeholder='State' name='puState' value={loadInfo.puState} onChange={handleChange} />
-                    <Form.Field>
-                    <DateInput
-                        label='Pickup Date*'
-                        dateFormat='MM/DD/YYYY'
-                        name='puDate' value={loadInfo.puDate} onChange={handleChange} />
-                    </Form.Field>
-                    <Form.Input required label='Pickup Time' placeholder='Pickup Time' type='time' name='puTime' value={loadInfo.puTime} onChange={handleChange} />
-                    <Form.Input label='Latest PU Time' placeholder='Latest Time' type='time' name='endPUTime' value={loadInfo.endPUTime} onChange={handleChange} />
-                </Form.Group>
+            <Dialog onClose={() => setEditOpen(false)} open={editOpen} fullWidth={true} maxWidth="md">
+                <DialogTitle>Edit Load Info</DialogTitle>
+                <Container>
+                    <Grid container rowSpacing={3} columnSpacing={2}>
+                        <Grid item md={4} fullWidth>
+                            <TextField label="Load ID" placeholder='Pro#, Confirmation#, etc...' name='loadID' value={loadInfo.loadID} onChange={handleChange} />
+                        </Grid>
+                        <Grid item md={4}>
+                            <FormControl fullWidth>
+                                <InputLabel>Dispatched</InputLabel>
+                                <Select name='dispatched' value={loadInfo.dispatched} onChange={handleChange}>
+                                    {dispatched.map(dispatch => {
+                                        return <MenuItem value={dispatch.key}>{dispatch.text}</MenuItem>
+                                    })}
+                                </Select>
+                            </FormControl>
+                        </Grid>  
+                        <Grid item md={4}>
+                            <FormControl fullWidth>
+                                <InputLabel>Status</InputLabel>
+                                <Select name='loadStatus' value={loadInfo.loadStatus} onChange={handleChange}>
+                                    {status.map(location => {
+                                        return <MenuItem value={location.key}>{location.text}</MenuItem>
+                                    })}
+                                </Select>
+                            </FormControl>
+                        </Grid>
+              
+                        <Grid item sm={true} md={4} >
+                            <FormControl fullWidth>
+                                <InputLabel>Driver *</InputLabel>
+                                <Select name='driverId' value={loadInfo.driverId} onChange={handleChange} required /* error={error.driverId} */>
+                                    {drivers ? drivers.map(driver => {
+                                        return <MenuItem value={driver.id}>{`${driver.firstName}, ${driver.truckNumber}, ${driver.phoneNumber}`}</MenuItem>
+                                    }) : <MenuItem>Loading</MenuItem>}
+                                </Select>
+                            </FormControl>
+                        </Grid>
+                        <Grid item sm={true} md={4}>
+                            <FormControl fullWidth>
+                                <InputLabel>Trailer *</InputLabel>
+                                <Select name='trailerType' value={loadInfo.trailerType} onChange={handleChange} required /* error={error.trailerType} */>
+                                    {trailerOptions ? trailerOptions.map(trailer => {
+                                        return <MenuItem value={trailer.value}>{trailer.text}</MenuItem>
+                                    }) : <MenuItem>Loading</MenuItem>}
+                                </Select>
+                            </FormControl>
+                        </Grid>
+                        <Grid item sm={true} md={4}>
+                            <FormControl fullWidth>
+                                <InputLabel>Trailer Number *</InputLabel>
+                                <Select name='trailerNumber' value={loadInfo.trailerNumber} onChange={handleChange} required /* error={error.trailerNumber} */>
+                                    {trailerNumbers ? trailerNumbers.map(trailer => {
+                                        return <MenuItem value={trailer.value}>{trailer.text}</MenuItem>
+                                    }) : <MenuItem>Loading</MenuItem>}
+                                </Select>
+                            </FormControl>
+                        </Grid>
 
-                <Form.Group>
-                    <Form.Input required label='Deliver City' placeholder='Deliver City' name='delCity' value={loadInfo.delCity} onChange={handleChange} />
-                    <Form.Input required control={Select} search options={states} label='Deliver State' placeholder='State' name='delState' value={loadInfo.delState} onChange={handleChange} />
-                    <Form.Field>
-                    <DateInput
-                            label='Deliver Date*'
-                            dateFormat='MM/DD/YYYY'
-                            name='delDate' value={loadInfo.delDate} onChange={handleChange} />
-                    </Form.Field>
-                    <Form.Input required label='Deliver Time' placeholder='Deliver Time' type='time' name='delTime' value={loadInfo.delTime} onChange={handleChange} />
-                    <Form.Input label='Latest Del Time' placeholder='Latest Time' type='time' name='endDelTime' value={loadInfo.endDelTime} onChange={handleChange} />
-                </Form.Group>
 
-                <Form.Group>
-                    <Form.Input required label='Commodity' placeholder='Commodity' name='commodity' value={loadInfo.commodity} onChange={handleChange} />
-                    <Form.Field>
-                        <Label basic style={{border: 'none'}}>Weight*</Label>
-                        <Input label={{ basic: true, content: 'K Lbs' }} labelPosition='right' placeholder='Weight' name='weight' value={loadInfo.weight} type='number' onChange={handleChange} />
-                    </Form.Field>
-                    <Form.Input required label='Broker' placeholder='Broker' name='broker' value={loadInfo.broker} onChange={handleChange} />
-                    <Form.Field>
-                        <Label basic style={{border: 'none'}}>Rate*</Label>
-                        <Input label={{ basic: true, content: '$' }} labelPosition='left' placeholder='Rate' name='rate' value={loadInfo.rate} type='number' onChange={handleChange} />
-                    </Form.Field>
-                </Form.Group>
+                        <Grid item md={2}>
+                            <TextField required name="puCity" label="Pickup City" value={loadInfo.puCity} onChange={handleChange} /* error={error.puCity} */ />
+                        </Grid>
+                        <Grid item md={2}>
+                            <FormControl fullWidth>
+                                <InputLabel>Pickup State *</InputLabel>
+                                <Select name='puState' value={loadInfo.puState} onChange={handleChange} required /* error={error.puState} */>
+                                    {states.map(state => {
+                                        return <MenuItem value={state.value}>{state.text}</MenuItem>
+                                    })}
+                                </Select>
+                            </FormControl>
+                        </Grid>
+                        <Grid item md={3}>
+                            <LocalizationProvider dateAdapter={AdapterDateFns}>
+                                <DatePicker
+                                    label="Pickup Date *"
+                                    name="puDate"
+                                    /* error={error.puDate} */
+                                    value={loadInfo.puDate}
+                                    onChange={(newValue) => {
+                                    setLoadInfo({...load, puDate: newValue});
+                                    }}
+                                    renderInput={(params) => <TextField {...params} />}
+                                />
+                            </LocalizationProvider>
+                        </Grid>
+                        <Grid item md={2}>
+                            <LocalizationProvider dateAdapter={AdapterDateFns}>
+                                <TimePicker label="Pickup Time" value={loadInfo.puTime} /* error={error.puTime} */ onChange={(newValue) => setLoadInfo({...load, puTime: newValue})} renderInput={(params) => <TextField {...params} />} />
+                            </LocalizationProvider>
+                        </Grid>
+                        <Grid item md={2}>
+                            <LocalizationProvider dateAdapter={AdapterDateFns}>
+                                <TimePicker label="Deliver Time" value={loadInfo.delTime} /* error={error.delTime} */ onChange={(newValue) => setLoadInfo({...load, delTime: newValue})} renderInput={(params) => <TextField {...params} />} />
+                            </LocalizationProvider>
+                        </Grid>
 
-                <Form.Input label="Additional Note" control={TextArea} placeholder="note" name='notes' value={loadInfo.notes} onChange={handleChange} />
 
-                <div style={{display: 'flex', justifyContent: 'center'}}>
-                    {renderSaveOrBookButton()}
-                
-                </div>
-                
-                
-            </Form>
-            <div style={{display: 'flex', justifyContent: 'center', marginTop: '10px'}}>
+                        <Grid item md={2}>
+                            <TextField required name="delCity" label="Deliver City" value={loadInfo.delCity} onChange={handleChange} /* error={error.delCity} */ />
+                        </Grid>
+                        <Grid item md={2}>
+                            <FormControl fullWidth>
+                                <InputLabel>Deliver State *</InputLabel>
+                                <Select name='delState' value={loadInfo.delState} onChange={handleChange} required /* error={error.delState} */>
+                                    {states.map(state => {
+                                        return <MenuItem value={state.value}>{state.text}</MenuItem>
+                                    })}
+                                </Select>
+                            </FormControl>
+                        </Grid>
+                        <Grid item md={3}>
+                            <LocalizationProvider dateAdapter={AdapterDateFns}>
+                                <DatePicker
+                                    label="Deliver Date *"
+                                    name="delDate"
+                                    /* error={error.delDate} */
+                                    value={loadInfo.delDate}
+                                    onChange={(newValue) => {
+                                    setLoadInfo({...load, delDate: newValue});
+                                    }}
+                                    renderInput={(params) => <TextField {...params} />}
+                                />
+                            </LocalizationProvider>
+                        </Grid>
+                        <Grid item md={2}>
+                            <LocalizationProvider dateAdapter={AdapterDateFns}>
+                                <TimePicker label="Latest Pickup Time" value={loadInfo.endPUTime} /* error={error.endPUTime} */ onChange={(newValue) => setLoadInfo({...load, endPUTime: newValue})} renderInput={(params) => <TextField {...params} />} />
+                            </LocalizationProvider>
+                        </Grid>
+                        <Grid item md={2}>
+                            <LocalizationProvider dateAdapter={AdapterDateFns}>
+                                <TimePicker label="Latest Deliver Time" value={loadInfo.endDelTime} /* error={error.endDelTime} */ onChange={(newValue) => setLoadInfo({...load, endDelTime: newValue})} renderInput={(params) => <TextField {...params} />} />
+                            </LocalizationProvider>
+                        </Grid>
+
+
+                        <Grid item sm={6} md={3}>
+                            <TextField required name="commodity" label="Commodity" value={loadInfo.commodity} onChange={handleChange} /* error={error.commodity} */ />
+                        </Grid>
+                        <Grid item sm={6} md={3}>
+                            <TextField required type="number" inputProps={{min: '0'}} name="weight" label="Weight" value={loadInfo.weight} onChange={handleChange} /* error={error.weight} */ />
+                        </Grid>
+                        <Grid item sm={6} md={3}>
+                            <TextField required name="broker" label="Broker" value={loadInfo.broker} onChange={handleChange} /* error={error.broker} */ />
+                        </Grid>
+                        <Grid item sm={6} md={3}>
+                            <TextField required type="number" inputProps={{min: '0'}} name="rate" label="Rate" value={loadInfo.rate} onChange={handleChange} rate />
+                        </Grid>
+
+                        <Grid item md={12}>
+                            <TextField label="Additional Notes" name="notes" variant='outlined' fullWidth multiline rows={4} value={loadInfo.notes} onChange={handleChange} />
+                        </Grid>
+                    </Grid>
+                </Container>
+                {renderSaveOrBookButton()}
                 {renderCancelOrDelete()}
-            </div>
-        </div>
-                </Modal.Content>
-                
-            </Modal>
-        </div>
+            </Dialog>
+        </Card>
     );
 };
 

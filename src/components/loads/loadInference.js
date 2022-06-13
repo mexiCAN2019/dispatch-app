@@ -79,11 +79,11 @@ function LoadInference() {
     //     const token = localStorage.getItem('token');
     //     setDriversDropdown(drivers(token));
     // }, []);
-    const [driversTesting, setDriversTesting] = useState();
+    const [drivers, setDrivers] = useState();
     useEffect(() => {
         const token = localStorage.getItem('token');
         ExpressF.getDrivers(token).then(fetchedDrivers => {
-            setDriversTesting(fetchedDrivers);
+            setDrivers(fetchedDrivers);
         }); 
     }, []);
 
@@ -94,7 +94,7 @@ function LoadInference() {
                     <FormControl fullWidth>
                         <InputLabel>Driver *</InputLabel>
                         <Select name='driverId' value={load.driverId} onChange={handleChange} required error={error.driverId}>
-                            {driversTesting ? driversTesting.map(driver => {
+                            {drivers ? drivers.map(driver => {
                                 return <MenuItem value={driver.id}>{`${driver.firstName}, ${driver.truckNumber}, ${driver.phoneNumber}`}</MenuItem>
                             }) : <MenuItem>Loading</MenuItem>}
                         </Select>
