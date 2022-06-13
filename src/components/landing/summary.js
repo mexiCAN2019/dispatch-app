@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Card, TextArea, Button } from 'semantic-ui-react';
+import { Stack, Button, TextField, Card, CardContent } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import Express from './../../fetchExpress';
 import ExpressF from './../../fetchFeathers';
@@ -14,7 +14,6 @@ function Summary({ load }) {
             border: "green solid 3px",
             margin: '25px 50px', 
             width: '250px', 
-            height: '300px',
             borderRadius: '20px'
         };
 
@@ -22,7 +21,6 @@ function Summary({ load }) {
             border: "yellow solid 3px",
             margin: '25px 50px', 
             width: '250px', 
-            height: '300px',
             borderRadius: '20px'
         };
 
@@ -30,7 +28,6 @@ function Summary({ load }) {
             border: "red solid 3px",
             margin: '25px 50px', 
             width: '250px', 
-            height: '300px',
             borderRadius: '20px'
         };
 
@@ -73,22 +70,43 @@ function Summary({ load }) {
         ExpressF.updateDriverInfo(loadInfo.id, updatedDriver);
     };
 
-    const handleChange = (e, {name, value}) => {
+    const handleChange = ({target}) => {
+        const {name, value} = target;
         setLoadInfo({...loadInfo, [name]: value });
     };
 
 
     return(
         <Card style={renderColorIfDriverNeedsLoad()}>
+            <Stack alignItems="center">
+            <Button onClick={() => naviagate(`/drivers/${loadInfo.driverId}`)}>{loadInfo.firstName}</Button>
+            <CardContent>
+                <Stack alignItems="center">
+                    <p><u>Most Recent Load</u></p>
+                    <p><b>{loadInfo.broker}</b></p>
+                    <p><i>Pick Up</i>: {loadInfo.puDate} @ {loadInfo.puTime} {loadInfo.endPUTime ? `- ${loadInfo.endPUTime}` : ''}</p>
+                    <p><i>Deliver</i>: {loadInfo.delDate} @ {loadInfo.delTime} {loadInfo.endDelTime ? `- ${loadInfo.endDelTime}` : ''}</p>
+                    <TextField label="Notes about Driver" name="summaryNote" multiline maxRows={2} value={loadInfo.summaryNote} onChange={handleChange} />
+                    <Button onClick={handleSubmit}>Save</Button>
+                </Stack>
+            </CardContent>
+            </Stack>
+        </Card>
+        
+    )
+};
+
+export default Summary;
+{/* <Card style={renderColorIfDriverNeedsLoad()}>
             <Card.Header>
-                {/* <b style={{fontSize: '20px', margin: '5px auto'}}> */}<Button onClick={() => naviagate(`/drivers/${loadInfo.driverId}`)} style={{color: 'none'}}>{loadInfo.firstName}</Button>{/* </b> */}
+                <Button onClick={() => naviagate(`/drivers/${loadInfo.driverId}`)} style={{color: 'none'}}>{loadInfo.firstName}</Button>
             </Card.Header>
             <Card.Content>
                 <div style={{display: 'flex', flexDirection: 'column'}}>
                     <p><u>Most Recent Load</u></p>
                     <p><b>{loadInfo.broker}</b></p>
-                    <p style={{margin: '15px auto'}}><i>Pick Up</i>: {loadInfo.puDate} @ {loadInfo.puTime}{loadInfo.endPUTime ? ` - ${loadInfo.endPUTime}` : ''}</p>
-                    <p><i>Deliver</i>: {loadInfo.delDate} @ {loadInfo.delTime}{loadInfo.endDelTime ? ` - ${loadInfo.endDelTime}` : ''}</p>
+                    <p style={{margin: '15px auto'}}><i>Pick Up</i>: {loadInfo.puDate} @ {loadInfo.puTime} {loadInfo.endPUTime ? `- ${loadInfo.endPUTime}` : ''}</p>
+                    <p><i>Deliver</i>: {loadInfo.delDate} @ {loadInfo.delTime} {loadInfo.endDelTime ? `- ${loadInfo.endDelTime}` : ''}</p>
                 </div>
             </Card.Content>
             <Card.Content extra style={{display: 'flex', flexDirection: 'column', justifyContent: 'center'}}>
@@ -97,8 +115,4 @@ function Summary({ load }) {
                 <Button icon="save" color="twitter" onClick={handleSubmit} size='mini' style={{width: "20%"}}></Button>
                 </div>
             </Card.Content>
-        </Card>
-    )
-};
-
-export default Summary;
+        </Card> */}

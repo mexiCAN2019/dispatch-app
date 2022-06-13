@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Card, Box, Toolbar, IconButton, Stack, Container, Button, Grid, TextField } from '@mui/material';
+import { Card, Stack, Container, Button, Grid, TextField } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { useUser } from './../util/react-local-spa';
 
@@ -30,8 +30,8 @@ function Login() {
     return (
         <Grid container direction="column" alignItems="center" justifyContent="center" style={{height: "90vh"}}>
             <Grid item>
-                <Card>
-                    <Container>
+                <Card style={{width: "25vw"}}>
+                    <Container style={{paddingTop: '10px', paddingBottom: '10px'}}>
                         <Stack spacing={3}>
                             <h2>Welcome</h2>
                             <TextField label='email' value={values.email} name="email" onChange={handleChange} />

@@ -1,4 +1,5 @@
 import React from 'react';
+import { Card } from '@mui/material';
 
 function UnassignedSummary({ loads }) {
 
@@ -17,9 +18,9 @@ function UnassignedSummary({ loads }) {
     const numberOfLoads = loads ? loads.length : 0;
 
     return (
-        <div style={border}>
+        <Card style={border}>
             <b>{numberOfLoads} Unassigned Loads</b>
-        </div>
+        </Card>
     )
 };
 
