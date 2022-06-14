@@ -1,12 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { Divider, Stack, Dialog, Container, Button, FormControl, Select, InputLabel, MenuItem, Grid, TextField, DialogTitle, Card, CardContent } from '@mui/material';
+import { Dialog, Container, Button, FormControl, Select, InputLabel, MenuItem, Grid, TextField, DialogTitle, Card, CardContent } from '@mui/material';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { TimePicker } from '@mui/x-date-pickers/TimePicker';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import { DateInput } from 'semantic-ui-calendar-react';
-import { trailerOptions, trailerNumbers, states, status, dispatched, drivers } from './../../util/options'
-import Express from '../../fetchExpress';
+import { trailerOptions, trailerNumbers, states, status, dispatched } from './../../util/options'
 import ExpressF from '../../fetchFeathers';
 
 function Load({ load, cancelLoad, cancel }) {
@@ -130,17 +128,6 @@ function Load({ load, cancelLoad, cancel }) {
         setLoadInfo({...loadInfo, [name]: value });
     }
 
-    const renderEndDelTime = () => {
-        if(loadInfo.endDelTime){
-            return <a style={{color: 'black'}}>- {loadInfo.endDelTime}</a>
-        }
-    }
-    const renderEndPUTime = () => {
-        if(loadInfo.endPUTime){
-            return <a style={{color: 'black'}}>- {loadInfo.endPUTime}</a>
-        }
-    }
-
     const loadStatusBorderColor = () => {
         const greenBorder = {
             border: "green solid 5px",
@@ -204,10 +191,10 @@ function Load({ load, cancelLoad, cancel }) {
                 {loadInfo.dispatched ? '' : <h3 style={{color: 'red'}}>Not Dispatched</h3>}
                 <p style={{fontWeight: "bold", margin: "0px"}}>Load #: {loadInfo.loadID}</p>
                 <p style={{fontWeight: "bold", margin: "0px"}}>{loadInfo.puCity}, {loadInfo.puState}</p>
-                <p style={{margin: "0px"}}>{loadInfo.puDate}, {loadInfo.puTime} {renderEndPUTime()}</p>
+                <p style={{margin: "0px"}}>{loadInfo.puDate}, {loadInfo.puTime} {loadInfo.endPUTime ? `- ${loadInfo.endPUTime}` : ''}</p>
                 <p style={{margin: "0px"}}>- to -</p>
                 <p style={{fontWeight: "bold", margin: "0px"}}>{loadInfo.delCity}, {loadInfo.delState}</p>
-                <p style={{margin: "0px"}}>{loadInfo.delDate}, {loadInfo.delTime} {renderEndDelTime()}</p>
+                <p style={{margin: "0px"}}>{loadInfo.delDate}, {loadInfo.delTime} {loadInfo.endDelTime ? `- ${loadInfo.endDelTime}` : ''}</p>
                 <br></br>
                 {loadInfo.commodity} | {loadInfo.weight}K LBS
                 <br></br>
@@ -231,7 +218,7 @@ function Load({ load, cancelLoad, cancel }) {
                                 <InputLabel>Dispatched</InputLabel>
                                 <Select name='dispatched' value={loadInfo.dispatched} onChange={handleChange}>
                                     {dispatched.map(dispatch => {
-                                        return <MenuItem value={dispatch.key}>{dispatch.text}</MenuItem>
+                                        return <MenuItem key={dispatch.key} value={dispatch.key}>{dispatch.text}</MenuItem>
                                     })}
                                 </Select>
                             </FormControl>
@@ -241,7 +228,7 @@ function Load({ load, cancelLoad, cancel }) {
                                 <InputLabel>Status</InputLabel>
                                 <Select name='loadStatus' value={loadInfo.loadStatus} onChange={handleChange}>
                                     {status.map(location => {
-                                        return <MenuItem value={location.key}>{location.text}</MenuItem>
+                                        return <MenuItem key={location.key} value={location.key}>{location.text}</MenuItem>
                                     })}
                                 </Select>
                             </FormControl>
@@ -252,7 +239,7 @@ function Load({ load, cancelLoad, cancel }) {
                                 <InputLabel>Driver *</InputLabel>
                                 <Select name='driverId' value={loadInfo.driverId} onChange={handleChange} required /* error={error.driverId} */>
                                     {drivers ? drivers.map(driver => {
-                                        return <MenuItem value={driver.id}>{`${driver.firstName}, ${driver.truckNumber}, ${driver.phoneNumber}`}</MenuItem>
+                                        return <MenuItem key={driver.id} value={driver.id}>{`${driver.firstName}, ${driver.truckNumber}, ${driver.phoneNumber}`}</MenuItem>
                                     }) : <MenuItem>Loading</MenuItem>}
                                 </Select>
                             </FormControl>
@@ -262,7 +249,7 @@ function Load({ load, cancelLoad, cancel }) {
                                 <InputLabel>Trailer *</InputLabel>
                                 <Select name='trailerType' value={loadInfo.trailerType} onChange={handleChange} required /* error={error.trailerType} */>
                                     {trailerOptions ? trailerOptions.map(trailer => {
-                                        return <MenuItem value={trailer.value}>{trailer.text}</MenuItem>
+                                        return <MenuItem key={trailer.value} value={trailer.value}>{trailer.text}</MenuItem>
                                     }) : <MenuItem>Loading</MenuItem>}
                                 </Select>
                             </FormControl>
@@ -272,7 +259,7 @@ function Load({ load, cancelLoad, cancel }) {
                                 <InputLabel>Trailer Number *</InputLabel>
                                 <Select name='trailerNumber' value={loadInfo.trailerNumber} onChange={handleChange} required /* error={error.trailerNumber} */>
                                     {trailerNumbers ? trailerNumbers.map(trailer => {
-                                        return <MenuItem value={trailer.value}>{trailer.text}</MenuItem>
+                                        return <MenuItem key={trailer.value} value={trailer.value}>{trailer.text}</MenuItem>
                                     }) : <MenuItem>Loading</MenuItem>}
                                 </Select>
                             </FormControl>
@@ -287,7 +274,7 @@ function Load({ load, cancelLoad, cancel }) {
                                 <InputLabel>Pickup State *</InputLabel>
                                 <Select name='puState' value={loadInfo.puState} onChange={handleChange} required /* error={error.puState} */>
                                     {states.map(state => {
-                                        return <MenuItem value={state.value}>{state.text}</MenuItem>
+                                        return <MenuItem key={state.key} value={state.value}>{state.text}</MenuItem>
                                     })}
                                 </Select>
                             </FormControl>
@@ -326,7 +313,7 @@ function Load({ load, cancelLoad, cancel }) {
                                 <InputLabel>Deliver State *</InputLabel>
                                 <Select name='delState' value={loadInfo.delState} onChange={handleChange} required /* error={error.delState} */>
                                     {states.map(state => {
-                                        return <MenuItem value={state.value}>{state.text}</MenuItem>
+                                        return <MenuItem key={state.key} value={state.value}>{state.text}</MenuItem>
                                     })}
                                 </Select>
                             </FormControl>

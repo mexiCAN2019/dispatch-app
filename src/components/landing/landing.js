@@ -14,12 +14,14 @@ function HomePage() {
             ExpressF.getDriversLanding(token).then(drivers => drivers.filter(driver => driver.id !== 1)).then(drivers => drivers.map(driver => {
                 Express.getMostRecentLoads(driver.id, new Date().getFullYear()).then(load => {
                     if(load){
-                        setLoads(prevLoads => [...prevLoads, load]);
+                        return setLoads(otherLoads => [...otherLoads, load]);
                     }
+                    return;
                 });
+                return null;
             })) 
             
-            // ExpressF.getUnassignedLoads().then(loads => setUnassignedLoads(loads))
+            ExpressF.getUnassignedLoads().then(loads => setUnassignedLoads(loads))
     }, []);
 
 

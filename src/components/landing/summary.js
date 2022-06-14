@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Stack, Button, TextField, Card, CardContent } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import Express from './../../fetchExpress';
 import ExpressF from './../../fetchFeathers';
 
 
@@ -48,7 +47,7 @@ function Summary({ load }) {
     } else if( year === d.getFullYear() && month < (d.getMonth() + 1)){
         return alertBorder;
 
-    } else if( year === d.getFullYear() && month == (d.getMonth() + 1) && day < d.getDate() ){
+    } else if( year === d.getFullYear() && month === (d.getMonth() + 1) && day < d.getDate() ){
         return alertBorder;
 
     } else {
@@ -97,22 +96,3 @@ function Summary({ load }) {
 };
 
 export default Summary;
-{/* <Card style={renderColorIfDriverNeedsLoad()}>
-            <Card.Header>
-                <Button onClick={() => naviagate(`/drivers/${loadInfo.driverId}`)} style={{color: 'none'}}>{loadInfo.firstName}</Button>
-            </Card.Header>
-            <Card.Content>
-                <div style={{display: 'flex', flexDirection: 'column'}}>
-                    <p><u>Most Recent Load</u></p>
-                    <p><b>{loadInfo.broker}</b></p>
-                    <p style={{margin: '15px auto'}}><i>Pick Up</i>: {loadInfo.puDate} @ {loadInfo.puTime} {loadInfo.endPUTime ? `- ${loadInfo.endPUTime}` : ''}</p>
-                    <p><i>Deliver</i>: {loadInfo.delDate} @ {loadInfo.delTime} {loadInfo.endDelTime ? `- ${loadInfo.endDelTime}` : ''}</p>
-                </div>
-            </Card.Content>
-            <Card.Content extra style={{display: 'flex', flexDirection: 'column', justifyContent: 'center'}}>
-                <TextArea placeholder="Notes about Driver" name="summaryNote" value={loadInfo.summaryNote} onChange={handleChange} />
-                <div style={{display: 'flex', justifyContent: 'center'}}>
-                <Button icon="save" color="twitter" onClick={handleSubmit} size='mini' style={{width: "20%"}}></Button>
-                </div>
-            </Card.Content>
-        </Card> */}

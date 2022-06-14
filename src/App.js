@@ -1,5 +1,5 @@
 import React from 'react';
-import { Routes, Route, Navigate } from 'react-router-dom';
+import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import './App.css';
 import HomePage from './components/landing/landing';
 import LoadInference from './components/loads/loadInference';
@@ -16,6 +16,7 @@ import { useUser } from './util/react-local-spa';
 function App() {
 
   const {user} = useUser();
+  const {pathname} = useLocation();
 
   const checkLoggedIn = () => {
     const loggedIn = (/* localStorage.token && */ user) ? true : false; //localStorage.token returns false even though auth is successful
@@ -63,7 +64,7 @@ function App() {
 
   return (
     <div>
-      <NavBar />
+      {pathname === '/login' ? '' : <NavBar />}
       <Routes>
         <Route path='/login' element={<Login />} />
         <Route path='/' element={<HomePage />} />

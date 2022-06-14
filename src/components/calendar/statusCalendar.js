@@ -27,13 +27,13 @@ import 'react-big-calendar/lib/css/react-big-calendar.css';
                 border: "none"
               };
         
-              if (event.status == "Delivered"){
+              if (event.status === "Delivered"){
                 newStyle.backgroundColor = "green"
 
-              } else if (event.status == "In-transit") {
+              } else if (event.status === "In-transit") {
                 newStyle.backgroundColor = "maroon"
 
-              } else if(event.status == "waiting"){
+              } else if(event.status === "waiting"){
                 newStyle.backgroundColor = "grey"
 
               }

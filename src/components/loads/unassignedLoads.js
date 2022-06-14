@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import RenderLoads from './../driver/renderLoads';
-import Express from './../../fetchExpress';
 import ExpressF from './../../fetchFeathers';
 
 
@@ -12,7 +11,7 @@ function UnassignedLoads() {
     }, []);
 
     const getMonthLoads = (driverId, year, month) => {
-        if(month == 0){
+        if(month === 0){
             ExpressF.getDriverBookedYearLoads(driverId, year).then(loads => setLoads(loads));
         } else {
             ExpressF.getMonthUnbookedLoads(year, month).then(loads => setLoads(loads));
@@ -23,7 +22,7 @@ function UnassignedLoads() {
         if (window.confirm('Are you sure you want to cancel load?')) {
             ExpressF.updateLoad(cancelledLoad.id, cancelledLoad);
             alert('load cancelled');
-            const filteredLoads = loads.filter(load => load.id != cancelledLoad.id);
+            const filteredLoads = loads.filter(load => load.id !== cancelledLoad.id);
             setLoads(filteredLoads);
         } else {
             alert('load not cancelled');

@@ -1,4 +1,3 @@
-    import Express from './../fetchExpress';
     import ExpressF from './../fetchFeathers';
 
 
@@ -13,12 +12,11 @@
     export const reloadSelect = [{key: 'reload', value: 1, text: 'Reload'}, {key: 'not reload', value: 0, text: 'Not Reload'}, {key: 'all', value: 2, text: 'All Loads'}];
     
 
-    //will be able to delete this
     export const drivers = (token) => {
         const drivers = [];
         ExpressF.getDrivers(token).then(fetchedDrivers => {
             fetchedDrivers.map(driver => {
-                drivers.push({key: driver.id, value: driver.id, text: `${driver.firstName}, ${driver.truckNumber}, ${driver.phoneNumber}`})
+                return drivers.push({key: driver.id, value: driver.id, text: `${driver.firstName}, ${driver.truckNumber}, ${driver.phoneNumber}`})
             });
         });
         return drivers;

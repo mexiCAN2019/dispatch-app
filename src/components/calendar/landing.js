@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Dimmer, Loader } from 'semantic-ui-react';
-import { Box, Stack, InputLabel, TextField, Select, FormControl, Container, Button, MenuItem } from '@mui/material';
+import { Stack, InputLabel, TextField, Select, FormControl, Container, Button, MenuItem } from '@mui/material';
 import StatusCalendar from './statusCalendar';
 import Express from '../../fetchExpress';
 import { months } from './../../util/options';
@@ -11,7 +11,7 @@ function Calendars() {
         //new Date() function doesn't take in numbers with zero in front. So must check if the month or day pulled from database has a zero in front
         //Might be able to just put Number() instead of checkZero function
         const checkForZero = (monthOrDay) => {
-          if(monthOrDay[0] == 0){
+          if(monthOrDay[0] === 0){
             return monthOrDay.slice(1);
           }
           return monthOrDay;
@@ -35,7 +35,7 @@ function Calendars() {
             const endDay = checkForZero(load.delDate.slice(3, 5));
             const endHour = checkForZero(load.delTime.slice(0,2));
   
-            setStatusLoads(prevLoad => [...prevLoad, {title: `${load.firstName}, ${load.puCity} to ${load.delCity} - ${load.dispatched ? 'dispatched' : 'not dispathed'}`, 
+            return setStatusLoads(prevLoad => [...prevLoad, {title: `${load.firstName}, ${load.puCity} to ${load.delCity} - ${load.dispatched ? 'dispatched' : 'not dispathed'}`, 
                                                     start: new Date(`${startYear}`, `${Number(startMonth) - 1}`, `${startDay}`, `${startHour}`), 
                                                     end: new Date(`${endYear}`, `${Number(endMonth) - 1}`, `${endDay}`, `${endHour}`), 
                                                     delMonthYear: `${load.delDate.slice(0, 2)}${load.delDate.slice(6)}`, 
@@ -60,7 +60,7 @@ function Calendars() {
 
 
     const renderLoader = () => {
-        if(statusLoads == false){
+        if(statusLoads == null){
             return (
                 <Dimmer active>
                     <Loader />
@@ -79,7 +79,7 @@ function Calendars() {
         if(loadsAlreadyFetched) return;
         
         const checkForZero = (monthOrDay) => {
-            if(monthOrDay[0] == 0){
+            if(monthOrDay[0] === 0){
                 return monthOrDay.slice(1);
             }
             return monthOrDay;
@@ -97,7 +97,7 @@ function Calendars() {
                 const endDay = checkForZero(load.delDate.slice(3, 5));
                 const endHour = checkForZero(load.delTime.slice(0,2));
     
-                setStatusLoads(prevLoad => [...prevLoad, {title: `${load.firstName}, ${load.puCity} to ${load.delCity} - ${load.dispatched ? 'dispatched' : 'not dispathed'}`, start: new Date(`${startYear}`, `${Number(startMonth) - 1}`, `${startDay}`, `${startHour}`), end: new Date(`${endYear}`, `${Number(endMonth) - 1}`, `${endDay}`, `${endHour}`), delMonthYear: `${load.delDate.slice(0, 2)}${load.delDate.slice(6)}`, status: load.loadStatus}]);
+                return setStatusLoads(prevLoad => [...prevLoad, {title: `${load.firstName}, ${load.puCity} to ${load.delCity} - ${load.dispatched ? 'dispatched' : 'not dispathed'}`, start: new Date(`${startYear}`, `${Number(startMonth) - 1}`, `${startDay}`, `${startHour}`), end: new Date(`${endYear}`, `${Number(endMonth) - 1}`, `${endDay}`, `${endHour}`), delMonthYear: `${load.delDate.slice(0, 2)}${load.delDate.slice(6)}`, status: load.loadStatus}]);
             });
         });
     };
@@ -114,8 +114,8 @@ function Calendars() {
                     <InputLabel>Choose Month</InputLabel>
                     <Select name='month' value={dateCriteria.month || ''} onChange={handleChange} required>
                         {months.map(month => {
-                            if(month.value === 0) return;
-                            return <MenuItem value={month.value}>{month.text}</MenuItem>
+                            if(month.value === 0) return null;
+                            return <MenuItem key={month.key} value={month.value}>{month.text}</MenuItem>
                         })}
                     </Select>
                 </FormControl>
