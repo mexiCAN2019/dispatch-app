@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import RenderLoads from './renderLoads';
-import Express from './../../fetchExpress';
 import ExpressF from './../../fetchFeathers';
 import { drivers } from './../../util/options'
-import { Divider, Stack, Dialog, Container, Button, ToggleButtonGroup, ToggleButton, CardMedia, CardContent, Grid, TextField, DialogTitle, Card } from '@mui/material';
+import { Divider, Stack, Dialog, Container, Button, ToggleButtonGroup, ToggleButton, CardMedia, CardContent, Grid, TextField, DialogTitle, Card, Avatar } from '@mui/material';
 import {
     Feed
 } from 'semantic-ui-react';
@@ -53,7 +52,7 @@ function Driver() {
         if (window.confirm('Are you sure you want to cancel load?')) {
             ExpressF.updateLoad(cancelledLoad.id, cancelledLoad);
             alert('load cancelled');
-            const filteredLoads = loads.filter(load => load.id != cancelledLoad.id);
+            const filteredLoads = loads.filter(load => load.id !== cancelledLoad.id);
             setLoads(filteredLoads);
         } else {
             alert('load not cancelled');
@@ -61,7 +60,7 @@ function Driver() {
     };
 
     const getMonthLoads = (driverId, year, month) => {
-        if(month == 0){
+        if(month === 0){
             ExpressF.getDriverBookedYearLoads(driverId, year).then(loads => setLoads(loads));
         } else {
             ExpressF.getDriverBookedMonthLoads(driverId, year, month).then(loads => setLoads(loads));
@@ -142,7 +141,7 @@ function Driver() {
         }
            return threeLoads.map(load => {
                 return (                                    
-                    <Feed.Event>
+                    <Feed.Event key={load.id}>
                         <Feed.Label icon="truck" />
                         <Feed.Content>
                             <Feed.Date content={`${load.delDate}`} />
@@ -193,7 +192,7 @@ function Driver() {
                 <Grid item md={3}>
                     <Stack spacing={2}>
                         <Card>
-                            <CardMedia component="img" image="/truck-2.jpeg" alt="profile pic" />
+                            <CardMedia component="img" image="/blank-profile-picture.png" alt="profile pic" />
                             <CardContent>
                                 <h2>{driver && driver.firstName} {driver && driver.lastName}</h2>
                             </CardContent>

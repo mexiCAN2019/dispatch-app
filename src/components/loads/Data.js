@@ -7,7 +7,7 @@ import { months, reloadSelect } from './../../util/options';
 const dataType = [{key: 'average', value: 'average', text: 'Average'}, {key: 'sum', value: 'sum', text: 'Total'}];
 
 function Data() {
-    const [dataCriteria, setDataCriteria] = useState({dataType: null, year: new Date().getFullYear(), month: null, reloadLoad: null, driverId: null});
+    const [dataCriteria, setDataCriteria] = useState({dataType: '', year: new Date().getFullYear(), month: '', reloadLoad: '', driverId: ''});
     const [data, setData] = useState({rate: null, numberOfLoads: null});
 
     const handleChange = (e) => {
@@ -19,7 +19,7 @@ function Data() {
         if(dataCriteria.driverId === 0){
             switch(dataCriteria.dataType){
                 case "average":
-                    if(dataCriteria.month == 0){
+                    if(dataCriteria.month === 0){
                         Express.getYearRateAverage(dataCriteria.year, dataCriteria.reloadLoad).then(response => setData({rate: response.averageRate, numberOfLoads: response.numberOfLoads}));
                         console.log("year");
                     } else{
@@ -28,7 +28,7 @@ function Data() {
                     }
                     break;
                 case "sum":
-                    if(dataCriteria.month == 0){
+                    if(dataCriteria.month === 0){
                         Express.getYearRateSum(dataCriteria.year, dataCriteria.reloadLoad).then(response => setData({rate: response.sumRate, numberOfLoads: response.numberOfLoads}));
                     } else{
                         Express.getMonthRateSum(dataCriteria.year, dataCriteria.month, dataCriteria.reloadLoad).then(response => setData({rate: response.sumRate, numberOfLoads: response.numberOfLoads}));
@@ -40,7 +40,7 @@ function Data() {
         } else {
             switch(dataCriteria.dataType){
                 case "average":
-                    if(dataCriteria.month == 0){
+                    if(dataCriteria.month === 0){
                         Express.getDriverYearRateAverage(dataCriteria.year, dataCriteria.reloadLoad, dataCriteria.driverId).then(response => setData({rate: response.averageRate, numberOfLoads: response.numberOfLoads}));
                     } else{
                         Express.getDriverMonthRateAverage(dataCriteria.year, dataCriteria.month, dataCriteria.reloadLoad, dataCriteria.driverId).then(response => setData({rate: response.averageRate, numberOfLoads: response.numberOfLoads}));
@@ -48,7 +48,7 @@ function Data() {
                     }
                     break;
                 case "sum":
-                    if(dataCriteria.month == 0){
+                    if(dataCriteria.month === 0){
                         Express.getDriverYearRateSum(dataCriteria.year, dataCriteria.reloadLoad, dataCriteria.driverId).then(response => setData({rate: response.sumRate, numberOfLoads: response.numberOfLoads}));
                     } else{
                         Express.getDriverMonthRateSum(dataCriteria.year, dataCriteria.month, dataCriteria.reloadLoad, dataCriteria.driverId).then(response => setData({rate: response.sumRate, numberOfLoads: response.numberOfLoads}));
@@ -68,7 +68,7 @@ function Data() {
         ExpressF.getDrivers(token).then(fetchedDrivers => {
             let drivers = [{key: 0, value: 0, text: 'All Drivers'}];
             fetchedDrivers.map(driver => {
-                drivers.push({key: driver.id, value: driver.id, text: `${driver.firstName}`})
+                return drivers.push({key: driver.id, value: driver.id, text: `${driver.firstName}`})
             });
             console.log(drivers);
         setDriversDropdown(drivers);

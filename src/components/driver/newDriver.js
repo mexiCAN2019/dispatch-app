@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
-import { Form, TextArea, Select, Button, Input, Label, Checkbox } from 'semantic-ui-react';
-import Express from '../../fetchExpress';
+import { Form, Button } from 'semantic-ui-react';
 import ExpressF from '../../fetchFeathers';
 
 function NewDriver() {

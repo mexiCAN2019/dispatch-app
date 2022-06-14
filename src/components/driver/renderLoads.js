@@ -54,7 +54,7 @@ function RenderLoads({ loads, cancelLoad, monthLoads, unbookedLoads, driverId, c
                         <InputLabel>Choose Month</InputLabel>
                         <Select name='month' value={dataCriteria.month || ''} onChange={handleChange} required>
                             {months.map(month => {
-                                return <MenuItem value={month.value}>{month.text}</MenuItem>
+                                return <MenuItem key={month.key} value={month.value}>{month.text}</MenuItem>
                             })}
                         </Select>
                     </FormControl>

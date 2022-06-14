@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 
 function Forms() {
     const [value, setValue] = useState(null);
@@ -22,6 +22,9 @@ function Forms() {
     return (
         <div>
             <button onClick={handleClick}>test</button>
+            {value.map(value => {
+                return <div>{value.puTime}</div>
+            })}
         </div>
     )
 };
