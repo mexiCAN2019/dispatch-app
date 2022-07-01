@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { Dialog, Container, Button, FormControl, Select, InputLabel, MenuItem, Grid, TextField, DialogTitle, Card, CardContent } from '@mui/material';
+import { Dialog, Container, Button, FormControl, Select, InputLabel, MenuItem, Grid, TextField, DialogTitle, Card, CardContent, Snackbar, Alert } from '@mui/material';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { TimePicker } from '@mui/x-date-pickers/TimePicker';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { MobileDatePicker } from '@mui/x-date-pickers/MobileDatePicker';
 import { trailerOptions, trailerNumbers, states, status, dispatched } from './../../util/options'
 import ExpressF from '../../fetchFeathers';
 
@@ -11,6 +12,9 @@ function Load({ load, cancelLoad, cancel }) {
     const [editOpen, setEditOpen] = useState(false);
     const [loadInfo , setLoadInfo] = useState(load);
     const [drivers, setDrivers] = useState();
+    const [snackbar, setSnackbar] = useState({success: false, info: false, deleted: false, vertical: 'top', horizontal: 'center',})
+
+    const { vertical, horizontal } = snackbar;
 
     useEffect(() => {
         const token = localStorage.getItem('token');
@@ -26,12 +30,12 @@ function Load({ load, cancelLoad, cancel }) {
             driverId: loadInfo.driverId,
             puCity: loadInfo.puCity,
             puState: loadInfo.puState,
-            puDate: loadInfo.puDate,
+            puDate: loadInfo.puDate.toLocaleString('en-US', {year: 'numeric', month: '2-digit', day: '2-digit'}),
             puTime: loadInfo.puTime,
             endPUTime: loadInfo.endPUTime,
             delCity: loadInfo.delCity,
             delState: loadInfo.delState,
-            delDate: loadInfo.delDate,
+            delDate: loadInfo.delDate.toLocaleString('en-US', {year: 'numeric', month: '2-digit', day: '2-digit'}),
             delTime: loadInfo.delTime,
             endDelTime: loadInfo.endDelTime,
             commodity: loadInfo.commodity,
@@ -46,15 +50,17 @@ function Load({ load, cancelLoad, cancel }) {
             trailerType: loadInfo.trailerType,
             booked: false
         };
-        cancelLoad(updatedLoad);
+        cancelLoad(updatedLoad).then(response => {
+            if(response){
+                setSnackbar({ ...snackbar, info: true });
+            }
+        });
     }
 
     const handleDelete = () => {
         if (window.confirm('Are you sure you want to delete load?')) {
             ExpressF.deleteLoad(loadInfo.id);
-            alert('Load Deleted');
-        } else {
-            alert('Load Not Deleted');
+            setSnackbar({ ...snackbar, deleted: true });
         }
     };
 
@@ -67,12 +73,12 @@ function Load({ load, cancelLoad, cancel }) {
                 driverId: loadInfo.driverId,
                 puCity: loadInfo.puCity,
                 puState: loadInfo.puState,
-                puDate: loadInfo.puDate,
+                puDate: loadInfo.puDate.toLocaleString('en-US', {year: 'numeric', month: '2-digit', day: '2-digit'}),
                 puTime: loadInfo.puTime,
                 endPUTime: loadInfo.endPUTime,
                 delCity: loadInfo.delCity,
                 delState: loadInfo.delState,
-                delDate: loadInfo.delDate,
+                delDate: loadInfo.delDate.toLocaleString('en-US', {year: 'numeric', month: '2-digit', day: '2-digit'}),
                 delTime: loadInfo.delTime,
                 endDelTime: loadInfo.endDelTime,
                 commodity: loadInfo.commodity,
@@ -93,12 +99,12 @@ function Load({ load, cancelLoad, cancel }) {
                 driverId: loadInfo.driverId,
                 puCity: loadInfo.puCity,
                 puState: loadInfo.puState,
-                puDate: loadInfo.puDate,
+                puDate: loadInfo.puDate.toLocaleString('en-US', {year: 'numeric', month: '2-digit', day: '2-digit'}),
                 puTime: loadInfo.puTime,
                 endPUTime: loadInfo.endPUTime,
                 delCity: loadInfo.delCity,
                 delState: loadInfo.delState,
-                delDate: loadInfo.delDate,
+                delDate: loadInfo.delDate.toLocaleString('en-US', {year: 'numeric', month: '2-digit', day: '2-digit'}),
                 delTime: loadInfo.delTime,
                 endDelTime: loadInfo.endDelTime,
                 commodity: loadInfo.commodity,
@@ -118,7 +124,7 @@ function Load({ load, cancelLoad, cancel }) {
             if(response === 400){
                 return alert('Make sure all areas with * are filled');
             }
-            alert('Load Updated');
+            setSnackbar({ ...snackbar, success: true });
             setEditOpen(false);
         });
     };
@@ -132,7 +138,7 @@ function Load({ load, cancelLoad, cancel }) {
         const greenBorder = {
             border: "green solid 5px",
             width: "335px",
-            height: "300px",
+            height: 'auto',
             display: "flex",
             flexDirection: "column",
             justifyContent: "center",
@@ -142,7 +148,7 @@ function Load({ load, cancelLoad, cancel }) {
         const maroonBorder = {
             border: "maroon solid 5px",
             width: "335px",
-            height: "300px",
+            height: 'auto',
             display: "flex",
             flexDirection: "column",
             justifyContent: "center",
@@ -152,7 +158,7 @@ function Load({ load, cancelLoad, cancel }) {
         const greyBorder = {
             border: "grey solid 5px",
             width: "335px",
-            height: "300px",
+            height: 'auto',
             display: "flex",
             flexDirection: "column",
             justifyContent: "center",
@@ -184,6 +190,15 @@ function Load({ load, cancelLoad, cancel }) {
         return <Button onClick={handleSubmit}>Book Load</Button> 
     };
 
+    const displayTime = (time) => {
+        let editedTime;
+        editedTime = time.slice(11, 16);
+        return editedTime
+    }
+
+    const handleClose = () => {
+        setSnackbar({ ...snackbar, success: false, info: false, deleted: false });
+      };
 
     return(
         <Card style={loadStatusBorderColor()}>
@@ -191,15 +206,16 @@ function Load({ load, cancelLoad, cancel }) {
                 {loadInfo.dispatched ? '' : <h3 style={{color: 'red'}}>Not Dispatched</h3>}
                 <p style={{fontWeight: "bold", margin: "0px"}}>Load #: {loadInfo.loadID}</p>
                 <p style={{fontWeight: "bold", margin: "0px"}}>{loadInfo.puCity}, {loadInfo.puState}</p>
-                <p style={{margin: "0px"}}>{loadInfo.puDate}, {loadInfo.puTime} {loadInfo.endPUTime ? `- ${loadInfo.endPUTime}` : ''}</p>
+                <p style={{margin: "0px"}}>{loadInfo.puDate} @ {displayTime(loadInfo.puTime)} {loadInfo.endPUTime ? `- ${displayTime(loadInfo.endPUTime)}` : ''}</p>
                 <p style={{margin: "0px"}}>- to -</p>
                 <p style={{fontWeight: "bold", margin: "0px"}}>{loadInfo.delCity}, {loadInfo.delState}</p>
-                <p style={{margin: "0px"}}>{loadInfo.delDate}, {loadInfo.delTime} {loadInfo.endDelTime ? `- ${loadInfo.endDelTime}` : ''}</p>
+                <p style={{margin: "0px"}}>{loadInfo.delDate} @ {displayTime(loadInfo.delTime)} {loadInfo.endDelTime ? `- ${displayTime(loadInfo.endDelTime)}` : ''}</p>
                 <br></br>
                 {loadInfo.commodity} | {loadInfo.weight}K LBS
                 <br></br>
                 {loadInfo.broker} | ${loadInfo.rate}
                 <br></br>
+                {/* <TextField label="Notes" defaultValue={loadInfo.notes} InputProps={{readOnly: true,}} /> */}
                 <p style={{border: "black solid 1px", width: "300px", margin: "auto"}}><strong>Notes:</strong> {loadInfo.notes}</p>
             </CardContent>    
             <Button onClick={()=> setEditOpen(true)} style={{margin: "auto"}}>Edit</Button> 
@@ -210,10 +226,10 @@ function Load({ load, cancelLoad, cancel }) {
                 <DialogTitle>Edit Load Info</DialogTitle>
                 <Container>
                     <Grid container rowSpacing={3} columnSpacing={2}>
-                        <Grid item md={4} fullWidth>
+                        <Grid item xs={6} md={4} fullWidth>
                             <TextField label="Load ID" placeholder='Pro#, Confirmation#, etc...' name='loadID' value={loadInfo.loadID} onChange={handleChange} />
                         </Grid>
-                        <Grid item md={4}>
+                        <Grid item xs={6} md={4}>
                             <FormControl fullWidth>
                                 <InputLabel>Dispatched</InputLabel>
                                 <Select name='dispatched' value={loadInfo.dispatched} onChange={handleChange}>
@@ -223,7 +239,7 @@ function Load({ load, cancelLoad, cancel }) {
                                 </Select>
                             </FormControl>
                         </Grid>  
-                        <Grid item md={4}>
+                        <Grid item xs={6} md={4}>
                             <FormControl fullWidth>
                                 <InputLabel>Status</InputLabel>
                                 <Select name='loadStatus' value={loadInfo.loadStatus} onChange={handleChange}>
@@ -234,7 +250,7 @@ function Load({ load, cancelLoad, cancel }) {
                             </FormControl>
                         </Grid>
               
-                        <Grid item sm={true} md={4} >
+                        <Grid item xs={6} md={4} >
                             <FormControl fullWidth>
                                 <InputLabel>Driver *</InputLabel>
                                 <Select name='driverId' value={loadInfo.driverId} onChange={handleChange} required /* error={error.driverId} */>
@@ -244,7 +260,7 @@ function Load({ load, cancelLoad, cancel }) {
                                 </Select>
                             </FormControl>
                         </Grid>
-                        <Grid item sm={true} md={4}>
+                        <Grid item xs={6} md={4}>
                             <FormControl fullWidth>
                                 <InputLabel>Trailer *</InputLabel>
                                 <Select name='trailerType' value={loadInfo.trailerType} onChange={handleChange} required /* error={error.trailerType} */>
@@ -254,7 +270,7 @@ function Load({ load, cancelLoad, cancel }) {
                                 </Select>
                             </FormControl>
                         </Grid>
-                        <Grid item sm={true} md={4}>
+                        <Grid item xs={6} md={4}>
                             <FormControl fullWidth>
                                 <InputLabel>Trailer Number *</InputLabel>
                                 <Select name='trailerNumber' value={loadInfo.trailerNumber} onChange={handleChange} required /* error={error.trailerNumber} */>
@@ -266,10 +282,10 @@ function Load({ load, cancelLoad, cancel }) {
                         </Grid>
 
 
-                        <Grid item md={2}>
+                        <Grid item xs={6} md={2}>
                             <TextField required name="puCity" label="Pickup City" value={loadInfo.puCity} onChange={handleChange} /* error={error.puCity} */ />
                         </Grid>
-                        <Grid item md={2}>
+                        <Grid item xs={6} md={2}>
                             <FormControl fullWidth>
                                 <InputLabel>Pickup State *</InputLabel>
                                 <Select name='puState' value={loadInfo.puState} onChange={handleChange} required /* error={error.puState} */>
@@ -279,7 +295,7 @@ function Load({ load, cancelLoad, cancel }) {
                                 </Select>
                             </FormControl>
                         </Grid>
-                        <Grid item md={3}>
+                        <Grid item xs={6} md={3}>
                             <LocalizationProvider dateAdapter={AdapterDateFns}>
                                 <DatePicker
                                     label="Pickup Date *"
@@ -293,22 +309,22 @@ function Load({ load, cancelLoad, cancel }) {
                                 />
                             </LocalizationProvider>
                         </Grid>
-                        <Grid item md={2}>
+                        <Grid item xs={6} md={2}>
                             <LocalizationProvider dateAdapter={AdapterDateFns}>
-                                <TimePicker label="Pickup Time" value={loadInfo.puTime} /* error={error.puTime} */ onChange={(newValue) => setLoadInfo({...load, puTime: newValue})} renderInput={(params) => <TextField {...params} />} />
+                                <TimePicker ampm={false} label="Pickup Time" value={loadInfo.puTime} /* error={error.puTime} */ onChange={(newValue) => setLoadInfo({...load, puTime: newValue})} renderInput={(params) => <TextField {...params} />} />
                             </LocalizationProvider>
                         </Grid>
-                        <Grid item md={2}>
+                        <Grid item xs={6} md={2}>
                             <LocalizationProvider dateAdapter={AdapterDateFns}>
-                                <TimePicker label="Deliver Time" value={loadInfo.delTime} /* error={error.delTime} */ onChange={(newValue) => setLoadInfo({...load, delTime: newValue})} renderInput={(params) => <TextField {...params} />} />
+                                <TimePicker ampm={false} label="Deliver Time" value={loadInfo.delTime} /* error={error.delTime} */ onChange={(newValue) => setLoadInfo({...load, delTime: newValue})} renderInput={(params) => <TextField {...params} />} />
                             </LocalizationProvider>
                         </Grid>
 
 
-                        <Grid item md={2}>
+                        <Grid item xs={6} md={2}>
                             <TextField required name="delCity" label="Deliver City" value={loadInfo.delCity} onChange={handleChange} /* error={error.delCity} */ />
                         </Grid>
-                        <Grid item md={2}>
+                        <Grid item xs={6} md={2}>
                             <FormControl fullWidth>
                                 <InputLabel>Deliver State *</InputLabel>
                                 <Select name='delState' value={loadInfo.delState} onChange={handleChange} required /* error={error.delState} */>
@@ -318,12 +334,12 @@ function Load({ load, cancelLoad, cancel }) {
                                 </Select>
                             </FormControl>
                         </Grid>
-                        <Grid item md={3}>
+                        <Grid item sm={6} md={3} sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
                             <LocalizationProvider dateAdapter={AdapterDateFns}>
                                 <DatePicker
                                     label="Deliver Date *"
                                     name="delDate"
-                                    /* error={error.delDate} */
+                                    // error={error.delDate ? true : undefined}
                                     value={loadInfo.delDate}
                                     onChange={(newValue) => {
                                     setLoadInfo({...load, delDate: newValue});
@@ -332,32 +348,46 @@ function Load({ load, cancelLoad, cancel }) {
                                 />
                             </LocalizationProvider>
                         </Grid>
-                        <Grid item md={2}>
+                        <Grid item xs={6} sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
                             <LocalizationProvider dateAdapter={AdapterDateFns}>
-                                <TimePicker label="Latest Pickup Time" value={loadInfo.endPUTime} /* error={error.endPUTime} */ onChange={(newValue) => setLoadInfo({...load, endPUTime: newValue})} renderInput={(params) => <TextField {...params} />} />
+                                <MobileDatePicker
+                                    label="Deliver Date *"
+                                    name="delDate"
+                                    // error={error.delDate ? true : undefined}
+                                    value={loadInfo.delDate}
+                                    onChange={(newValue) => {
+                                    setLoadInfo({...load, delDate: newValue});
+                                    }}
+                                    renderInput={(params) => <TextField {...params} />}
+                                />
                             </LocalizationProvider>
                         </Grid>
-                        <Grid item md={2}>
+                        <Grid item xs={6} md={2}>
                             <LocalizationProvider dateAdapter={AdapterDateFns}>
-                                <TimePicker label="Latest Deliver Time" value={loadInfo.endDelTime} /* error={error.endDelTime} */ onChange={(newValue) => setLoadInfo({...load, endDelTime: newValue})} renderInput={(params) => <TextField {...params} />} />
+                                <TimePicker ampm={false} label="Latest Pickup Time" value={loadInfo.endPUTime} /* error={error.endPUTime} */ onChange={(newValue) => setLoadInfo({...load, endPUTime: newValue})} renderInput={(params) => <TextField {...params} />} />
+                            </LocalizationProvider>
+                        </Grid>
+                        <Grid item xs={6} md={2}>
+                            <LocalizationProvider dateAdapter={AdapterDateFns}>
+                                <TimePicker ampm={false} label="Latest Deliver Time" value={loadInfo.endDelTime} /* error={error.endDelTime} */ onChange={(newValue) => setLoadInfo({...load, endDelTime: newValue})} renderInput={(params) => <TextField {...params} />} />
                             </LocalizationProvider>
                         </Grid>
 
 
-                        <Grid item sm={6} md={3}>
+                        <Grid item xs={6} sm={6} md={3}>
                             <TextField required name="commodity" label="Commodity" value={loadInfo.commodity} onChange={handleChange} /* error={error.commodity} */ />
                         </Grid>
-                        <Grid item sm={6} md={3}>
+                        <Grid item xs={6} sm={6} md={3}>
                             <TextField required type="number" inputProps={{min: '0'}} name="weight" label="Weight" value={loadInfo.weight} onChange={handleChange} /* error={error.weight} */ />
                         </Grid>
-                        <Grid item sm={6} md={3}>
+                        <Grid item xs={6} sm={6} md={3}>
                             <TextField required name="broker" label="Broker" value={loadInfo.broker} onChange={handleChange} /* error={error.broker} */ />
                         </Grid>
-                        <Grid item sm={6} md={3}>
+                        <Grid item xs={6} sm={6} md={3}>
                             <TextField required type="number" inputProps={{min: '0'}} name="rate" label="Rate" value={loadInfo.rate} onChange={handleChange} rate />
                         </Grid>
 
-                        <Grid item md={12}>
+                        <Grid item xs={12} md={12}>
                             <TextField label="Additional Notes" name="notes" variant='outlined' fullWidth multiline rows={4} value={loadInfo.notes} onChange={handleChange} />
                         </Grid>
                     </Grid>
@@ -365,6 +395,30 @@ function Load({ load, cancelLoad, cancel }) {
                 {renderSaveOrBookButton()}
                 {renderCancelOrDelete()}
             </Dialog>
+            <Snackbar
+                anchorOrigin={{ vertical, horizontal }}
+                open={snackbar.success}
+                onClose={handleClose}
+                key={vertical + horizontal}
+            >
+                <Alert onClose={handleClose} severity="success">Load Updated!</Alert>
+            </Snackbar>
+            <Snackbar
+                anchorOrigin={{ vertical, horizontal }}
+                open={snackbar.info}
+                onClose={handleClose}
+                key={vertical + horizontal}
+            >
+                <Alert onClose={handleClose} severity="info">Load Cancelled</Alert>
+            </Snackbar>
+            <Snackbar
+                anchorOrigin={{ vertical, horizontal }}
+                open={snackbar.deleted}
+                onClose={handleClose}
+                key={vertical + horizontal}
+            >
+                <Alert onClose={handleClose} severity="success">Load Deleted!</Alert>
+            </Snackbar>
         </Card>
     );
 };

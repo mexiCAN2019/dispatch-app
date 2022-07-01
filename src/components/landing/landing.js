@@ -11,18 +11,24 @@ function HomePage() {
 
     useEffect(() => {
             const token = localStorage.getItem('token');
-            ExpressF.getDriversLanding(token).then(drivers => drivers.filter(driver => driver.id !== 1)).then(drivers => drivers.map(driver => {
-                Express.getMostRecentLoads(driver.id, new Date().getFullYear()).then(load => {
-                    if(load){
-                        return setLoads(otherLoads => [...otherLoads, load]);
-                    }
-                    return;
-                });
-                return null;
-            })) 
+            ExpressF.getDriversLanding(token).then(drivers => drivers.filter(driver => driver.id !== 1)).then(drivers => {
+                console.log(drivers)
+                drivers.map(driver => {
+                    Express.getMostRecentLoads(driver.id, new Date().getFullYear()).then(load => {
+                        if(load){
+                            console.log(load);
+                            setLoads(prevLoads => [...prevLoads, load]);
+                            return 'hm'
+                        }
+                        // return;
+                    });
+                    console.log(loads);
+                    return null;
+                })
+            }) 
             
             ExpressF.getUnassignedLoads().then(loads => setUnassignedLoads(loads))
-    }, []);
+        }, []);
 
 
     return(

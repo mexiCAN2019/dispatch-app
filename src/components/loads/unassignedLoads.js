@@ -21,11 +21,9 @@ function UnassignedLoads() {
     const cancelledLoad = (cancelledLoad) => {
         if (window.confirm('Are you sure you want to cancel load?')) {
             ExpressF.updateLoad(cancelledLoad.id, cancelledLoad);
-            alert('load cancelled');
             const filteredLoads = loads.filter(load => load.id !== cancelledLoad.id);
             setLoads(filteredLoads);
-        } else {
-            alert('load not cancelled');
+            return true;
         }
     };
 

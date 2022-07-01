@@ -1,12 +1,15 @@
 import React, { useState } from 'react';
-import { Stack, Button, TextField, Card, CardContent } from '@mui/material';
+import { Stack, Button, TextField, Card, CardContent, Snackbar, Alert } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import ExpressF from './../../fetchFeathers';
 
 
 function Summary({ load }) {
     const [loadInfo, setLoadInfo] = useState(load);
+    const [snackbar, setSnackbar] = useState({success: false, info: false, error: false, vertical: 'top', horizontal: 'center',})
+    
     const naviagate = useNavigate();
+    const { vertical, horizontal } = snackbar;
 
     const renderColorIfDriverNeedsLoad = () => {
         const greenBorder = {
@@ -67,6 +70,7 @@ function Summary({ load }) {
         };
 
         ExpressF.updateDriverInfo(loadInfo.id, updatedDriver);
+        setSnackbar({ ...snackbar, success: true });
     };
 
     const handleChange = ({target}) => {
@@ -74,6 +78,9 @@ function Summary({ load }) {
         setLoadInfo({...loadInfo, [name]: value });
     };
 
+    const handleClose = () => {
+        setSnackbar({ ...snackbar, success: false, info: false, error: false });
+    };
 
     return(
         <Card style={renderColorIfDriverNeedsLoad()}>
@@ -90,6 +97,14 @@ function Summary({ load }) {
                 </Stack>
             </CardContent>
             </Stack>
+            <Snackbar
+                anchorOrigin={{ vertical, horizontal }}
+                open={snackbar.success}
+                onClose={handleClose}
+                key={vertical + horizontal}
+            >
+                <Alert onClose={handleClose} severity="success"></Alert>
+            </Snackbar>
         </Card>
         
     )
