@@ -21,3 +21,5 @@ for (let i = 0; i < bobsFollowers.length; i++){
 };
 OR
 try using indexOf(). reference creditChecker from codecademy
+
+EXPOSE 3000/tcp
