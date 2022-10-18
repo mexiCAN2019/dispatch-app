@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import {  Image } from 'semantic-ui-react';
 import { AppBar, Box, Toolbar, IconButton, Typography, Container, Button, MenuItem, Menu, Dialog, DialogTitle, Stack } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import AccountCircle from '@mui/icons-material/AccountCircle';
@@ -105,7 +104,17 @@ function Navbar() {
                             cursor: 'pointer'
                             }}
                         >
-                            <Image src='/kg-logo.png' size='small' alt="KG Logo" />
+                            <Box
+                                component="img"
+                                sx={{
+                                height: 90,
+                                width: 150
+                                // maxHeight: { xs: 233, md: 167 },
+                                // maxWidth: { xs: 350, md: 250 },
+                                }}
+                                alt="KG Logo"
+                                src="/kg-logo.png"
+                            />
                         </Typography>
 
                         <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}> {/* EXTRA SMALL - NAV ICON DROPDOWN */}
@@ -162,7 +171,17 @@ function Navbar() {
                             cursor: 'pointer'
                             }}
                         >
-                            <Image src='/kg-logo.png' size='small' />
+                            <Box
+                                component="img"
+                                sx={{
+                                height: 90,
+                                width: 150
+                                // maxHeight: { xs: 233, md: 167 },
+                                // maxWidth: { xs: 350, md: 250 },
+                                }}
+                                alt="KG Logo"
+                                src="/kg-logo.png"
+                            />
                         </Typography>
 
                         <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>  {/* MEDIUM - NEW LOAD */}
