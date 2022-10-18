@@ -129,20 +129,6 @@ function Data() {
                 </Card>
             </Grid >
         </Grid>
-        // <div>
-        //     <div style={{display: 'flex', justifyContent: 'center'}}>
-                
-        //     <Form.Input style={{width:"300px"}} required control={Select} label='Driver' placeholder='Driver' name='driverId' value={dataCriteria.driverId} options={driversDropdown} onChange={handleChange} width={6} />
-        //     <Form.Input style={{width:"300px"}} required control={Select} label='Choose Data Type' placeholder='Average or Total?' name='dataType' value={dataCriteria.dataType} options={dataType} onChange={handleChange} width={6} />
-        //     <Form.Input style={{width:"300px"}} required control={Select} label='Choose Month' placeholder='Month' name='month' value={dataCriteria.month} options={months} onChange={handleChange} width={6} />
-        //     <Form.Input style={{width:"300px"}} required type='number' label='Enter Year' placeholder='Year' name='year' value={dataCriteria.year} onChange={handleChange} width={6} />
-        //     <Form.Input style={{width:"300px"}} required control={Select} label='Choose Load Type' placeholder='Reload?' name='reloadLoad' value={dataCriteria.reloadLoad} options={reloadSelect} onChange={handleChange} width={6} />
-            
-        //     <br></br>
-            
-        //     </div>
-            
-        // </div>
     )
 };
 

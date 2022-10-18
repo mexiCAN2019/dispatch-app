@@ -3,10 +3,8 @@ import { useParams } from 'react-router-dom';
 import RenderLoads from './renderLoads';
 import ExpressF from './../../fetchFeathers';
 import { drivers } from './../../util/options'
-import { Divider, Stack, Dialog, Container, Button, ToggleButtonGroup, ToggleButton, CardMedia, CardContent, Grid, TextField, DialogTitle, Card, Avatar } from '@mui/material';
-import {
-    Feed
-} from 'semantic-ui-react';
+import { Divider, Stack, Dialog, Container, Button, ToggleButtonGroup, ToggleButton, CardMedia, CardContent, Grid, TextField, DialogTitle, Card, Avatar, Typography } from '@mui/material';
+import LocalShippingIcon from "@mui/icons-material/LocalShipping";
 
 
 function Driver() {
@@ -127,28 +125,22 @@ function Driver() {
     const renderRecentLoads = () => {
         if(!threeLoads){
             return (
-                <Feed.Event>
-                    <Feed.Label icon="truck" />
-                    <Feed.Content>
-                        <Feed.Summary>
-                            No Recent Loads
-                        </Feed.Summary>
-                    </Feed.Content>
-                </Feed.Event>
+                <>
+                    <LocalShippingIcon />
+                    <Typography>
+                        No Recent Loads
+                    </Typography>
+                </>
             )
         }
            return threeLoads.map(load => {
                 return (                                    
-                    <Feed.Event key={load.id}>
-                        <Feed.Label icon="truck" />
-                        <Feed.Content>
-                            <Feed.Date content={`${load.delDate}`} />
-                            <Feed.Summary>
-                                {`${load.loadStatus} load from ${load.puCity}, ${load.puState} to ${load.delCity}, ${load.delState}`}
-                            </Feed.Summary>
-                        </Feed.Content>
-                    </Feed.Event>
-                        )
+                    <div key={load.id}>
+                        <LocalShippingIcon />
+                        <Typography>{load.delDate}</Typography>
+                        <Typography>{`${load.loadStatus} load from ${load.puCity}, ${load.puState} to ${load.delCity}, ${load.delState}`}</Typography>
+                    </div>
+                )
             });
     };
 

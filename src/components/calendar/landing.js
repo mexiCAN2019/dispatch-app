@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { Dimmer, Loader } from 'semantic-ui-react';
-import { Stack, InputLabel, TextField, Select, FormControl, Container, Button, MenuItem } from '@mui/material';
+import { Stack, InputLabel, TextField, Select, FormControl, Container, Button, MenuItem, Backdrop, CircularProgress } from '@mui/material';
 import StatusCalendar from './statusCalendar';
 import Express from '../../fetchExpress';
 import { months } from './../../util/options';
 
 function Calendars() {
     const [statusLoads, setStatusLoads] = useState([]);
+    const [open, setOpen] = useState(true);
     useEffect(() => {
         //new Date() function doesn't take in numbers with zero in front. So must check if the month or day pulled from database has a zero in front
         //Might be able to just put Number() instead of checkZero function
@@ -35,6 +35,8 @@ function Calendars() {
             const endDay = checkForZero(load.delDate.slice(3, 5));
             const endHour = checkForZero(load.delTime.slice(0,2));
   
+            setOpen(false);
+
             return setStatusLoads(prevLoad => [...prevLoad, {title: `${load.firstName}, ${load.puCity} to ${load.delCity} - ${load.dispatched ? 'dispatched' : 'not dispathed'}`, 
                                                     start: new Date(`${startYear}`, `${Number(startMonth) - 1}`, `${startDay}`, `${startHour}`), 
                                                     end: new Date(`${endYear}`, `${Number(endMonth) - 1}`, `${endDay}`, `${endHour}`), 
@@ -59,20 +61,6 @@ function Calendars() {
 
 
 
-    const renderLoader = () => {
-        if(statusLoads == null){
-            return (
-                <Dimmer active>
-                    <Loader />
-                </Dimmer>
-            )
-        }
-            return (
-                <Dimmer>
-                    <Loader />
-                </Dimmer>
-            )
-    }
 
     const handleSubmit = () => {
         const loadsAlreadyFetched = statusLoads.find((load) => load.delMonthYear === `${dateCriteria.month}${dateCriteria.year}`);
@@ -122,10 +110,14 @@ function Calendars() {
                 <TextField label="Enter Year" name="year" type='number' value={dateCriteria.year} onChange={handleChange} />
                 <Button variant="contained" onClick={handleSubmit}>Get Loads!</Button>
             </Stack>
+
             <div>
                 <h4 style={{textAlign:"center"}}><i>Calendar initially only retreives loads for the current month. Must get loads and then hit "back" to see the month and loads.</i></h4>
            
-                {renderLoader()}
+                <Backdrop sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+                            open={open}>
+                    <CircularProgress color='inherit' />
+                </Backdrop>
 
                 <StatusCalendar loads={statusLoads} />
             </div>
