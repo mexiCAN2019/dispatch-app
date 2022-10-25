@@ -28,9 +28,9 @@ function Login() {
     };
 
     return (
-        <Grid container direction="column" alignItems="center" justifyContent="center" style={{height: "90vh"}}>
+        <Grid container direction="column" alignItems="center" justifyContent="center" style={{background: "rgb(170,170,170)", background: "linear-gradient(180deg, rgba(170,170,170,1) 0%, rgba(255,255,255,1) 100%)", height: "90vh"}}>
             <Grid item>
-                <Card style={{width: "25vw"}}>
+                <Card variant="outlined" style={{width: "25vw", minWidth: "248px"}}>
                     <Container style={{paddingTop: '10px', paddingBottom: '10px'}}>
                         <Stack spacing={3}>
                             <h2>Welcome</h2>
