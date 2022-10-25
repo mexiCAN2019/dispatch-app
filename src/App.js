@@ -51,6 +51,9 @@ function App() {
       case 'unbooked-loads':
         finalComponent = (user.role === 'dev' || user.role === 'admin') ? <UnbookedLoads /> : 'redirect';
         break;
+      case 'driver':
+        finalComponent = (user.role === 'dev' || user.role === 'admin') ? <Driver /> : 'redirect';
+        break;
       default:
         break;
     };
@@ -67,15 +70,17 @@ function App() {
       {pathname === '/login' ? '' : <NavBar />}
       <Routes>
         <Route path='/login' element={<Login />} />
-        <Route path='/' element={<HomePage />} />
-        <Route path='/newLoad' element={<LoadInference />} />
-        <Route path='/calendar' element={<Calendars />} />
+        <Route path='/' element={<>
+            {authenticatedRoutes('home')}
+          </>} />
+        <Route path='/newLoad' element={<>{authenticatedRoutes('new-load')}</>} />
+        <Route path='/calendar' element={<>{authenticatedRoutes('calendar')}</>} />
         {/* <Route path='/forms' element={<>{authenticatedRoutes('forms')}</>} /> */}
-        <Route path='/newDriver' route='new-driver' element={<NewDriver />} />
-        <Route path='/unassignedLoads' route='unassigned-loads' element={<UnassignedLoads />} />
-        <Route path='/data' route='data' element={<Data />} />
-        <Route path='/unbookedLoads' route='unbooked-loads' element={<UnbookedLoads />} />
-        <Route path='/drivers/:driverId' element={<Driver />} />
+        <Route path='/newDriver' route='new-driver' element={<>{authenticatedRoutes('new-driver')}</>} />
+        <Route path='/unassignedLoads' route='unassigned-loads' element={<>{authenticatedRoutes('unassigned-loads')}</>} />
+        <Route path='/data' route='data' element={<>{authenticatedRoutes('data')}</>} />
+        <Route path='/unbookedLoads' route='unbooked-loads' element={<>{authenticatedRoutes('unbooked-loads')}</>} />
+        <Route path='/drivers/:driverId' element={<>{authenticatedRoutes('driver')}</>} />
       </Routes>
     </div>
   );
@@ -91,4 +96,5 @@ export default App;
 <>{authenticatedRoutes('new-driver')}</>
 <>{authenticatedRoutes('unassigned-loads')}</>
 <>{authenticatedRoutes('data')}</>
-<>{authenticatedRoutes('unbooked-loads')}</> */}
+<>{authenticatedRoutes('unbooked-loads')}</> 
+<>{authenticatedRoutes('unbooked-loads')}</>*/}
