@@ -1,5 +1,5 @@
 // const baseUrl = 'http://localhost:5000';
-const baseUrl = 'http://kgtransportapi.elementbalance.com';
+const baseUrl = 'http://192.168.1.92:31184';
 const Express = {};
 
 

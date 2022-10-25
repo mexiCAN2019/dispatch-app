@@ -7,6 +7,7 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { MobileDatePicker } from '@mui/x-date-pickers/MobileDatePicker';
 import { trailerOptions, trailerNumbers, states, status, dispatched } from './../../util/options'
 import ExpressF from '../../fetchFeathers';
+import { getMonth, getDate, getYear } from 'date-fns';
 
 function Load({ load, cancelLoad, cancel }) {
     const [editOpen, setEditOpen] = useState(false);
@@ -190,30 +191,30 @@ function Load({ load, cancelLoad, cancel }) {
         return <Button onClick={handleSubmit}>Book Load</Button> 
     };
 
-    const displayTime = (time) => {
-        let editedTime;
-        editedTime = time.slice(11, 16);
-        return editedTime
-    }
 
     const handleClose = () => {
         setSnackbar({ ...snackbar, success: false, info: false, deleted: false });
       };
 
+    const options = {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric'
+    }
+
     return(
         <Card style={loadStatusBorderColor()}>
             <CardContent style={{display: 'flex', flexDirection: 'column', alignItems:'center'}}>
-                {loadInfo.dispatched ? '' : <h3 style={{color: 'red'}}>Not Dispatched</h3>}
-                <p style={{fontWeight: "bold", margin: "0px"}}>Load #: {loadInfo.loadID}</p>
+                {loadInfo.dispatched ? '' : <h3 style={{color: 'red', margin: '5px auto'}}>Not Dispatched</h3>}
+                <p style={{fontWeight: "bold", margin: "5px auto"}}>Load #: {loadInfo.loadID}</p>
                 <p style={{fontWeight: "bold", margin: "0px"}}>{loadInfo.puCity}, {loadInfo.puState}</p>
-                <p style={{margin: "0px"}}>{loadInfo.puDate} @ {displayTime(loadInfo.puTime)} {loadInfo.endPUTime ? `- ${displayTime(loadInfo.endPUTime)}` : ''}</p>
+                <p style={{margin: "0px"}}>{loadInfo.puDate.length === 10 ? loadInfo.puDate : loadInfo.puDate.toLocaleDateString('en-US', options)} @ {loadInfo.puTime.length === 5 ? loadInfo.puTime : String(loadInfo.puTime).slice(16,21)} {loadInfo.endPUTime ? `- ${loadInfo.endPUTime.length === 5 ? loadInfo.endPUTime : String(loadInfo.endPUTime).slice(16,21)}` : ''}</p>
                 <p style={{margin: "0px"}}>- to -</p>
                 <p style={{fontWeight: "bold", margin: "0px"}}>{loadInfo.delCity}, {loadInfo.delState}</p>
-                <p style={{margin: "0px"}}>{loadInfo.delDate} @ {displayTime(loadInfo.delTime)} {loadInfo.endDelTime ? `- ${displayTime(loadInfo.endDelTime)}` : ''}</p>
+                <p style={{margin: "0px"}}>{loadInfo.delDate.length === 10 ? loadInfo.delDate : loadInfo.delDate.toLocaleDateString('en-US', options)} @ {loadInfo.delTime.length === 5 ? loadInfo.delTime : String(loadInfo.delTime).slice(16,21)} {loadInfo.endDelTime ? `- ${loadInfo.endDelTime.length === 5 ? loadInfo.endDelTime : String(loadInfo.endDelTime).slice(16,21)}` : ''}</p>
                 <br></br>
-                {loadInfo.commodity} | {loadInfo.weight}K LBS
-                <br></br>
-                {loadInfo.broker} | ${loadInfo.rate}
+                <span>{loadInfo.commodity} | {loadInfo.weight}K LBS</span>
+                <span>{loadInfo.broker} | ${loadInfo.rate}</span>
                 <br></br>
                 {/* <TextField label="Notes" defaultValue={loadInfo.notes} InputProps={{readOnly: true,}} /> */}
                 <p style={{border: "black solid 1px", width: "300px", margin: "auto"}}><strong>Notes:</strong> {loadInfo.notes}</p>
@@ -303,7 +304,7 @@ function Load({ load, cancelLoad, cancel }) {
                                     /* error={error.puDate} */
                                     value={loadInfo.puDate}
                                     onChange={(newValue) => {
-                                    setLoadInfo({...load, puDate: newValue});
+                                    setLoadInfo({...loadInfo, puDate: newValue});
                                     }}
                                     renderInput={(params) => <TextField {...params} />}
                                 />
@@ -311,12 +312,12 @@ function Load({ load, cancelLoad, cancel }) {
                         </Grid>
                         <Grid item xs={6} md={2}>
                             <LocalizationProvider dateAdapter={AdapterDateFns}>
-                                <TimePicker ampm={false} label="Pickup Time" value={loadInfo.puTime} /* error={error.puTime} */ onChange={(newValue) => setLoadInfo({...load, puTime: newValue})} renderInput={(params) => <TextField {...params} />} />
+                                <TimePicker ampm={false} label="Pickup Time" value={loadInfo.puTime} /* error={error.puTime} */ onChange={(newValue) => setLoadInfo({...loadInfo, puTime: newValue})} renderInput={(params) => <TextField {...params} />} />
                             </LocalizationProvider>
                         </Grid>
                         <Grid item xs={6} md={2}>
                             <LocalizationProvider dateAdapter={AdapterDateFns}>
-                                <TimePicker ampm={false} label="Deliver Time" value={loadInfo.delTime} /* error={error.delTime} */ onChange={(newValue) => setLoadInfo({...load, delTime: newValue})} renderInput={(params) => <TextField {...params} />} />
+                                <TimePicker ampm={false} label="Deliver Time" value={loadInfo.delTime} /* error={error.delTime} */ onChange={(newValue) => setLoadInfo({...loadInfo, delTime: newValue})} renderInput={(params) => <TextField {...params} />} />
                             </LocalizationProvider>
                         </Grid>
 
@@ -342,7 +343,7 @@ function Load({ load, cancelLoad, cancel }) {
                                     // error={error.delDate ? true : undefined}
                                     value={loadInfo.delDate}
                                     onChange={(newValue) => {
-                                    setLoadInfo({...load, delDate: newValue});
+                                    setLoadInfo({...loadInfo, delDate: newValue});
                                     }}
                                     renderInput={(params) => <TextField {...params} />}
                                 />
@@ -356,7 +357,7 @@ function Load({ load, cancelLoad, cancel }) {
                                     // error={error.delDate ? true : undefined}
                                     value={loadInfo.delDate}
                                     onChange={(newValue) => {
-                                    setLoadInfo({...load, delDate: newValue});
+                                    setLoadInfo({...loadInfo, delDate: newValue});
                                     }}
                                     renderInput={(params) => <TextField {...params} />}
                                 />
@@ -364,12 +365,12 @@ function Load({ load, cancelLoad, cancel }) {
                         </Grid>
                         <Grid item xs={6} md={2}>
                             <LocalizationProvider dateAdapter={AdapterDateFns}>
-                                <TimePicker ampm={false} label="Latest Pickup Time" value={loadInfo.endPUTime} /* error={error.endPUTime} */ onChange={(newValue) => setLoadInfo({...load, endPUTime: newValue})} renderInput={(params) => <TextField {...params} />} />
+                                <TimePicker ampm={false} label="Latest Pickup Time" value={loadInfo.endPUTime} /* error={error.endPUTime} */ onChange={(newValue) => setLoadInfo({...loadInfo, endPUTime: newValue})} renderInput={(params) => <TextField {...params} />} />
                             </LocalizationProvider>
                         </Grid>
                         <Grid item xs={6} md={2}>
                             <LocalizationProvider dateAdapter={AdapterDateFns}>
-                                <TimePicker ampm={false} label="Latest Deliver Time" value={loadInfo.endDelTime} /* error={error.endDelTime} */ onChange={(newValue) => setLoadInfo({...load, endDelTime: newValue})} renderInput={(params) => <TextField {...params} />} />
+                                <TimePicker ampm={false} label="Latest Deliver Time" value={loadInfo.endDelTime} /* error={error.endDelTime} */ onChange={(newValue) => setLoadInfo({...loadInfo, endDelTime: newValue})} renderInput={(params) => <TextField {...params} />} />
                             </LocalizationProvider>
                         </Grid>
 
