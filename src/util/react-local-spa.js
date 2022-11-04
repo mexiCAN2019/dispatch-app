@@ -8,7 +8,7 @@ export const Authenticate = (email, password) => {
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify({strategy: "local", email: email, password: password})
     };
-    return fetch("http://kgfeathers.elementbalance.com/authentication", fetchOptions).then(response => {
+    return fetch("http://dispatchfeathers.elementbalance.com/authentication", fetchOptions).then(response => {
         if(!response.ok){
             return 400;
         }

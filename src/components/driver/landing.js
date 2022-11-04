@@ -111,10 +111,12 @@ function Driver() {
     const renderProfileOrLoads = () => {
         return (
             <ToggleButtonGroup
+                className='white-back'
                 color="primary"
                 value={alignment}
                 exclusive
                 onChange={handleProfileChange}
+                style={{margin: '15px auto'}}
             >
                 <ToggleButton value="profile">Profile</ToggleButton>
                 <ToggleButton value="loads">Driver Loads</ToggleButton>

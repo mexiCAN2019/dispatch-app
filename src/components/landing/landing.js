@@ -40,7 +40,7 @@ function HomePage() {
                 </div>
             </div>
             <Container>
-                <h2>Dashboard</h2>
+                <h2 style={{textAlign: 'center'}}>Dashboard</h2>
                 <RenderSummaries loads={loads}
                                 unassignedLoads={unassignedLoads} />
             </Container>

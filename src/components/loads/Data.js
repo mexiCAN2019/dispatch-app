@@ -81,7 +81,7 @@ function Data() {
                 <Stack spacing={3}>
                     <FormControl fullWidth>
                         <InputLabel>Driver *</InputLabel>
-                        <Select name='driverId' value={dataCriteria.driverId} onChange={handleChange} required>
+                        <Select className='white-back' name='driverId' value={dataCriteria.driverId} onChange={handleChange} required>
                             {driversDropdown ? driversDropdown.map(driver => {
                                 return <MenuItem key={driver.key} value={driver.value}>{driver.text}</MenuItem>
                             }) : <MenuItem>Loading</MenuItem>}
@@ -89,7 +89,7 @@ function Data() {
                     </FormControl>
                     <FormControl fullWidth>
                         <InputLabel>Average or Total *</InputLabel>
-                        <Select name='dataType' value={dataCriteria.dataType} onChange={handleChange} required>
+                        <Select className='white-back' name='dataType' value={dataCriteria.dataType} onChange={handleChange} required>
                             {dataType.map(type => {
                                 return <MenuItem key={type.key} value={type.value}>{type.text}</MenuItem>
                             })}
@@ -97,7 +97,7 @@ function Data() {
                     </FormControl>
                     <FormControl fullWidth>
                         <InputLabel>Choose Month *</InputLabel>
-                        <Select name='month' value={dataCriteria.month} onChange={handleChange} required>
+                        <Select className='white-back' name='month' value={dataCriteria.month} onChange={handleChange} required>
                             {months.map(month => {
                                 return <MenuItem key={month.key} value={month.value}>{month.text}</MenuItem>
                             })}
@@ -105,13 +105,13 @@ function Data() {
                     </FormControl>
                     <FormControl fullWidth>
                         <InputLabel>Choose Load Type *</InputLabel>
-                        <Select name='reloadLoad' value={dataCriteria.reloadLoad} onChange={handleChange} required>
+                        <Select className='white-back' name='reloadLoad' value={dataCriteria.reloadLoad} onChange={handleChange} required>
                             {reloadSelect.map(load => {
                                 return <MenuItem key={load.key} value={load.value}>{load.text}</MenuItem>
                             })}
                         </Select>
                     </FormControl>
-                    <TextField type="number" label='Enter Year' value={dataCriteria.year} name="year" onChange={handleChange} required />
+                    <TextField className='white-back' type="number" label='Enter Year' value={dataCriteria.year} name="year" onChange={handleChange} required />
                     <Button variant='contained' onClick={handleSubmit}>Go</Button>
                 </Stack>
             </Grid>

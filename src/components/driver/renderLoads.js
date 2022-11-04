@@ -47,25 +47,25 @@ function RenderLoads({ loads, cancelLoad, monthLoads, unbookedLoads, driverId, c
     }
 
     return(
-        <div>
+        <div style={{display: "flex", flexDirection: "column", alignItems: "center"}}>
             <Container>
                 <Stack direction="row" spacing={2} justifyContent="center" style={{margin: '75px auto'}}>
                     <FormControl>
                         <InputLabel>Choose Month</InputLabel>
-                        <Select name='month' value={dataCriteria.month || ''} onChange={handleChange} required>
+                        <Select className='white-back' name='month' value={dataCriteria.month || ''} onChange={handleChange} required>
                             {months.map(month => {
                                 return <MenuItem key={month.key} value={month.value}>{month.text}</MenuItem>
                             })}
                         </Select>
                     </FormControl>
-                    <TextField label="Enter Year" name="year" type='number' value={dataCriteria.year} onChange={handleChange} />
+                    <TextField className='white-back' label="Enter Year" name="year" type='number' value={dataCriteria.year} onChange={handleChange} />
                     <Button variant="contained" onClick={handleSubmit}>Get Loads!</Button>
                 </Stack>
             </Container>
 
-            <span><i>Page initially only retreives loads for the current month.</i></span>
+            <span><em>Page initially only retreives loads for the current month.</em></span>
             <br></br>
-            <span><i>Green border = Delivered, red = in transit, grey = waiting to be picked up. Red dot means load has not been dispatched (load information sent to driver).</i></span>
+            <em><strong>Green border:</strong> Delivered, <strong>maroon</strong> in transit, <strong>grey:</strong> waiting to be picked up.</em>
 
             <div style={{display: "flex", justifyContent: "space-between", flexWrap: "wrap", }}>
                 {loads.map(load => {

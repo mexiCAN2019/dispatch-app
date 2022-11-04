@@ -139,7 +139,7 @@ function LoadInference() {
                 <Grid item xs={6} sm={6} md={4} >
                     <FormControl fullWidth>
                         <InputLabel>Driver *</InputLabel>
-                        <Select name='driverId' value={load.driverId} onChange={handleChange} required error={error.driverId ? true : undefined}>
+                        <Select className='white-back' name='driverId' value={load.driverId} onChange={handleChange} required error={error.driverId ? true : undefined}>
                             {drivers ? drivers.map(driver => {
                                 return <MenuItem key={driver.id} value={driver.id}>{`${driver.firstName}, ${driver.truckNumber}, ${driver.phoneNumber}`}</MenuItem>
                             }) : <MenuItem>Loading</MenuItem>}
@@ -149,7 +149,7 @@ function LoadInference() {
                 <Grid item xs={6} sm={6} md={4}>
                     <FormControl fullWidth>
                         <InputLabel>Trailer *</InputLabel>
-                        <Select name='trailerType' value={load.trailerType} onChange={handleChange} required error={error.trailerType ? true : undefined}>
+                        <Select className='white-back' name='trailerType' value={load.trailerType} onChange={handleChange} required error={error.trailerType ? true : undefined}>
                             {trailerOptions ? trailerOptions.map(trailer => {
                                 return <MenuItem key={trailer.key} value={trailer.value}>{trailer.text}</MenuItem>
                             }) : <MenuItem>Loading</MenuItem>}
@@ -159,7 +159,7 @@ function LoadInference() {
                 <Grid item xs={6} sm={6} md={4}>
                     <FormControl fullWidth>
                         <InputLabel>Trailer Number *</InputLabel>
-                        <Select name='trailerNumber' value={load.trailerNumber} onChange={handleChange} required error={error.trailerNumber ? true : undefined}>
+                        <Select className='white-back' name='trailerNumber' value={load.trailerNumber} onChange={handleChange} required error={error.trailerNumber ? true : undefined}>
                             {trailerNumbers ? trailerNumbers.map(trailer => {
                                 return <MenuItem key={trailer.key} value={trailer.value}>{trailer.text}</MenuItem>
                             }) : <MenuItem>Loading</MenuItem>}
@@ -169,12 +169,12 @@ function LoadInference() {
 
 
                 <Grid item xs={6} sm={6} md={2}>
-                    <TextField required name="puCity" label="Pickup City" value={load.puCity} onChange={handleChange} error={error.puCity ? true : undefined} />
+                    <TextField className='white-back' required name="puCity" label="Pickup City" value={load.puCity} onChange={handleChange} error={error.puCity ? true : undefined} />
                 </Grid>
                 <Grid item xs={6} sm={6} md={2}>
                     <FormControl fullWidth>
                         <InputLabel>Pickup State *</InputLabel>
-                        <Select name='puState' value={load.puState} onChange={handleChange} required error={error.puState ? true : undefined}>
+                        <Select className='white-back' name='puState' value={load.puState} onChange={handleChange} required error={error.puState ? true : undefined}>
                             {states.map(state => {
                                 return <MenuItem key={state.key} value={state.value}>{state.text}</MenuItem>
                             })}
@@ -184,6 +184,7 @@ function LoadInference() {
                 <Grid item sm={6} md={3} sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
                     <LocalizationProvider dateFormats={{fullDate: 'MM/dd/yyyy', keyboardDate: 'MM/dd/yyyy'}} dateAdapter={AdapterDateFns}>
                         <DatePicker
+                            className='white-back'
                             label="Pickup Date *"
                             name="puDate"
                             error={error.puDate ? true : undefined}
@@ -199,6 +200,7 @@ function LoadInference() {
                 <Grid item xs={6} sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
                     <LocalizationProvider dateAdapter={AdapterDateFns}>
                         <MobileDatePicker
+                            className='white-back'
                             label="Pickup Date *"
                             name="puDate"
                             error={error.puDate ? true : undefined}
@@ -212,23 +214,23 @@ function LoadInference() {
                 </Grid>
                 <Grid item xs={6} sm={6} md={2}>
                     <LocalizationProvider dateAdapter={AdapterDateFns}>
-                        <TimePicker ampm={false} label="Pickup Time" value={load.puTime} error={error.puTime ? true : undefined} onChange={(newValue) => setLoad({...load, puTime: newValue})} renderInput={(params) => <TextField {...params} />} />
+                        <TimePicker className='white-back' ampm={false} label="Pickup Time" value={load.puTime} error={error.puTime ? true : undefined} onChange={(newValue) => setLoad({...load, puTime: newValue})} renderInput={(params) => <TextField {...params} />} />
                     </LocalizationProvider>
                 </Grid>
                 <Grid item xs={6} sm={6} md={2}>
                     <LocalizationProvider dateAdapter={AdapterDateFns}>
-                        <TimePicker ampm={false} label="Latest Pickup Time" value={load.endPUTime} error={error.endPUTime ? true : undefined} onChange={(newValue) => setLoad({...load, endPUTime: newValue})} renderInput={(params) => <TextField {...params} />} />
+                        <TimePicker className='white-back' ampm={false} label="Latest Pickup Time" value={load.endPUTime} error={error.endPUTime ? true : undefined} onChange={(newValue) => setLoad({...load, endPUTime: newValue})} renderInput={(params) => <TextField {...params} />} />
                     </LocalizationProvider>
                 </Grid>
 
 
                 <Grid item xs={6} sm={6} md={2}>
-                    <TextField required name="delCity" label="Deliver City" value={load.delCity} onChange={handleChange} error={error.delCity ? true : undefined} />
+                    <TextField className='white-back' required name="delCity" label="Deliver City" value={load.delCity} onChange={handleChange} error={error.delCity ? true : undefined} />
                 </Grid>
                 <Grid item xs={6} sm={6} md={2}>
                     <FormControl fullWidth>
                         <InputLabel>Deliver State *</InputLabel>
-                        <Select name='delState' value={load.delState} onChange={handleChange} required error={error.delState ? true : undefined}>
+                        <Select className='white-back' name='delState' value={load.delState} onChange={handleChange} required error={error.delState ? true : undefined}>
                             {states.map(state => {
                                 return <MenuItem key={state.key} value={state.value}>{state.text}</MenuItem>
                             })}
@@ -238,6 +240,7 @@ function LoadInference() {
                 <Grid item sm={6} md={3} sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
                     <LocalizationProvider dateAdapter={AdapterDateFns}>
                         <DatePicker
+                            className='white-back'
                             label="Deliver Date *"
                             name="delDate"
                             error={error.delDate ? true : undefined}
@@ -253,6 +256,7 @@ function LoadInference() {
                 <Grid item xs={6} sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
                     <LocalizationProvider dateAdapter={AdapterDateFns}>
                         <MobileDatePicker
+                            className='white-back'
                             label="Deliver Date *"
                             name="delDate"
                             error={error.delDate ? true : undefined}
@@ -266,37 +270,37 @@ function LoadInference() {
                 </Grid>
                 <Grid item xs={6} sm={6} md={2}>
                     <LocalizationProvider dateAdapter={AdapterDateFns}>
-                        <TimePicker format="HH:mm" ampm={false} label="Deliver Time" value={load.delTime} error={error.delTime ? true : undefined} onChange={(newValue) => setLoad({...load, delTime: newValue})} renderInput={(params) => <TextField {...params} />} />
+                        <TimePicker className='white-back' format="HH:mm" ampm={false} label="Deliver Time" value={load.delTime} error={error.delTime ? true : undefined} onChange={(newValue) => setLoad({...load, delTime: newValue})} renderInput={(params) => <TextField {...params} />} />
                     </LocalizationProvider>
                 </Grid>
                 <Grid item xs={6} sm={6} md={2}>
                     <LocalizationProvider dateAdapter={AdapterDateFns}>
-                        <TimePicker ampm={false} label="Latest Deliver Time" value={load.endDelTime} error={error.endDelTime ? true : undefined} onChange={(newValue) => setLoad({...load, endDelTime: newValue})} renderInput={(params) => <TextField {...params} />} />
+                        <TimePicker className='white-back' ampm={false} label="Latest Deliver Time" value={load.endDelTime} error={error.endDelTime ? true : undefined} onChange={(newValue) => setLoad({...load, endDelTime: newValue})} renderInput={(params) => <TextField {...params} />} />
                     </LocalizationProvider>
                 </Grid>
 
 
                 <Grid item xs={6} sm={6} md={3}>
-                    <TextField required name="commodity" label="Commodity" value={load.commodity} onChange={handleChange} error={error.commodity ? true : undefined} />
+                    <TextField className='white-back' required name="commodity" label="Commodity" value={load.commodity} onChange={handleChange} error={error.commodity ? true : undefined} />
                 </Grid>
                 <Grid item xs={6} sm={6} md={3}>
-                    {<TextField InputProps={{endAdornment: <InputAdornment position="end">K lbs</InputAdornment>}} required type="number" inputProps={{min: '0'}} name="weight" label="Weight" value={load.weight} onChange={handleChange} error={error.weight ? true : undefined} />}
+                    {<TextField className='white-back' InputProps={{endAdornment: <InputAdornment position="end">K lbs</InputAdornment>}} required type="number" inputProps={{min: '0'}} name="weight" label="Weight" value={load.weight} onChange={handleChange} error={error.weight ? true : undefined} />}
                     
                 </Grid>
                 <Grid item xs={6} sm={6} md={3}>
-                    <TextField required name="broker" label="Broker" value={load.broker} onChange={handleChange} error={error.broker ? true : undefined} />
+                    <TextField className='white-back' required name="broker" label="Broker" value={load.broker} onChange={handleChange} error={error.broker ? true : undefined} />
                 </Grid>
                 <Grid item xs={6} sm={6} md={3}>
-                    <TextField required type="number" inputProps={{min: '0'}} name="rate" label="Rate" value={load.rate} onChange={handleChange} />
+                    <TextField className='white-back' required type="number" inputProps={{min: '0'}} name="rate" label="Rate" value={load.rate} onChange={handleChange} />
                 </Grid>
 
                 <Grid item xs={12} md={12}>
-                    <TextField label="Additional Notes" name="notes" variant='outlined' fullWidth multiline rows={4} value={load.notes} onChange={handleChange} />
+                    <TextField className='white-back' label="Additional Notes" name="notes" variant='outlined' fullWidth multiline rows={4} value={load.notes} onChange={handleChange} />
                 </Grid>
 
 
                 <Grid item xs={12} sm={12} md={12} style={{display: 'flex', justifyContent: 'center'}}>
-                    <FormControl>
+                    <FormControl className='white-back'>
                         <FormLabel id="book-load">Book Load?</FormLabel>
                         <RadioGroup
                             aria-labelledby="book-load"
@@ -309,7 +313,7 @@ function LoadInference() {
                             <FormControlLabel value={0} control={<Radio />} label="Do not book" />
                         </RadioGroup>
                     </FormControl>
-                    <FormControl>
+                    <FormControl className='white-back'>
                         <FormLabel id="reload">Reloading?</FormLabel>
                         <RadioGroup
                             aria-labelledby="reload"

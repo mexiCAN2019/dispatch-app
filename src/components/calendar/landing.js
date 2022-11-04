@@ -100,14 +100,14 @@ function Calendars() {
             <Stack direction="row" spacing={2} justifyContent="center" style={{margin: '75px auto'}}>
                 <FormControl>
                     <InputLabel>Choose Month</InputLabel>
-                    <Select name='month' value={dateCriteria.month || ''} onChange={handleChange} required>
+                    <Select className='white-back' name='month' value={dateCriteria.month || ''} onChange={handleChange} required>
                         {months.map(month => {
                             if(month.value === 0) return null;
                             return <MenuItem key={month.key} value={month.value}>{month.text}</MenuItem>
                         })}
                     </Select>
                 </FormControl>
-                <TextField label="Enter Year" name="year" type='number' value={dateCriteria.year} onChange={handleChange} />
+                <TextField className='white-back' label="Enter Year" name="year" type='number' value={dateCriteria.year} onChange={handleChange} />
                 <Button variant="contained" onClick={handleSubmit}>Get Loads!</Button>
             </Stack>
 

@@ -66,16 +66,15 @@ function App() {
   };
 
   return (
-    <div>
+    <div className='application'>
       {pathname === '/login' ? '' : <NavBar />}
       <Routes>
-        <Route path='/login' element={<Login />} />
+      <Route path='/login' element={<Login />} />
         <Route path='/' element={<>
             {authenticatedRoutes('home')}
           </>} />
         <Route path='/newLoad' element={<>{authenticatedRoutes('new-load')}</>} />
         <Route path='/calendar' element={<>{authenticatedRoutes('calendar')}</>} />
-        {/* <Route path='/forms' element={<>{authenticatedRoutes('forms')}</>} /> */}
         <Route path='/newDriver' route='new-driver' element={<>{authenticatedRoutes('new-driver')}</>} />
         <Route path='/unassignedLoads' route='unassigned-loads' element={<>{authenticatedRoutes('unassigned-loads')}</>} />
         <Route path='/data' route='data' element={<>{authenticatedRoutes('data')}</>} />
@@ -88,13 +87,16 @@ function App() {
 
 export default App;
 
-{/* <>
+{/* 
+<Route path='/login' element={<Login />} />
+        <Route path='/' element={<>
             {authenticatedRoutes('home')}
-          </>
-<>{authenticatedRoutes('new-load')}</>
-<>{authenticatedRoutes('calendar')}</>
-<>{authenticatedRoutes('new-driver')}</>
-<>{authenticatedRoutes('unassigned-loads')}</>
-<>{authenticatedRoutes('data')}</>
-<>{authenticatedRoutes('unbooked-loads')}</> 
-<>{authenticatedRoutes('unbooked-loads')}</>*/}
+          </>} />
+        <Route path='/newLoad' element={<>{authenticatedRoutes('new-load')}</>} />
+        <Route path='/calendar' element={<>{authenticatedRoutes('calendar')}</>} />
+        <Route path='/newDriver' route='new-driver' element={<>{authenticatedRoutes('new-driver')}</>} />
+        <Route path='/unassignedLoads' route='unassigned-loads' element={<>{authenticatedRoutes('unassigned-loads')}</>} />
+        <Route path='/data' route='data' element={<>{authenticatedRoutes('data')}</>} />
+        <Route path='/unbookedLoads' route='unbooked-loads' element={<>{authenticatedRoutes('unbooked-loads')}</>} />
+        <Route path='/drivers/:driverId' element={<>{authenticatedRoutes('driver')}</>} />
+*/}

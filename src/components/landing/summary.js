@@ -13,21 +13,21 @@ function Summary({ load }) {
 
     const renderColorIfDriverNeedsLoad = () => {
         const greenBorder = {
-            border: "green solid 3px",
+            border: "green solid 6px",
             margin: '25px 50px', 
             width: '250px', 
             borderRadius: '20px'
         };
 
         const warningBorder = {
-            border: "yellow solid 3px",
+            border: "yellow solid 6px",
             margin: '25px 50px', 
             width: '250px', 
             borderRadius: '20px'
         };
 
         const alertBorder = {
-            border: "red solid 3px",
+            border: "red solid 6px",
             margin: '25px 50px', 
             width: '250px', 
             borderRadius: '20px'
@@ -86,7 +86,7 @@ function Summary({ load }) {
         <Card style={renderColorIfDriverNeedsLoad()}>
             <Stack alignItems="center">
             <Button onClick={() => naviagate(`/drivers/${loadInfo.driverId}`)}>{loadInfo.firstName}</Button>
-            <CardContent>
+            <CardContent style={{paddingTop: '0px'}}>
                 <Stack alignItems="center">
                     <p><u>Most Recent Load</u></p>
                     <p><b>{loadInfo.broker}</b></p>

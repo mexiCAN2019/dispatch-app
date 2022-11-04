@@ -14,6 +14,7 @@ import 'react-big-calendar/lib/css/react-big-calendar.css';
     return(
       <div style={{ height: 1700 }}>
         <Calendar
+          className='white-back'
           views={['month', "work_week"]}
           events={loads}
           localizer={localizer}
